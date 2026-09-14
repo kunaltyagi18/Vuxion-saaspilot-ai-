@@ -1,0 +1,29 @@
+{
+  "name": "my-app",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "seed:services": "node scripts/seed-services.js",
+    "seed:services:reset": "node scripts/seed-services.js --reset"
+  },
+  "dependencies": {
+    "@clerk/nextjs": "^7.5.8",
+    "framer-motion": "^12.41.0",
+    "mongoose": "^9.7.2",
+    "next": "16.2.9",
+    "next-cloudinary": "^6.17.5",
+    "postcss": "^8.5.16",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.1",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.9",
+    "tailwindcss": "^4.3.1"
+  }
+}

@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+/* Tailwind CSS v4 custom variant for class-based dark mode */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Smooth transition Jab light/dark mode switch ho */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Inputs styling for dark and light theme */
+.dark input, .dark textarea, .dark select {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+  color: #f9fafb !important;
+}
+
+.dark input::placeholder, .dark textarea::placeholder {
+  color: #9ca3af !important;
+}
