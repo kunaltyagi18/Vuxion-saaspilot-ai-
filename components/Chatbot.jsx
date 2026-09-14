@@ -81,7 +81,7 @@ export default function Chatbot() {
                   🤖
                 </div>
                 <div>
-                  <p className="text-white font-bold text-sm leading-tight">MyAgency Assistant</p>
+                  <p className="text-white font-bold text-sm leading-tight">Vuxion Assistant</p>
                   <p className="text-indigo-200 text-xs flex items-center gap-1">
                     <span className="w-2 h-2 rounded-full bg-green-400 inline-block animate-pulse"></span> Online
                   </p>

@@ -84,10 +84,10 @@ export default function Footer() {
           >
             <Link href="/" className="flex items-center gap-2 mb-4">
               <span className="bg-indigo-600 text-white w-9 h-9 rounded-lg flex items-center justify-center text-base font-black shadow-md shadow-indigo-500/20">
-                A
+                V
               </span>
               <span className="text-xl font-bold text-gray-900 dark:text-white">
-                MyAgency
+                Vuxion
               </span>
             </Link>
             <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-5">
@@ -175,24 +175,24 @@ export default function Footer() {
             <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
               <li className="flex items-start gap-2.5">
                 <span className="mt-0.5">📍</span>
-                <span>Tech Hub, Sector 62, Noida, India</span>
+                <span>Vuxion, Noida, India</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="mt-0.5">✉️</span>
                 <a
-                  href="mailto:hello@myagency.com"
+                  href="mailto:hello@vuxion.com"
                   className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors break-all"
                 >
-                  hello@myagency.com
+                  hello@vuxion.com
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="mt-0.5">📞</span>
                 <a
-                  href="tel:+919876543210"
+                  href="tel:+9174280XXXXX"
                   className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                 >
-                  +91 98765 43210
+                  +91 74280 XXXXX
                 </a>
               </li>
             </ul>
@@ -204,7 +204,7 @@ export default function Footer() {
           <p className="text-xs text-gray-500 dark:text-gray-400 text-center sm:text-left">
             © {new Date().getFullYear()}{" "}
             <span className="font-semibold text-gray-700 dark:text-gray-300">
-              MyAgency
+              Vuxion
             </span>
             . All rights reserved. Built with{" "}
             <span className="text-indigo-600 dark:text-indigo-400">Next.js</span>{" "}

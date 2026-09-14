@@ -72,7 +72,7 @@ export default function Contact() {
               </div>
               <div>
                 <h4 className="font-bold text-gray-900 dark:text-white text-base">Our Office</h4>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Tech Hub, Sector 62, Noida, India</p>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Vuxion, Noida, India</p>
               </div>
             </div>
 
@@ -82,7 +82,7 @@ export default function Contact() {
               </div>
               <div>
                 <h4 className="font-bold text-gray-900 dark:text-white text-base">Email Us</h4>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">hello@myagency.com</p>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">hello@vuxion.com</p>
               </div>
             </div>
 
@@ -92,7 +92,7 @@ export default function Contact() {
               </div>
               <div>
                 <h4 className="font-bold text-gray-900 dark:text-white text-base">Call Us</h4>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">+91 98765 43210</p>
+                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">+91 74280 XXXXX</p>
               </div>
             </div>
           </motion.div>

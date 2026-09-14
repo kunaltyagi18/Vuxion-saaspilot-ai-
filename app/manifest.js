@@ -3,8 +3,8 @@
 
 export default function manifest() {
     return {
-        name: "MyAgency",
-        short_name: "MyAgency",
+        name: "Vuxion",
+        short_name: "Vuxion",
         description: "Web Development, UI/UX & SEO Agency built with Next.js",
         start_url: "/",
         display: "standalone",

@@ -49,8 +49,8 @@ export default function Navbar() {
       className="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800 z-50 px-6 md:px-12 py-4 flex justify-between items-center transition-colors duration-300"
     >
       <Link href="/" className="text-xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
-        <span className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">A</span>
-        MyAgency
+        <span className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">V</span>
+        Vuxion
       </Link>
 
       <div className="flex gap-4 md:gap-6 items-center text-sm font-medium text-gray-600 dark:text-gray-300">

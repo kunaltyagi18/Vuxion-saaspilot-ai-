@@ -16,7 +16,7 @@ export async function POST(request) {
     const greetings = ["hi", "hello", "hey", "namaste", "greetings", "good morning", "good evening"];
     if (greetings.some((g) => cleanMsg.startsWith(g) || userWords.includes(g))) {
       return NextResponse.json({
-        answer: "Hello! 👋 Welcome to MyAgency! I can help you with information about our Services, Projects, Pricing, and Contact details. What would you like to know?",
+        answer: "Hello! 👋 Welcome to Vuxion! I can help you with information about our Services, Projects, Pricing, and Contact details. What would you like to know?",
       });
     }
 
@@ -52,7 +52,7 @@ export async function POST(request) {
     const contactKeywords = ["contact", "email", "phone", "call", "address", "location", "reach", "number"];
     if (contactKeywords.some((k) => cleanMsg.includes(k))) {
       return NextResponse.json({
-        answer: "📞 Phone: +91 98765 43210\n📧 Email: hello@myagency.com\n📍 Address: Tech Hub, Sector 62, Noida, India\n\nYou can also fill out the contact form on this page!",
+        answer: "📞 Phone: +91 74280 XXXXX\n📧 Email: hello@vuxion.com\n📍 Address: Vuxion, Noida, India\n\nYou can also fill out the contact form on this page!",
       });
     }
 
