@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import toast from "react-hot-toast";
 
 // pehle se kuch welcome message dikhane ke liye
 const welcomeMsg = {
@@ -39,6 +40,19 @@ export default function Chatbot() {
       });
 
       const data = await res.json();
+
+      if (res.status === 429) {
+        // Rate limit hit — show toast + add as bot message
+        toast.error(data.answer || "Too many messages! Please wait a moment.", {
+          icon: "⏳",
+          duration: 5000,
+        });
+        setMessages((prev) => [
+          ...prev,
+          { role: "bot", text: data.answer || "⏳ Too many messages! Please wait a moment before sending more." },
+        ]);
+        return;
+      }
 
       setMessages((prev) => [
         ...prev,

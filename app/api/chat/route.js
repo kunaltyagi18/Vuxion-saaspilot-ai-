@@ -3,8 +3,24 @@ import FAQ from "@/models/FAQ";
 import Service from "@/models/Service";
 import Project from "@/models/Project";
 import { NextResponse } from "next/server";
+import { checkRateLimit } from "@/lib/ratelimit";
 
 export async function POST(request) {
+  // ── Rate Limiting: max 10 chatbot messages per IP per minute ────────────────
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "anonymous";
+
+  const rateCheck = checkRateLimit(`chat:${ip}`, { limit: 10, windowMs: 60_000 });
+  if (!rateCheck.ok) {
+    return NextResponse.json(
+      { answer: "⏳ Too many messages! Please wait a moment before sending more." },
+      { status: 429 }
+    );
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
   try {
     await connectDB();
 

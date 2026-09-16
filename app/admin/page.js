@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ADMIN_EMAIL } from "@/lib/config"; // shared constant — sirf yahan se import karo
+import { ADMIN_EMAIL } from "@/lib/config";
 import { CldUploadWidget } from "next-cloudinary";
+import toast from "react-hot-toast";
 
 // Cloudinary configured hai ya nahi — dono env vars present hone chahiye
 const CLOUDINARY_CONFIGURED =
@@ -40,7 +41,7 @@ export default function AdminPage() {
   const [fKeywords, setFKeywords] = useState("");
   const [fAnswer, setFAnswer] = useState("");
 
-  const [msg, setMsg] = useState("");
+  const [msg, setMsg] = useState(""); // kept for compatibility but toast is used instead
 
   // Client-side auth + email check (defense in depth)
   // Middleware agar kisi wajah se bypass ho jaye, tab bhi UI level pe block hoga
@@ -84,14 +85,14 @@ export default function AdminPage() {
   }
 
   async function addFAQ() {
-    if (!fKeywords || !fAnswer) return setMsg("Keywords aur answer dono bharo!");
+    if (!fKeywords || !fAnswer) return toast.error("Keywords aur answer dono bharo!");
     const keywordsArray = fKeywords.split(",").map((k) => k.trim()).filter(Boolean);
     await fetch("/api/faqs", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ keywords: keywordsArray, answer: fAnswer }),
     });
-    setMsg("FAQ add ho gaya!");
+    toast.success("FAQ add ho gaya! 🤖");
     setFKeywords(""); setFAnswer("");
     loadFAQs();
   }
@@ -99,14 +100,14 @@ export default function AdminPage() {
   async function deleteFAQ(id) {
     if (!window.confirm("Are you sure you want to delete this FAQ?")) return;
     await fetch(`/api/faqs/${id}`, { method: "DELETE" });
-    setMsg("FAQ delete ho gaya!");
+    toast.success("FAQ delete ho gaya! 🗑️");
     loadFAQs();
   }
 
   async function deleteLead(id) {
     if (!window.confirm("Are you sure you want to delete this lead?")) return;
     await fetch(`/api/contact/${id}`, { method: "DELETE" });
-    setMsg("Lead delete ho gaya!");
+    toast.success("Lead delete ho gaya! 🗑️");
     loadLeads();
   }
 
@@ -124,13 +125,13 @@ export default function AdminPage() {
 
   // service add karne ka function (image URL include karke)
   async function addService() {
-    if (!sTitle || !sDesc || !sPrice) return setMsg("Saare basic fields bharo!");
+    if (!sTitle || !sDesc || !sPrice) return toast.error("Saare basic fields bharo!");
     await fetch("/api/services", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: sTitle, description: sDesc, price: sPrice, image: sImage }),
     });
-    setMsg("Service add ho gayi!");
+    toast.success("Service add ho gayi! 🛠️");
     setSTitle(""); setSDesc(""); setSPrice(""); setSImage("");
     loadServices();
   }
@@ -138,20 +139,20 @@ export default function AdminPage() {
   async function deleteService(id) {
     if (!window.confirm("Are you sure you want to delete this service?")) return;
     await fetch(`/api/services/${id}`, { method: "DELETE" });
-    setMsg("Service delete ho gayi!");
+    toast.success("Service delete ho gayi! 🗑️");
     loadServices();
   }
 
   // project add karne ka function (image URL include karke)
   async function addProject() {
-    if (!pTitle || !pDesc) return setMsg("Title aur description toh bharo!");
+    if (!pTitle || !pDesc) return toast.error("Title aur description toh bharo!");
     const techArray = pTech.split(",").map((t) => t.trim()).filter(Boolean);
     await fetch("/api/projects", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: pTitle, description: pDesc, techStack: techArray, link: pLink, image: pImage }),
     });
-    setMsg("Project add ho gaya!");
+    toast.success("Project add ho gaya! 🚀");
     setPTitle(""); setPDesc(""); setPTech(""); setPLink(""); setPImage("");
     loadProjects();
   }
@@ -159,7 +160,7 @@ export default function AdminPage() {
   async function deleteProject(id) {
     if (!window.confirm("Are you sure you want to delete this project?")) return;
     await fetch(`/api/projects/${id}`, { method: "DELETE" });
-    setMsg("Project delete ho gaya!");
+    toast.success("Project delete ho gaya! 🗑️");
     loadProjects();
   }
 
@@ -181,13 +182,7 @@ export default function AdminPage() {
           </Link>
         </div>
 
-        {/* alert message display */}
-        {msg && (
-          <div className="bg-green-100 dark:bg-green-950/80 text-green-800 dark:text-green-300 border border-green-200 dark:border-green-800 px-4 py-3 rounded-xl mb-8 text-sm font-medium flex justify-between items-center">
-            <span>{msg}</span>
-            <button onClick={() => setMsg("")} className="text-xs font-bold px-2">✕</button>
-          </div>
-        )}
+        {/* No green alert banner needed — toasts handle all feedback */}
 
         {/* Dashboard Stat Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">

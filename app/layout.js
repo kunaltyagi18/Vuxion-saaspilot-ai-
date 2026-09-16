@@ -1,12 +1,13 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { SITE_URL } from "@/lib/config";
+import ToasterProvider from "@/components/ToasterProvider";
 
 export const metadata = {
-  metadataBase: new URL(SITE_URL), // 👈 lib/config.js me SITE_URL set karo — relative OG image URLs isi se resolve hoti hain
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "Vuxion | Web Development, UI/UX & SEO Services",
-    template: "%s | Vuxion", // 👈 future pages "Services | Vuxion" jaisa auto-bana denge
+    template: "%s | Vuxion",
   },
   description:
     "We build fast, scalable web apps with Next.js. Full-stack development, UI/UX design, and SEO — tailored for growth.",
@@ -18,7 +19,7 @@ export const metadata = {
   ],
   authors: [{ name: "Vuxion" }],
   alternates: {
-    canonical: SITE_URL, // duplicate-content signals avoid karne ke liye canonical tag
+    canonical: SITE_URL,
   },
   openGraph: {
     title: "Vuxion | Web Development, UI/UX & SEO Services",
@@ -45,7 +46,6 @@ export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
       <html lang="en" className="scroll-smooth">
-        {/* body background light me white aur dark me dark slate rahega */}
         <body className="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
           {/* JSON-LD structured data — Google ko batata hai ye ek Organization hai */}
           <script
@@ -66,6 +66,8 @@ export default function RootLayout({ children }) {
             }}
           />
           {children}
+          {/* Global Toast Notifications — poori site pe available */}
+          <ToasterProvider />
         </body>
       </html>
     </ClerkProvider>
