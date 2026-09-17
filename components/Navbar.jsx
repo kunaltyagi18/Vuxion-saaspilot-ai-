@@ -1,13 +1,22 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, useScroll, useSpring } from "framer-motion";
 import { UserButton, SignInButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { ADMIN_EMAIL } from "@/lib/config"; // sirf ek jagah se email constant
+import { ADMIN_EMAIL } from "@/lib/config";
 
 export default function Navbar() {
-  const { isSignedIn, user } = useUser(); // user object bhi lo — email check ke liye
+  const { isSignedIn, user } = useUser();
   const [darkMode, setDarkMode] = useState(false);
+
+  // Scroll progress bar — useScroll tracks how much page is scrolled
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001,
+  });
+
 
   // page load hone pe check karo localStorage me theme saved hai ya nahi
   useEffect(() => {
@@ -42,12 +51,19 @@ export default function Navbar() {
     user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
 
   return (
-    <motion.nav
-      initial={{ y: -60, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5 }}
-      className="fixed top-0 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800 z-50 px-6 md:px-12 py-4 flex justify-between items-center transition-colors duration-300"
-    >
+    <>
+      {/* ── Scroll Progress Bar ─────────────────────────────────────────── */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-indigo-500 via-violet-500 to-purple-500 z-[60] origin-left"
+        style={{ scaleX }}
+      />
+
+      <motion.nav
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="fixed top-[3px] w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800 z-50 px-6 md:px-12 py-4 flex justify-between items-center transition-colors duration-300"
+      >
       <Link href="/" className="text-xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
         <span className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">V</span>
         Vuxion
@@ -85,6 +101,7 @@ export default function Navbar() {
           </SignInButton>
         )}
       </div>
-    </motion.nav>
+      </motion.nav>
+    </>
   );
 }

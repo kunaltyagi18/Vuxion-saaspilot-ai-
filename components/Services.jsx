@@ -168,6 +168,14 @@ export default function Services() {
                         {s.description}
                       </p>
                     </div>
+                    {/* CTA Button */}
+                    <a
+                      href="#contact"
+                      className="mt-5 inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-sm font-semibold hover:gap-2.5 transition-all duration-200 group/btn"
+                    >
+                      Get Started
+                      <span className="transition-transform duration-200 group-hover/btn:translate-x-1">→</span>
+                    </a>
                   </div>
                 </motion.div>
               );
