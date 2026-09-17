@@ -6,468 +6,527 @@ import Link from "next/link";
 import { ADMIN_EMAIL } from "@/lib/config";
 import { CldUploadWidget } from "next-cloudinary";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
 
-// Cloudinary configured hai ya nahi — dono env vars present hone chahiye
 const CLOUDINARY_CONFIGURED =
   process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME &&
   process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME !== "your_cloud_name" &&
   process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET &&
   process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET !== "your_unsigned_preset";
 
+// ── Sidebar nav items ─────────────────────────────────────────────────────────
+const NAV_ITEMS = [
+  { key: "services",  label: "Services",      icon: "🛠️" },
+  { key: "projects",  label: "Projects",      icon: "🚀" },
+  { key: "faqs",      label: "Chatbot FAQs",  icon: "🤖" },
+  { key: "leads",     label: "Leads",         icon: "📩" },
+];
+
+// ── Small reusable input ──────────────────────────────────────────────────────
+function Field({ placeholder, value, onChange, type = "text" }) {
+  return (
+    <input
+      type={type}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 transition"
+    />
+  );
+}
+
+function TextArea({ placeholder, value, onChange, rows = 3 }) {
+  return (
+    <textarea
+      rows={rows}
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 transition resize-none"
+    />
+  );
+}
+
 export default function AdminPage() {
-  // user object bhi lo — email check ke liye (defense in depth)
   const { isSignedIn, isLoaded, user } = useUser();
   const router = useRouter();
 
+  // Active sidebar section
+  const [activeSection, setActiveSection] = useState("services");
+
+  // Data
   const [services, setServices] = useState([]);
   const [projects, setProjects] = useState([]);
   const [faqs, setFaqs] = useState([]);
   const [leads, setLeads] = useState([]);
 
-  // service form state (image URL state ke saath)
+  // Add Service form
   const [sTitle, setSTitle] = useState("");
   const [sDesc, setSDesc] = useState("");
   const [sPrice, setSPrice] = useState("");
   const [sImage, setSImage] = useState("");
 
-  // project form state (image URL state ke saath)
+  // Add Project form
   const [pTitle, setPTitle] = useState("");
   const [pDesc, setPDesc] = useState("");
-  const [pTech, setPTech] = useState(""); // comma separated
+  const [pTech, setPTech] = useState("");
   const [pLink, setPLink] = useState("");
   const [pImage, setPImage] = useState("");
 
-  // faq state
+  // Add FAQ form
   const [fKeywords, setFKeywords] = useState("");
   const [fAnswer, setFAnswer] = useState("");
 
-  const [msg, setMsg] = useState(""); // kept for compatibility but toast is used instead
+  // Edit state — { id, data }
+  const [editingId, setEditingId] = useState(null);
+  const [editData, setEditData] = useState({});
 
-  // Client-side auth + email check (defense in depth)
-  // Middleware agar kisi wajah se bypass ho jaye, tab bhi UI level pe block hoga
+  // ── Auth guard ──────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (!isLoaded) return; // abhi Clerk load nahi hua, wait karo
-
-    // Check 1: User logged in hai ya nahi?
-    if (!isSignedIn) {
-      router.push("/");
-      return;
-    }
-
-    // Check 2: Logged in hai, but admin email hai ya nahi?
-    const userEmail = user?.primaryEmailAddress?.emailAddress;
-    if (userEmail && userEmail !== ADMIN_EMAIL) {
-      // Admin nahi hai — turant ghar bhejo
-      router.push("/");
-    }
+    if (!isLoaded) return;
+    if (!isSignedIn) { router.push("/"); return; }
+    const email = user?.primaryEmailAddress?.emailAddress;
+    if (email && email !== ADMIN_EMAIL) router.push("/");
   }, [isLoaded, isSignedIn, user, router]);
 
-  // component mount pe saara data load karo
+  // ── Load all data on mount ──────────────────────────────────────────────────
   useEffect(() => {
-    loadServices();
-    loadProjects();
-    loadFAQs();
-    loadLeads();
+    loadAll();
   }, []);
 
-  async function loadLeads() {
-    const res = await fetch("/api/contact");
-    if (res.ok) {
-      const data = await res.json();
-      setLeads(data);
-    }
+  async function loadAll() {
+    const [s, p, f, l] = await Promise.all([
+      fetch("/api/services").then(r => r.json()),
+      fetch("/api/projects").then(r => r.json()),
+      fetch("/api/faqs").then(r => r.json()),
+      fetch("/api/contact").then(r => r.ok ? r.json() : []),
+    ]);
+    setServices(Array.isArray(s) ? s : []);
+    setProjects(Array.isArray(p) ? p : []);
+    setFaqs(Array.isArray(f) ? f : []);
+    setLeads(Array.isArray(l) ? l : []);
   }
 
-  async function loadFAQs() {
-    const res = await fetch("/api/faqs");
-    const data = await res.json();
-    setFaqs(data);
-  }
-
-  async function addFAQ() {
-    if (!fKeywords || !fAnswer) return toast.error("Keywords aur answer dono bharo!");
-    const keywordsArray = fKeywords.split(",").map((k) => k.trim()).filter(Boolean);
-    await fetch("/api/faqs", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ keywords: keywordsArray, answer: fAnswer }),
-    });
-    toast.success("FAQ add ho gaya! 🤖");
-    setFKeywords(""); setFAnswer("");
-    loadFAQs();
-  }
-
-  async function deleteFAQ(id) {
-    if (!window.confirm("Are you sure you want to delete this FAQ?")) return;
-    await fetch(`/api/faqs/${id}`, { method: "DELETE" });
-    toast.success("FAQ delete ho gaya! 🗑️");
-    loadFAQs();
-  }
-
-  async function deleteLead(id) {
-    if (!window.confirm("Are you sure you want to delete this lead?")) return;
-    await fetch(`/api/contact/${id}`, { method: "DELETE" });
-    toast.success("Lead delete ho gaya! 🗑️");
-    loadLeads();
-  }
-
-  async function loadServices() {
-    const res = await fetch("/api/services");
-    const data = await res.json();
-    setServices(data);
-  }
-
-  async function loadProjects() {
-    const res = await fetch("/api/projects");
-    const data = await res.json();
-    setProjects(data);
-  }
-
-  // service add karne ka function (image URL include karke)
+  // ── Add handlers ────────────────────────────────────────────────────────────
   async function addService() {
-    if (!sTitle || !sDesc || !sPrice) return toast.error("Saare basic fields bharo!");
+    if (!sTitle || !sDesc || !sPrice) return toast.error("Saare fields bharo!");
     await fetch("/api/services", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: sTitle, description: sDesc, price: sPrice, image: sImage }),
     });
     toast.success("Service add ho gayi! 🛠️");
     setSTitle(""); setSDesc(""); setSPrice(""); setSImage("");
-    loadServices();
+    fetch("/api/services").then(r => r.json()).then(d => setServices(Array.isArray(d) ? d : []));
   }
 
-  async function deleteService(id) {
-    if (!window.confirm("Are you sure you want to delete this service?")) return;
-    await fetch(`/api/services/${id}`, { method: "DELETE" });
-    toast.success("Service delete ho gayi! 🗑️");
-    loadServices();
-  }
-
-  // project add karne ka function (image URL include karke)
   async function addProject() {
-    if (!pTitle || !pDesc) return toast.error("Title aur description toh bharo!");
-    const techArray = pTech.split(",").map((t) => t.trim()).filter(Boolean);
+    if (!pTitle || !pDesc) return toast.error("Title aur description bharo!");
+    const techArray = pTech.split(",").map(t => t.trim()).filter(Boolean);
     await fetch("/api/projects", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: pTitle, description: pDesc, techStack: techArray, link: pLink, image: pImage }),
     });
     toast.success("Project add ho gaya! 🚀");
     setPTitle(""); setPDesc(""); setPTech(""); setPLink(""); setPImage("");
-    loadProjects();
+    fetch("/api/projects").then(r => r.json()).then(d => setProjects(Array.isArray(d) ? d : []));
   }
 
-  async function deleteProject(id) {
-    if (!window.confirm("Are you sure you want to delete this project?")) return;
-    await fetch(`/api/projects/${id}`, { method: "DELETE" });
-    toast.success("Project delete ho gaya! 🗑️");
-    loadProjects();
+  async function addFAQ() {
+    if (!fKeywords || !fAnswer) return toast.error("Keywords aur answer dono bharo!");
+    const keywordsArray = fKeywords.split(",").map(k => k.trim()).filter(Boolean);
+    await fetch("/api/faqs", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ keywords: keywordsArray, answer: fAnswer }),
+    });
+    toast.success("FAQ add ho gaya! 🤖");
+    setFKeywords(""); setFAnswer("");
+    fetch("/api/faqs").then(r => r.json()).then(d => setFaqs(Array.isArray(d) ? d : []));
   }
 
-  if (!isLoaded) return <p className="p-10 text-gray-500 dark:text-gray-400">Loading admin panel...</p>;
+  // ── Delete handlers ─────────────────────────────────────────────────────────
+  async function del(endpoint, id, label, refreshFn) {
+    if (!window.confirm(`Delete karna chahte ho?`)) return;
+    await fetch(`/api/${endpoint}/${id}`, { method: "DELETE" });
+    toast.success(`${label} delete ho gaya! 🗑️`);
+    refreshFn();
+  }
+
+  // ── Edit handlers ────────────────────────────────────────────────────────────
+  function startEdit(item, section) {
+    setEditingId(item._id);
+    if (section === "services") {
+      setEditData({ title: item.title, description: item.description, price: item.price, image: item.image || "" });
+    } else if (section === "projects") {
+      setEditData({ title: item.title, description: item.description, techStack: item.techStack?.join(", ") || "", link: item.link || "", image: item.image || "" });
+    } else if (section === "faqs") {
+      setEditData({ keywords: item.keywords?.join(", ") || "", answer: item.answer });
+    }
+  }
+
+  function cancelEdit() { setEditingId(null); setEditData({}); }
+
+  async function saveEdit(endpoint, section, refreshFn) {
+    let body = { ...editData };
+    if (section === "projects") {
+      body.techStack = editData.techStack.split(",").map(t => t.trim()).filter(Boolean);
+    }
+    if (section === "faqs") {
+      body.keywords = editData.keywords.split(",").map(k => k.trim()).filter(Boolean);
+    }
+    await fetch(`/api/${endpoint}/${editingId}`, {
+      method: "PUT", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    toast.success("Update ho gaya! ✅");
+    cancelEdit();
+    refreshFn();
+  }
+
+  const reloadServices = () => fetch("/api/services").then(r => r.json()).then(d => setServices(Array.isArray(d) ? d : []));
+  const reloadProjects = () => fetch("/api/projects").then(r => r.json()).then(d => setProjects(Array.isArray(d) ? d : []));
+  const reloadFaqs = () => fetch("/api/faqs").then(r => r.json()).then(d => setFaqs(Array.isArray(d) ? d : []));
+  const reloadLeads = () => fetch("/api/contact").then(r => r.ok ? r.json() : []).then(d => setLeads(Array.isArray(d) ? d : []));
+
+  if (!isLoaded) return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+      <div className="animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full" />
+    </div>
+  );
+
+  const stats = [
+    { label: "Services", value: services.length, icon: "🛠️", section: "services" },
+    { label: "Projects", value: projects.length, icon: "🚀", section: "projects" },
+    { label: "FAQs",     value: faqs.length,     icon: "🤖", section: "faqs" },
+    { label: "Leads",    value: leads.length,     icon: "📩", section: "leads" },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-6 sm:p-10 transition-colors duration-300">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-extrabold text-indigo-600 dark:text-indigo-400">Admin Control Panel</h1>
-            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Yahan se services, projects, aur FAQs manage karo</p>
-          </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex transition-colors duration-300">
+
+      {/* ── LEFT SIDEBAR ──────────────────────────────────────────────────────── */}
+      <aside className="w-64 shrink-0 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col min-h-screen sticky top-0">
+        {/* Logo */}
+        <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800">
+          <Link href="/" className="flex items-center gap-2">
+            <span className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">V</span>
+            <span className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">Vuxion</span>
+          </Link>
+          <p className="text-xs text-gray-400 mt-1 ml-10">Admin Panel</p>
+        </div>
+
+        {/* Stats */}
+        <div className="px-4 py-4 grid grid-cols-2 gap-2">
+          {stats.map(s => (
+            <button
+              key={s.section}
+              onClick={() => setActiveSection(s.section)}
+              className={`rounded-xl p-3 text-center transition-all border ${
+                activeSection === s.section
+                  ? "bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800"
+                  : "bg-gray-50 dark:bg-gray-800/60 border-gray-100 dark:border-gray-700 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30"
+              }`}
+            >
+              <div className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400">{s.value}</div>
+              <div className="text-[10px] text-gray-500 uppercase tracking-wide font-semibold">{s.label}</div>
+            </button>
+          ))}
+        </div>
+
+        {/* Nav */}
+        <nav className="px-3 flex-1">
+          <p className="text-[10px] font-bold uppercase text-gray-400 tracking-widest px-3 mb-2">Manage</p>
+          {NAV_ITEMS.map(item => (
+            <button
+              key={item.key}
+              onClick={() => { setActiveSection(item.key); cancelEdit(); }}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold mb-1 transition-all ${
+                activeSection === item.key
+                  ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
+                  : "text-gray-600 dark:text-gray-300 hover:bg-indigo-50 dark:hover:bg-gray-800 hover:text-indigo-600 dark:hover:text-indigo-400"
+              }`}
+            >
+              <span className="text-base">{item.icon}</span>
+              {item.label}
+              {activeSection === item.key && (
+                <span className="ml-auto w-1.5 h-1.5 bg-white rounded-full" />
+              )}
+            </button>
+          ))}
+        </nav>
+
+        {/* Back to site */}
+        <div className="p-4 border-t border-gray-100 dark:border-gray-800">
           <Link
             href="/"
-            className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-4 py-2 rounded-xl text-sm font-semibold hover:bg-gray-300 dark:hover:bg-gray-700 transition"
+            className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition font-medium px-3 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-800"
           >
             ← Back to Site
           </Link>
         </div>
+      </aside>
 
-        {/* No green alert banner needed — toasts handle all feedback */}
+      {/* ── MAIN CONTENT ─────────────────────────────────────────────────────── */}
+      <main className="flex-1 p-8 overflow-auto">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeSection}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.2 }}
+          >
 
-        {/* Dashboard Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center">
-            <span className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{services.length}</span>
-            <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold mt-1">Services</span>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center">
-            <span className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{projects.length}</span>
-            <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold mt-1">Projects</span>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center">
-            <span className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{faqs.length}</span>
-            <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold mt-1">FAQs</span>
-          </div>
-          <div className="bg-white dark:bg-gray-800 p-4 rounded-2xl shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col items-center justify-center text-center">
-            <span className="text-3xl font-bold text-indigo-600 dark:text-indigo-400">{leads.length}</span>
-            <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold mt-1">Leads</span>
-          </div>
-        </div>
+            {/* ═══════════════ SERVICES ══════════════════════════════════════ */}
+            {activeSection === "services" && (
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-1">🛠️ Services</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">Add, edit, or delete your service offerings.</p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* ── Services Section ── */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                <span>🛠️</span> Services
-              </h2>
-
-              {/* add service form */}
-              <div className="flex flex-col gap-3 mb-6">
-                <input
-                  placeholder="Service title (e.g. Web Development)"
-                  value={sTitle}
-                  onChange={(e) => setSTitle(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <input
-                  placeholder="Short description"
-                  value={sDesc}
-                  onChange={(e) => setSDesc(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <input
-                  placeholder="Price (e.g. Starting ₹15,000)"
-                  value={sPrice}
-                  onChange={(e) => setSPrice(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <div className="flex gap-2">
-                  <input
-                    placeholder="Image URL (optional)"
-                    value={sImage}
-                    onChange={(e) => setSImage(e.target.value)}
-                    className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                  {CLOUDINARY_CONFIGURED ? (
-                    <CldUploadWidget uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET} onSuccess={(result) => setSImage(result.info.secure_url)}>
-                      {({ open }) => (
-                        <button type="button" onClick={() => open()} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 rounded-xl text-sm font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                          Upload
-                        </button>
+                {/* Add Form */}
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 mb-8 shadow-sm">
+                  <h2 className="text-sm font-bold uppercase text-gray-400 tracking-wider mb-4">+ Add New Service</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <Field placeholder="Title (e.g. Web Development)" value={sTitle} onChange={setSTitle} />
+                    <Field placeholder="Price (e.g. Starting ₹15,000)" value={sPrice} onChange={setSPrice} />
+                    <div className="md:col-span-2">
+                      <Field placeholder="Short description" value={sDesc} onChange={setSDesc} />
+                    </div>
+                    <div className="md:col-span-2 flex gap-2">
+                      <Field placeholder="Image URL (optional)" value={sImage} onChange={setSImage} />
+                      {CLOUDINARY_CONFIGURED && (
+                        <CldUploadWidget uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET} onSuccess={(r) => setSImage(r.info.secure_url)}>
+                          {({ open }) => (
+                            <button onClick={() => open()} className="shrink-0 bg-gray-100 dark:bg-gray-800 px-4 rounded-xl text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition text-gray-700 dark:text-gray-200">Upload</button>
+                          )}
+                        </CldUploadWidget>
                       )}
-                    </CldUploadWidget>
-                  ) : (
-                    <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center px-2">
-                      Paste URL above
-                    </span>
-                  )}
-                </div>
-                <button
-                  onClick={addService}
-                  className="bg-indigo-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm mt-1"
-                >
-                  + Add Service
-                </button>
-              </div>
-            </div>
-
-            {/* services list */}
-            <div className="flex flex-col gap-3 max-h-64 overflow-y-auto">
-              <h3 className="text-xs font-bold uppercase text-gray-400 tracking-wider">Existing Services</h3>
-              {services.length === 0 ? (
-                <p className="text-gray-400 text-sm italic">Abhi koi service nahi hai</p>
-              ) : (
-                services.map((s) => (
-                  <div key={s._id} className="flex justify-between items-center bg-indigo-50/50 dark:bg-gray-900/60 border border-indigo-100 dark:border-gray-700 rounded-xl px-4 py-3">
-                    <div>
-                      <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{s.title}</p>
-                      <p className="text-xs text-indigo-600 dark:text-indigo-400 font-medium">{s.price}</p>
                     </div>
-                    <button
-                      onClick={() => deleteService(s._id)}
-                      className="text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 bg-red-50 dark:bg-red-950/50 rounded-lg transition"
-                    >
-                      Delete
-                    </button>
                   </div>
-                ))
-              )}
-            </div>
-          </div>
+                  <button onClick={addService} className="mt-4 bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-sm">
+                    + Add Service
+                  </button>
+                </div>
 
-          {/* ── Projects Section ── */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 flex flex-col justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-                <span>🚀</span> Projects
-              </h2>
-
-              {/* add project form */}
-              <div className="flex flex-col gap-3 mb-6">
-                <input
-                  placeholder="Project title (e.g. E-Commerce Store)"
-                  value={pTitle}
-                  onChange={(e) => setPTitle(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <input
-                  placeholder="Short description"
-                  value={pDesc}
-                  onChange={(e) => setPDesc(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <input
-                  placeholder="Tech stack (comma se separated: Next.js, MongoDB)"
-                  value={pTech}
-                  onChange={(e) => setPTech(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <input
-                  placeholder="Live project URL (optional)"
-                  value={pLink}
-                  onChange={(e) => setPLink(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <div className="flex gap-2">
-                  <input
-                    placeholder="Image URL (optional)"
-                    value={pImage}
-                    onChange={(e) => setPImage(e.target.value)}
-                    className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  />
-                  {CLOUDINARY_CONFIGURED ? (
-                    <CldUploadWidget uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET} onSuccess={(result) => setPImage(result.info.secure_url)}>
-                      {({ open }) => (
-                        <button type="button" onClick={() => open()} className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 px-4 rounded-xl text-sm font-semibold hover:bg-gray-300 dark:hover:bg-gray-600 transition">
-                          Upload
-                        </button>
+                {/* List */}
+                <div className="flex flex-col gap-3">
+                  <h2 className="text-xs font-bold uppercase text-gray-400 tracking-wider">Existing Services ({services.length})</h2>
+                  {services.length === 0 ? (
+                    <p className="text-gray-400 italic text-sm py-6 text-center">Koi service nahi — upar se add karo!</p>
+                  ) : services.map(s => (
+                    <motion.div key={s._id} layout className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+                      {editingId === s._id ? (
+                        /* ── EDIT FORM ── */
+                        <div className="p-5 flex flex-col gap-3">
+                          <p className="text-xs font-bold uppercase text-indigo-500 tracking-wider mb-1">Editing: {s.title}</p>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <Field placeholder="Title" value={editData.title || ""} onChange={v => setEditData(p => ({ ...p, title: v }))} />
+                            <Field placeholder="Price" value={editData.price || ""} onChange={v => setEditData(p => ({ ...p, price: v }))} />
+                            <div className="md:col-span-2">
+                              <Field placeholder="Description" value={editData.description || ""} onChange={v => setEditData(p => ({ ...p, description: v }))} />
+                            </div>
+                            <div className="md:col-span-2">
+                              <Field placeholder="Image URL" value={editData.image || ""} onChange={v => setEditData(p => ({ ...p, image: v }))} />
+                            </div>
+                          </div>
+                          <div className="flex gap-2 mt-1">
+                            <button onClick={() => saveEdit("services", "services", reloadServices)} className="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition">Save Changes</button>
+                            <button onClick={cancelEdit} className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-5 py-2 rounded-xl text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
+                          </div>
+                        </div>
+                      ) : (
+                        /* ── DISPLAY ROW ── */
+                        <div className="flex items-center justify-between px-5 py-4">
+                          <div>
+                            <p className="font-bold text-gray-800 dark:text-gray-100">{s.title}</p>
+                            <p className="text-xs text-indigo-500 font-semibold mt-0.5">{s.price}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-md line-clamp-1">{s.description}</p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0 ml-4">
+                            <button onClick={() => startEdit(s, "services")} className="text-indigo-600 dark:text-indigo-400 text-xs font-bold px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition">Edit</button>
+                            <button onClick={() => del("services", s._id, "Service", reloadServices)} className="text-red-500 text-xs font-bold px-3 py-1.5 bg-red-50 dark:bg-red-950/30 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition">Delete</button>
+                          </div>
+                        </div>
                       )}
-                    </CldUploadWidget>
-                  ) : (
-                    <span className="text-xs text-gray-400 dark:text-gray-500 flex items-center px-2">
-                      Paste URL above
-                    </span>
-                  )}
+                    </motion.div>
+                  ))}
                 </div>
-                <button
-                  onClick={addProject}
-                  className="bg-indigo-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm mt-1"
-                >
-                  + Add Project
-                </button>
               </div>
-            </div>
+            )}
 
-            {/* projects list */}
-            <div className="flex flex-col gap-3 max-h-64 overflow-y-auto">
-              <h3 className="text-xs font-bold uppercase text-gray-400 tracking-wider">Existing Projects</h3>
-              {projects.length === 0 ? (
-                <p className="text-gray-400 text-sm italic">Abhi koi project nahi hai</p>
-              ) : (
-                projects.map((p) => (
-                  <div key={p._id} className="flex justify-between items-center bg-gray-50 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3">
-                    <div>
-                      <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{p.title}</p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">{p.techStack?.join(", ")}</p>
+            {/* ═══════════════ PROJECTS ══════════════════════════════════════ */}
+            {activeSection === "projects" && (
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-1">🚀 Projects</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">Manage your portfolio projects.</p>
+
+                {/* Add Form */}
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 mb-8 shadow-sm">
+                  <h2 className="text-sm font-bold uppercase text-gray-400 tracking-wider mb-4">+ Add New Project</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <Field placeholder="Title (e.g. E-Commerce Store)" value={pTitle} onChange={setPTitle} />
+                    <Field placeholder="Tech Stack (comma separated)" value={pTech} onChange={setPTech} />
+                    <div className="md:col-span-2">
+                      <Field placeholder="Short description" value={pDesc} onChange={setPDesc} />
                     </div>
-                    <button
-                      onClick={() => deleteProject(p._id)}
-                      className="text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 bg-red-50 dark:bg-red-950/50 rounded-lg transition"
-                    >
-                      Delete
-                    </button>
+                    <Field placeholder="Live URL (optional)" value={pLink} onChange={setPLink} />
+                    <div className="flex gap-2">
+                      <Field placeholder="Image URL (optional)" value={pImage} onChange={setPImage} />
+                      {CLOUDINARY_CONFIGURED && (
+                        <CldUploadWidget uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET} onSuccess={(r) => setPImage(r.info.secure_url)}>
+                          {({ open }) => (
+                            <button onClick={() => open()} className="shrink-0 bg-gray-100 dark:bg-gray-800 px-4 rounded-xl text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition text-gray-700 dark:text-gray-200">Upload</button>
+                          )}
+                        </CldUploadWidget>
+                      )}
+                    </div>
                   </div>
-                ))
-              )}
-            </div>
-          </div>
+                  <button onClick={addProject} className="mt-4 bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-sm">
+                    + Add Project
+                  </button>
+                </div>
 
-          {/* ── FAQs Section (Full Width) ── */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 md:col-span-2">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-              <span>🤖</span> Chatbot FAQs
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* add faq form */}
-              <div className="flex flex-col gap-3">
-                <input
-                  placeholder="Keywords (comma se separation: price, cost, fee)"
-                  value={fKeywords}
-                  onChange={(e) => setFKeywords(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-                <textarea
-                  rows={3}
-                  placeholder="Chatbot ka exact answer..."
-                  value={fAnswer}
-                  onChange={(e) => setFAnswer(e.target.value)}
-                  className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                />
-                <button
-                  onClick={addFAQ}
-                  className="bg-indigo-600 text-white py-2.5 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition shadow-sm"
-                >
-                  + Add FAQ
-                </button>
+                {/* List */}
+                <div className="flex flex-col gap-3">
+                  <h2 className="text-xs font-bold uppercase text-gray-400 tracking-wider">Existing Projects ({projects.length})</h2>
+                  {projects.length === 0 ? (
+                    <p className="text-gray-400 italic text-sm py-6 text-center">Koi project nahi — upar se add karo!</p>
+                  ) : projects.map(p => (
+                    <motion.div key={p._id} layout className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+                      {editingId === p._id ? (
+                        <div className="p-5 flex flex-col gap-3">
+                          <p className="text-xs font-bold uppercase text-indigo-500 tracking-wider mb-1">Editing: {p.title}</p>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <Field placeholder="Title" value={editData.title || ""} onChange={v => setEditData(prev => ({ ...prev, title: v }))} />
+                            <Field placeholder="Tech Stack (comma separated)" value={editData.techStack || ""} onChange={v => setEditData(prev => ({ ...prev, techStack: v }))} />
+                            <div className="md:col-span-2">
+                              <Field placeholder="Description" value={editData.description || ""} onChange={v => setEditData(prev => ({ ...prev, description: v }))} />
+                            </div>
+                            <Field placeholder="Live URL" value={editData.link || ""} onChange={v => setEditData(prev => ({ ...prev, link: v }))} />
+                            <Field placeholder="Image URL" value={editData.image || ""} onChange={v => setEditData(prev => ({ ...prev, image: v }))} />
+                          </div>
+                          <div className="flex gap-2 mt-1">
+                            <button onClick={() => saveEdit("projects", "projects", reloadProjects)} className="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition">Save Changes</button>
+                            <button onClick={cancelEdit} className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-5 py-2 rounded-xl text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-between px-5 py-4">
+                          <div>
+                            <p className="font-bold text-gray-800 dark:text-gray-100">{p.title}</p>
+                            <div className="flex flex-wrap gap-1 mt-1.5">
+                              {p.techStack?.map((t, i) => (
+                                <span key={i} className="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 text-[10px] px-2 py-0.5 rounded-md font-semibold border border-indigo-100 dark:border-indigo-900">{t}</span>
+                              ))}
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-md line-clamp-1">{p.description}</p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0 ml-4">
+                            <button onClick={() => startEdit(p, "projects")} className="text-indigo-600 dark:text-indigo-400 text-xs font-bold px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition">Edit</button>
+                            <button onClick={() => del("projects", p._id, "Project", reloadProjects)} className="text-red-500 text-xs font-bold px-3 py-1.5 bg-red-50 dark:bg-red-950/30 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition">Delete</button>
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
               </div>
+            )}
 
-              {/* faqs list */}
-              <div className="flex flex-col gap-3 max-h-60 overflow-y-auto pr-1">
-                <h3 className="text-xs font-bold uppercase text-gray-400 tracking-wider">Saved FAQs</h3>
-                {faqs.length === 0 ? (
-                  <p className="text-gray-400 text-sm italic">Koi FAQ nahi — add karo!</p>
-                ) : (
-                  faqs.map((f) => (
-                    <div
-                      key={f._id}
-                      className="flex justify-between items-start bg-gray-50 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-3"
-                    >
-                      <div>
-                        <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 mb-1">
-                          Keywords: {f.keywords.join(", ")}
-                        </p>
-                        <p className="text-sm text-gray-700 dark:text-gray-300">{f.answer}</p>
-                      </div>
-                      <button
-                        onClick={() => deleteFAQ(f._id)}
-                        className="text-red-500 hover:text-red-700 text-xs font-semibold px-2 py-1 bg-red-50 dark:bg-red-950/50 rounded-lg ml-3 shrink-0 transition"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
+            {/* ═══════════════ FAQs ══════════════════════════════════════════ */}
+            {activeSection === "faqs" && (
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-1">🤖 Chatbot FAQs</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">Train your chatbot by adding keyword-answer pairs.</p>
 
-          {/* ── Leads Section (Full Width) ── */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-100 dark:border-gray-700 md:col-span-2">
-            <h2 className="text-xl font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
-              <span>📩</span> Contact Leads
-            </h2>
-            
-            <div className="flex flex-col gap-3 max-h-96 overflow-y-auto pr-1">
-              {leads.length === 0 ? (
-                <p className="text-gray-400 text-sm italic">Koi leads nahi hai.</p>
-              ) : (
-                leads.map((lead) => (
-                  <div key={lead._id} className="flex justify-between items-start bg-gray-50 dark:bg-gray-900/60 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-4">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <p className="text-sm font-bold text-gray-800 dark:text-gray-200">{lead.name}</p>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">({lead.email})</span>
-                        <span className="text-[10px] bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded-full ml-2">
-                          {new Date(lead.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                      <p className="text-sm text-gray-700 dark:text-gray-300 mt-2">{lead.message}</p>
-                    </div>
-                    <button
-                      onClick={() => deleteLead(lead._id)}
-                      className="text-red-500 hover:text-red-700 text-xs font-semibold px-3 py-1.5 bg-red-50 dark:bg-red-950/50 rounded-lg ml-3 shrink-0 transition"
-                    >
-                      Delete
-                    </button>
+                {/* Add Form */}
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 mb-8 shadow-sm">
+                  <h2 className="text-sm font-bold uppercase text-gray-400 tracking-wider mb-4">+ Add New FAQ</h2>
+                  <div className="flex flex-col gap-3">
+                    <Field placeholder="Keywords (comma separated: price, cost, fee)" value={fKeywords} onChange={setFKeywords} />
+                    <TextArea placeholder="Chatbot ka exact answer..." value={fAnswer} onChange={setFAnswer} rows={3} />
                   </div>
-                ))
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+                  <button onClick={addFAQ} className="mt-4 bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-sm">
+                    + Add FAQ
+                  </button>
+                </div>
+
+                {/* List */}
+                <div className="flex flex-col gap-3">
+                  <h2 className="text-xs font-bold uppercase text-gray-400 tracking-wider">Saved FAQs ({faqs.length})</h2>
+                  {faqs.length === 0 ? (
+                    <p className="text-gray-400 italic text-sm py-6 text-center">Koi FAQ nahi — upar se add karo!</p>
+                  ) : faqs.map(f => (
+                    <motion.div key={f._id} layout className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 shadow-sm overflow-hidden">
+                      {editingId === f._id ? (
+                        <div className="p-5 flex flex-col gap-3">
+                          <p className="text-xs font-bold uppercase text-indigo-500 tracking-wider mb-1">Editing FAQ</p>
+                          <Field placeholder="Keywords (comma separated)" value={editData.keywords || ""} onChange={v => setEditData(prev => ({ ...prev, keywords: v }))} />
+                          <TextArea placeholder="Answer" value={editData.answer || ""} onChange={v => setEditData(prev => ({ ...prev, answer: v }))} rows={3} />
+                          <div className="flex gap-2 mt-1">
+                            <button onClick={() => saveEdit("faqs", "faqs", reloadFaqs)} className="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition">Save Changes</button>
+                            <button onClick={cancelEdit} className="bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 px-5 py-2 rounded-xl text-sm font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition">Cancel</button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-start justify-between px-5 py-4">
+                          <div className="flex-1 min-w-0 mr-4">
+                            <div className="flex flex-wrap gap-1 mb-2">
+                              {f.keywords?.map((k, i) => (
+                                <span key={i} className="bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 text-[10px] px-2 py-0.5 rounded-md font-semibold border border-indigo-100 dark:border-indigo-900">{k}</span>
+                              ))}
+                            </div>
+                            <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{f.answer}</p>
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <button onClick={() => startEdit(f, "faqs")} className="text-indigo-600 dark:text-indigo-400 text-xs font-bold px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950/40 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/40 transition">Edit</button>
+                            <button onClick={() => del("faqs", f._id, "FAQ", reloadFaqs)} className="text-red-500 text-xs font-bold px-3 py-1.5 bg-red-50 dark:bg-red-950/30 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition">Delete</button>
+                          </div>
+                        </div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* ═══════════════ LEADS ════════════════════════════════════════ */}
+            {activeSection === "leads" && (
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-1">📩 Contact Leads</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">Sab log jo contact form fill kiya hai.</p>
+                <div className="flex flex-col gap-3">
+                  {leads.length === 0 ? (
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-12 text-center">
+                      <p className="text-4xl mb-3">📭</p>
+                      <p className="text-gray-400 italic text-sm">Abhi koi lead nahi hai.</p>
+                    </div>
+                  ) : leads.map(lead => (
+                    <motion.div key={lead._id} layout className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 px-6 py-5 shadow-sm flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-2 flex-wrap">
+                          <div className="w-9 h-9 bg-indigo-600 text-white rounded-full flex items-center justify-center text-sm font-bold shrink-0">
+                            {lead.name?.[0]?.toUpperCase() || "?"}
+                          </div>
+                          <div>
+                            <p className="font-bold text-gray-800 dark:text-gray-100 text-sm">{lead.name}</p>
+                            <a href={`mailto:${lead.email}`} className="text-xs text-indigo-500 hover:underline">{lead.email}</a>
+                          </div>
+                          <span className="text-[10px] bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-100 dark:border-indigo-800 font-semibold ml-auto">
+                            {new Date(lead.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                          </span>
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed ml-12">{lead.message}</p>
+                      </div>
+                      <button onClick={() => del("contact", lead._id, "Lead", reloadLeads)} className="text-red-500 text-xs font-bold px-3 py-1.5 bg-red-50 dark:bg-red-950/30 rounded-lg hover:bg-red-100 dark:hover:bg-red-900/30 transition shrink-0">Delete</button>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+          </motion.div>
+        </AnimatePresence>
+      </main>
     </div>
   );
-}
+}
