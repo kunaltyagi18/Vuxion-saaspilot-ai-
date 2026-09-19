@@ -20,6 +20,7 @@ const CLOUDINARY_CONFIGURED =
 
 const NAV_ITEMS = [
   { key: "dashboard", label: "Dashboard",     icon: "📊" },
+  { key: "about",     label: "About Us",      icon: "ℹ️" },
   { key: "services",  label: "Services",      icon: "🛠️" },
   { key: "projects",  label: "Projects",      icon: "🚀" },
   { key: "faqs",      label: "Chatbot FAQs",  icon: "🤖" },
@@ -66,6 +67,10 @@ export default function AdminPage() {
   const [faqs, setFaqs] = useState([]);
   const [leads, setLeads] = useState([]);
 
+  // About Us state
+  const [about, setAbout] = useState(null);
+  const [aboutSaving, setAboutSaving] = useState(false);
+
   // Add Service form
   const [sTitle, setSTitle] = useState("");
   const [sDesc, setSDesc] = useState("");
@@ -101,16 +106,37 @@ export default function AdminPage() {
   }, []);
 
   async function loadAll() {
-    const [s, p, f, l] = await Promise.all([
+    const [s, p, f, l, a] = await Promise.all([
       fetch("/api/services").then(r => r.json()),
       fetch("/api/projects").then(r => r.json()),
       fetch("/api/faqs").then(r => r.json()),
       fetch("/api/contact").then(r => r.ok ? r.json() : []),
+      fetch("/api/about").then(r => r.ok ? r.json() : null),
     ]);
     setServices(Array.isArray(s) ? s : []);
     setProjects(Array.isArray(p) ? p : []);
     setFaqs(Array.isArray(f) ? f : []);
     setLeads(Array.isArray(l) ? l : []);
+    if (a) setAbout(a);
+  }
+
+  // Save About
+  async function saveAbout() {
+    setAboutSaving(true);
+    try {
+      const res = await fetch("/api/about", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(about),
+      });
+      const updated = await res.json();
+      setAbout(updated);
+      toast.success("About Us save ho gaya! ℹ️");
+    } catch {
+      toast.error("Save nahi hua, retry karo.");
+    } finally {
+      setAboutSaving(false);
+    }
   }
 
   // ── Add handlers ────────────────────────────────────────────────────────────
@@ -416,6 +442,163 @@ export default function AdminPage() {
                     </div>
                   )}
                 </div>
+              </div>
+            )}
+
+            {/* ═══════════════ ABOUT US ═════════════════════════════════════ */}
+            {activeSection === "about" && (
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-1">ℹ️ About Us</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">
+                  Edit your company story, mission, vision, stats, and team members.
+                </p>
+
+                {!about ? (
+                  <div className="flex items-center justify-center h-40">
+                    <div className="animate-spin w-7 h-7 border-4 border-indigo-500 border-t-transparent rounded-full" />
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-6">
+
+                    {/* Basic Info */}
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                      <h2 className="text-xs font-bold uppercase text-gray-400 tracking-wider mb-4">Basic Info</h2>
+                      <div className="flex flex-col gap-3">
+                        <Field placeholder="Tagline (e.g. We build digital experiences...)" value={about.tagline || ""} onChange={v => setAbout(p => ({ ...p, tagline: v }))} />
+                        <TextArea placeholder="Description (main paragraph about the company)" value={about.description || ""} onChange={v => setAbout(p => ({ ...p, description: v }))} rows={3} />
+                      </div>
+                    </div>
+
+                    {/* Mission & Vision */}
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                      <h2 className="text-xs font-bold uppercase text-gray-400 tracking-wider mb-4">Mission & Vision</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-xs font-semibold text-gray-500 mb-1 block">🎯 Mission</label>
+                          <TextArea placeholder="Your mission statement..." value={about.mission || ""} onChange={v => setAbout(p => ({ ...p, mission: v }))} rows={3} />
+                        </div>
+                        <div>
+                          <label className="text-xs font-semibold text-gray-500 mb-1 block">🔭 Vision</label>
+                          <TextArea placeholder="Your vision statement..." value={about.vision || ""} onChange={v => setAbout(p => ({ ...p, vision: v }))} rows={3} />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xs font-bold uppercase text-gray-400 tracking-wider">Stats</h2>
+                        <button
+                          onClick={() => setAbout(p => ({ ...p, stats: [...(p.stats || []), { label: "", value: "" }] }))}
+                          className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                        >+ Add Stat</button>
+                      </div>
+                      <div className="flex flex-col gap-3">
+                        {(about.stats || []).map((stat, i) => (
+                          <div key={i} className="flex gap-2 items-center">
+                            <input
+                              placeholder="Value (e.g. 50+)"
+                              value={stat.value}
+                              onChange={e => {
+                                const updated = [...about.stats];
+                                updated[i] = { ...updated[i], value: e.target.value };
+                                setAbout(p => ({ ...p, stats: updated }));
+                              }}
+                              className="w-28 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                            />
+                            <input
+                              placeholder="Label (e.g. Projects Delivered)"
+                              value={stat.label}
+                              onChange={e => {
+                                const updated = [...about.stats];
+                                updated[i] = { ...updated[i], label: e.target.value };
+                                setAbout(p => ({ ...p, stats: updated }));
+                              }}
+                              className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                            />
+                            <button
+                              onClick={() => setAbout(p => ({ ...p, stats: p.stats.filter((_, idx) => idx !== i) }))}
+                              className="text-red-400 hover:text-red-600 text-lg px-1 font-bold"
+                            >×</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Team Members */}
+                    <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                      <div className="flex items-center justify-between mb-4">
+                        <h2 className="text-xs font-bold uppercase text-gray-400 tracking-wider">Team Members</h2>
+                        <button
+                          onClick={() => setAbout(p => ({ ...p, teamMembers: [...(p.teamMembers || []), { name: "", role: "", bio: "", image: "" }] }))}
+                          className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
+                        >+ Add Member</button>
+                      </div>
+                      <div className="flex flex-col gap-4">
+                        {(about.teamMembers || []).map((member, i) => (
+                          <div key={i} className="border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex flex-col gap-2 relative">
+                            <button
+                              onClick={() => setAbout(p => ({ ...p, teamMembers: p.teamMembers.filter((_, idx) => idx !== i) }))}
+                              className="absolute top-3 right-3 text-red-400 hover:text-red-600 text-lg font-bold"
+                            >×</button>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                              <input
+                                placeholder="Name"
+                                value={member.name}
+                                onChange={e => {
+                                  const updated = [...about.teamMembers];
+                                  updated[i] = { ...updated[i], name: e.target.value };
+                                  setAbout(p => ({ ...p, teamMembers: updated }));
+                                }}
+                                className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                              />
+                              <input
+                                placeholder="Role (e.g. Full-Stack Dev)"
+                                value={member.role}
+                                onChange={e => {
+                                  const updated = [...about.teamMembers];
+                                  updated[i] = { ...updated[i], role: e.target.value };
+                                  setAbout(p => ({ ...p, teamMembers: updated }));
+                                }}
+                                className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                              />
+                            </div>
+                            <textarea
+                              rows={2}
+                              placeholder="Short bio..."
+                              value={member.bio}
+                              onChange={e => {
+                                const updated = [...about.teamMembers];
+                                updated[i] = { ...updated[i], bio: e.target.value };
+                                setAbout(p => ({ ...p, teamMembers: updated }));
+                              }}
+                              className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white resize-none"
+                            />
+                            <input
+                              placeholder="Photo URL (optional)"
+                              value={member.image || ""}
+                              onChange={e => {
+                                const updated = [...about.teamMembers];
+                                updated[i] = { ...updated[i], image: e.target.value };
+                                setAbout(p => ({ ...p, teamMembers: updated }));
+                              }}
+                              className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Save Button */}
+                    <button
+                      onClick={saveAbout}
+                      disabled={aboutSaving}
+                      className="bg-indigo-600 text-white px-8 py-3 rounded-xl text-sm font-bold hover:bg-indigo-700 transition shadow-md disabled:opacity-60 disabled:cursor-not-allowed w-fit"
+                    >
+                      {aboutSaving ? "Saving..." : "💾 Save About Us"}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
