@@ -7,6 +7,10 @@ import { ADMIN_EMAIL } from "@/lib/config";
 import { CldUploadWidget } from "next-cloudinary";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip,
+  ResponsiveContainer, CartesianGrid, Area, AreaChart
+} from "recharts";
 
 const CLOUDINARY_CONFIGURED =
   process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME &&
@@ -14,12 +18,12 @@ const CLOUDINARY_CONFIGURED =
   process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET &&
   process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET !== "your_unsigned_preset";
 
-// ── Sidebar nav items ─────────────────────────────────────────────────────────
 const NAV_ITEMS = [
+  { key: "dashboard", label: "Dashboard",     icon: "📊" },
   { key: "services",  label: "Services",      icon: "🛠️" },
   { key: "projects",  label: "Projects",      icon: "🚀" },
   { key: "faqs",      label: "Chatbot FAQs",  icon: "🤖" },
-  { key: "leads",     label: "Leads",         icon: "📩" },
+  { key: "leads",     label: "Contact Leads", icon: "📩" },
 ];
 
 // ── Small reusable input ──────────────────────────────────────────────────────
@@ -52,7 +56,9 @@ export default function AdminPage() {
   const router = useRouter();
 
   // Active sidebar section
-  const [activeSection, setActiveSection] = useState("services");
+  const [activeSection, setActiveSection] = useState("dashboard");
+  // Chart granularity: "day" | "month" | "year"
+  const [chartView, setChartView] = useState("month");
 
   // Data
   const [services, setServices] = useState([]);
@@ -200,6 +206,45 @@ export default function AdminPage() {
     { label: "Leads",    value: leads.length,     icon: "📩", section: "leads" },
   ];
 
+  // ── Process leads for chart based on selected view ────────────────────────
+  const buildChartData = (view) => {
+    const map = leads.reduce((acc, lead) => {
+      const date = new Date(lead.createdAt);
+      let key, sortKey;
+      if (view === "day") {
+        key = date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+        sortKey = date.getFullYear() * 10000 + date.getMonth() * 100 + date.getDate();
+      } else if (view === "month") {
+        key = date.toLocaleString("en-IN", { month: "short", year: "numeric" });
+        sortKey = date.getFullYear() * 100 + date.getMonth();
+      } else {
+        key = String(date.getFullYear());
+        sortKey = date.getFullYear();
+      }
+      if (!acc[key]) acc[key] = { name: key, leads: 0, sortKey };
+      acc[key].leads += 1;
+      return acc;
+    }, {});
+    return Object.values(map).sort((a, b) => a.sortKey - b.sortKey);
+  };
+
+  const leadsChartData = buildChartData(chartView);
+
+  // Custom tooltip for line chart
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="bg-white dark:bg-gray-900 border border-indigo-100 dark:border-gray-700 rounded-xl px-4 py-3 shadow-lg">
+          <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">{label}</p>
+          <p className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">
+            {payload[0].value} <span className="text-xs font-semibold">leads</span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex transition-colors duration-300">
 
@@ -214,23 +259,7 @@ export default function AdminPage() {
           <p className="text-xs text-gray-400 mt-1 ml-10">Admin Panel</p>
         </div>
 
-        {/* Stats */}
-        <div className="px-4 py-4 grid grid-cols-2 gap-2">
-          {stats.map(s => (
-            <button
-              key={s.section}
-              onClick={() => setActiveSection(s.section)}
-              className={`rounded-xl p-3 text-center transition-all border ${
-                activeSection === s.section
-                  ? "bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-800"
-                  : "bg-gray-50 dark:bg-gray-800/60 border-gray-100 dark:border-gray-700 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/30"
-              }`}
-            >
-              <div className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400">{s.value}</div>
-              <div className="text-[10px] text-gray-500 uppercase tracking-wide font-semibold">{s.label}</div>
-            </button>
-          ))}
-        </div>
+        {/* Stats removed from sidebar */}
 
         {/* Nav */}
         <nav className="px-3 flex-1">
@@ -275,6 +304,120 @@ export default function AdminPage() {
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.2 }}
           >
+
+            {/* ═══════════════ DASHBOARD ══════════════════════════════════════ */}
+            {activeSection === "dashboard" && (
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-1">📊 Dashboard</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-8">Welcome to your Vuxion admin panel.</p>
+
+                {/* Stat Cards */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                  {stats.map(s => (
+                    <button
+                      key={s.section}
+                      onClick={() => setActiveSection(s.section)}
+                      className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 flex flex-col items-center justify-center shadow-sm hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-800 transition-all group"
+                    >
+                      <div className="text-3xl mb-2">{s.icon}</div>
+                      <div className="text-3xl font-extrabold text-gray-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{s.value}</div>
+                      <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mt-1">{s.label}</div>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Chart Section */}
+                <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                  <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+                    <h2 className="text-lg font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                      📈 Leads Overview
+                    </h2>
+                    {/* Day / Month / Year toggle */}
+                    <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-xl p-1 gap-1">
+                      {["day", "month", "year"].map(v => (
+                        <button
+                          key={v}
+                          onClick={() => setChartView(v)}
+                          className={`px-4 py-1.5 rounded-lg text-xs font-bold capitalize transition-all ${
+                            chartView === v
+                              ? "bg-indigo-600 text-white shadow-sm"
+                              : "text-gray-500 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400"
+                          }`}
+                        >
+                          {v}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="h-72 w-full">
+                    {leadsChartData.length > 0 ? (
+                      <ResponsiveContainer width="100%" height="100%">
+                        <AreaChart data={leadsChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                          <defs>
+                            <linearGradient id="leadGradient" x1="0" y1="0" x2="0" y2="1">
+                              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2} />
+                              <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
+                            </linearGradient>
+                          </defs>
+                          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+                          <XAxis
+                            dataKey="name"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 11, fill: '#9ca3af' }}
+                            dy={10}
+                          />
+                          <YAxis
+                            allowDecimals={false}
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fontSize: 11, fill: '#9ca3af' }}
+                          />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Area
+                            type="monotone"
+                            dataKey="leads"
+                            stroke="#6366f1"
+                            strokeWidth={2.5}
+                            fill="url(#leadGradient)"
+                            dot={{ r: 4, fill: '#6366f1', strokeWidth: 2, stroke: '#fff' }}
+                            activeDot={{ r: 6, fill: '#6366f1', stroke: '#fff', strokeWidth: 2 }}
+                          />
+                        </AreaChart>
+                      </ResponsiveContainer>
+                    ) : (
+                      <div className="h-full flex flex-col items-center justify-center gap-3 text-gray-400">
+                        <span className="text-4xl">📭</span>
+                        <p className="italic text-sm">No lead data yet — share the website!</p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Summary row */}
+                  {leadsChartData.length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800 flex gap-6 text-sm">
+                      <div>
+                        <span className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Total Leads</span>
+                        <p className="text-xl font-extrabold text-gray-900 dark:text-white">{leads.length}</p>
+                      </div>
+                      <div>
+                        <span className="text-gray-400 text-xs font-semibold uppercase tracking-wider">This {chartView === "day" ? "Day" : chartView === "month" ? "Month" : "Year"}</span>
+                        <p className="text-xl font-extrabold text-indigo-600 dark:text-indigo-400">
+                          {leadsChartData[leadsChartData.length - 1]?.leads ?? 0}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-gray-400 text-xs font-semibold uppercase tracking-wider">Peak</span>
+                        <p className="text-xl font-extrabold text-violet-600 dark:text-violet-400">
+                          {Math.max(...leadsChartData.map(d => d.leads))}
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* ═══════════════ SERVICES ══════════════════════════════════════ */}
             {activeSection === "services" && (
