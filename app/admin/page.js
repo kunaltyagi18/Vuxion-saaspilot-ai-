@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip,
-  ResponsiveContainer, CartesianGrid, Area, AreaChart
+  ResponsiveContainer, CartesianGrid
 } from "recharts";
 
 const CLOUDINARY_CONFIGURED =
@@ -353,38 +353,38 @@ export default function AdminPage() {
                   <div className="h-72 w-full">
                     {leadsChartData.length > 0 ? (
                       <ResponsiveContainer width="100%" height="100%">
-                        <AreaChart data={leadsChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                          <defs>
-                            <linearGradient id="leadGradient" x1="0" y1="0" x2="0" y2="1">
-                              <stop offset="5%" stopColor="#6366f1" stopOpacity={0.2} />
-                              <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
-                            </linearGradient>
-                          </defs>
-                          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+                        <LineChart data={leadsChartData} margin={{ top: 16, right: 24, left: -10, bottom: 8 }}>
+                          {/* Full grid — both vertical and horizontal lines */}
+                          <CartesianGrid
+                            stroke="#e2e8f0"
+                            strokeDasharray=""
+                            vertical={true}
+                            horizontal={true}
+                          />
                           <XAxis
                             dataKey="name"
-                            axisLine={false}
-                            tickLine={false}
-                            tick={{ fontSize: 11, fill: '#9ca3af' }}
-                            dy={10}
+                            axisLine={{ stroke: '#374151', strokeWidth: 2 }}
+                            tickLine={{ stroke: '#374151' }}
+                            tick={{ fontSize: 11, fill: '#6b7280', fontWeight: 600 }}
+                            dy={8}
                           />
                           <YAxis
                             allowDecimals={false}
-                            axisLine={false}
-                            tickLine={false}
-                            tick={{ fontSize: 11, fill: '#9ca3af' }}
+                            axisLine={{ stroke: '#374151', strokeWidth: 2 }}
+                            tickLine={{ stroke: '#374151' }}
+                            tick={{ fontSize: 11, fill: '#6b7280', fontWeight: 600 }}
+                            dx={-4}
                           />
                           <Tooltip content={<CustomTooltip />} />
-                          <Area
-                            type="monotone"
+                          <Line
+                            type="linear"
                             dataKey="leads"
-                            stroke="#6366f1"
+                            stroke="#14b8a6"
                             strokeWidth={2.5}
-                            fill="url(#leadGradient)"
-                            dot={{ r: 4, fill: '#6366f1', strokeWidth: 2, stroke: '#fff' }}
-                            activeDot={{ r: 6, fill: '#6366f1', stroke: '#fff', strokeWidth: 2 }}
+                            dot={{ r: 5, fill: '#14b8a6', stroke: '#14b8a6', strokeWidth: 0 }}
+                            activeDot={{ r: 7, fill: '#0d9488', stroke: '#fff', strokeWidth: 2 }}
                           />
-                        </AreaChart>
+                        </LineChart>
                       </ResponsiveContainer>
                     ) : (
                       <div className="h-full flex flex-col items-center justify-center gap-3 text-gray-400">
