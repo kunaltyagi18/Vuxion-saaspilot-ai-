@@ -70,10 +70,10 @@ export default function Navbar() {
       </Link>
 
       <div className="flex gap-4 md:gap-6 items-center text-sm font-medium text-gray-600 dark:text-gray-300">
-        <Link href="#about"    className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</Link>
-        <Link href="#services" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Services</Link>
-        <Link href="#projects" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Projects</Link>
-        <Link href="#contact"  className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</Link>
+        <Link href="/about"    className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</Link>
+        <Link href="/services" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Services</Link>
+        <Link href="/projects" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Projects</Link>
+        <Link href="/contact"  className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</Link>
 
         {/* Dark / Light Mode Toggle Button */}
         <button

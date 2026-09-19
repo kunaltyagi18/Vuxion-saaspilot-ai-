@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 // Default images list agar database me image URL set na ho
 const defaultProjectImages = [
@@ -10,9 +11,10 @@ const defaultProjectImages = [
   "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=600&q=80",
 ];
 
-export default function Projects() {
+export default function Projects({ limit }) {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const displayed = limit ? projects.slice(0, limit) : projects;
 
   // Projects API se fetch karne ka effect
   useEffect(() => {
@@ -69,7 +71,7 @@ export default function Projects() {
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {projects.map((p, i) => {
+            {displayed.map((p, i) => {
               // agar dataset me image nahi hai toh fallback photo use karenge
               const projectImg = p.image || defaultProjectImages[i % defaultProjectImages.length];
 
@@ -135,6 +137,24 @@ export default function Projects() {
               );
             })}
           </div>
+        )}
+
+        {/* View All CTA — only on home page */}
+        {limit && projects.length > limit && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="text-center mt-12"
+          >
+            <Link
+              href="/projects"
+              className="inline-flex items-center gap-2 border-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-500 px-7 py-3 rounded-xl font-bold text-sm hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white transition-all"
+            >
+              View All Projects →
+            </Link>
+          </motion.div>
         )}
       </div>
     </section>

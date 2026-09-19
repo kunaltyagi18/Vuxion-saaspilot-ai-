@@ -2,6 +2,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 const defaultServiceImages = [
   "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=800&q=80",
@@ -70,9 +71,10 @@ function pickServiceImage(title, index) {
   return defaultServiceImages[index % defaultServiceImages.length];
 }
 
-export default function Services() {
+export default function Services({ limit }) {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const displayed = limit ? services.slice(0, limit) : services;
 
   // component load hone pe MongoDB API se services fetch karo
   useEffect(() => {
@@ -130,7 +132,7 @@ export default function Services() {
           </p>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {services.map((s, i) => {
+            {displayed.map((s, i) => {
               // agar database me custom image hai toh woh use karo, varna smart fallback
               const cardImg = s.image || pickServiceImage(s.title, i);
 
@@ -181,6 +183,24 @@ export default function Services() {
               );
             })}
           </div>
+        )}
+
+        {/* View All CTA — only on home page (when limit is set) */}
+        {limit && services.length > limit && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.3 }}
+            className="text-center mt-12"
+          >
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-2 border-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-500 px-7 py-3 rounded-xl font-bold text-sm hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white transition-all"
+            >
+              View All Services →
+            </Link>
+          </motion.div>
         )}
       </div>
     </section>

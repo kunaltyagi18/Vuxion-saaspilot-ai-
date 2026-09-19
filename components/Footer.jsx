@@ -44,10 +44,11 @@ const socials = [
 
 // Quick nav links — same anchors jo Navbar me use ho rahe hain
 const navLinks = [
-  { label: "Home", href: "#hero" },
-  { label: "Services", href: "#services" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home",     href: "/" },
+  { label: "About",    href: "/about" },
+  { label: "Services", href: "/services" },
+  { label: "Projects", href: "/projects" },
+  { label: "Contact",  href: "/contact" },
 ];
 
 // Services list — UI me jo dikhate hain wahi
@@ -150,13 +151,13 @@ export default function Footer() {
             <ul className="space-y-3">
               {serviceLinks.map((s) => (
                 <li key={s}>
-                  <a
-                    href="#services"
+                  <Link
+                    href="/services"
                     className="text-sm text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors inline-flex items-center gap-1.5 group"
                   >
                     <span className="w-0 group-hover:w-3 h-px bg-indigo-600 dark:bg-indigo-400 transition-all duration-300" />
                     {s}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>

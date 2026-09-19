@@ -1,6 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import Link from "next/link";
+
 
 // ── Default fallback (shown before fetch completes) ────────────────────────
 const DEFAULT = {
@@ -46,7 +48,7 @@ function Avatar({ name, image, color }) {
   );
 }
 
-export default function About() {
+export default function About({ preview = false }) {
   const [data, setData] = useState(DEFAULT);
 
   useEffect(() => {
@@ -137,8 +139,8 @@ export default function About() {
           </div>
         </motion.div>
 
-        {/* ── Team Section ─────────────────────────────────────────────── */}
-        {data.teamMembers?.length > 0 && (
+        {/* ── Team Section ─────────────────────────────────────────────────── */}
+        {!preview && data.teamMembers?.length > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -176,6 +178,24 @@ export default function About() {
                 </motion.div>
               ))}
             </div>
+          </motion.div>
+        )}
+
+        {/* ── View Full About CTA (home page only) ─────────────────────────── */}
+        {preview && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.4, delay: 0.2 }}
+            className="text-center mt-4"
+          >
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-2 border-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-500 px-7 py-3 rounded-xl font-bold text-sm hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white transition-all"
+            >
+              Meet the Team &amp; Learn More →
+            </Link>
           </motion.div>
         )}
 
