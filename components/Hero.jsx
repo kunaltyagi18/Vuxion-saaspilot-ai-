@@ -57,10 +57,10 @@ export default function Hero() {
       {/* ── CONTENT — left aligned ────────────────────────────────────── */}
       <motion.div
         style={{ y, opacity }}
-        className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-20 pb-16"
+        className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-24 sm:pt-20 pb-16"
       >
-        {/* Text block — constrained to left ~50% on desktop */}
-        <div className="w-full max-w-lg lg:max-w-xl xl:max-w-2xl">
+        {/* Text block — constrained to left ~50% on desktop, full width on mobile */}
+        <div className="w-full md:max-w-lg lg:max-w-xl xl:max-w-2xl">
 
           {/* Live badge */}
           <motion.span
@@ -84,7 +84,7 @@ export default function Hero() {
             initial={{ opacity: 0, x: -40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.15 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight text-white"
+            className="text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.08] tracking-tight text-white"
           >
             We Craft{" "}
             <br className="hidden sm:block" />
@@ -158,7 +158,7 @@ export default function Hero() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.75 }}
-            className="mt-12 flex flex-wrap gap-x-8 gap-y-4"
+            className="mt-10 flex flex-wrap gap-x-6 gap-y-5"
             aria-label="Trust indicators"
           >
             {[
@@ -184,12 +184,12 @@ export default function Hero() {
         </div>
       </motion.div>
 
-      {/* ── SCROLL INDICATOR ─────────────────────────────────────────── */}
+      {/* ── SCROLL INDICATOR — hidden on mobile ───────────────────────── */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.3 }}
-        className="absolute bottom-8 left-8 sm:left-16 lg:left-20 z-10 flex flex-col items-center gap-2"
+        className="hidden sm:flex absolute bottom-8 left-8 sm:left-16 lg:left-20 z-10 flex-col items-center gap-2"
         aria-hidden="true"
       >
         <span className="text-white/40 text-[10px] tracking-widest uppercase font-medium">Scroll</span>
