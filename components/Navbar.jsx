@@ -58,27 +58,37 @@ export default function Navbar() {
         style={{ scaleX }}
       />
 
+      {/* ── Floating Pill Navbar ─────────────────────────────────────────── */}
       <motion.nav
-        initial={{ y: -60, opacity: 0 }}
+        initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="fixed top-[3px] w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm border-b border-gray-100 dark:border-gray-800 z-50 px-6 md:px-12 py-4 flex justify-between items-center transition-colors duration-300"
+        transition={{ duration: 0.55, ease: "easeOut" }}
+        className="fixed top-4 left-1/2 -translate-x-1/2 z-50
+          w-auto max-w-3xl px-5 py-2.5
+          flex items-center justify-between gap-6
+          rounded-full
+          bg-white/10 dark:bg-gray-900/20
+          backdrop-blur-xl
+          border border-white/20 dark:border-white/10
+          shadow-lg shadow-black/20
+          transition-colors duration-300"
+        style={{ minWidth: "min(90vw, 760px)" }}
       >
-      <Link href="/" className="text-xl font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-2">
-        <span className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">V</span>
+      <Link href="/" className="text-xl font-bold text-white flex items-center gap-2 shrink-0">
+        <span className="bg-white/20 border border-white/30 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black backdrop-blur-sm">V</span>
         Vuxion
       </Link>
 
-      <div className="flex gap-4 md:gap-6 items-center text-sm font-medium text-gray-600 dark:text-gray-300">
-        <Link href="/about"    className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">About</Link>
-        <Link href="/services" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Services</Link>
-        <Link href="/projects" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Projects</Link>
-        <Link href="/contact"  className="hover:text-indigo-600 dark:hover:text-indigo-400 transition">Contact</Link>
+      <div className="flex gap-3 md:gap-5 items-center text-sm font-medium text-white/80">
+        <Link href="/about"    className="hover:text-white transition">About</Link>
+        <Link href="/services" className="hover:text-white transition">Services</Link>
+        <Link href="/projects" className="hover:text-white transition">Projects</Link>
+        <Link href="/contact"  className="hover:text-white transition">Contact</Link>
 
-        {/* Dark / Light Mode Toggle Button */}
+        {/* Dark / Light Mode Toggle */}
         <button
           onClick={toggleDarkMode}
-          className="p-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-700 transition flex items-center justify-center"
+          className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition flex items-center justify-center text-base"
           title="Toggle Theme"
         >
           {darkMode ? "🌞" : "🌙"}
@@ -86,9 +96,8 @@ export default function Navbar() {
 
         {isSignedIn ? (
           <>
-            {/* Admin link sirf tab dikhao jab email admin ki ho — doston ko nahi dikhega */}
             {isAdmin && (
-              <Link href="/admin" className="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold">
+              <Link href="/admin" className="text-white/80 hover:text-white font-semibold transition">
                 Admin
               </Link>
             )}
@@ -96,7 +105,7 @@ export default function Navbar() {
           </>
         ) : (
           <SignInButton mode="modal">
-            <button className="bg-indigo-600 text-white px-4 py-2 rounded-xl hover:bg-indigo-700 transition shadow-sm font-medium">
+            <button className="border border-white/40 text-white px-4 py-1.5 rounded-full hover:bg-white/20 transition text-sm font-semibold">
               Login
             </button>
           </SignInButton>
