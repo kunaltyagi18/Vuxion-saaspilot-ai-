@@ -57,7 +57,7 @@ export default function Hero() {
       {/* ── CONTENT — left aligned ────────────────────────────────────── */}
       <motion.div
         style={{ y, opacity }}
-        className="relative z-10 w-full max-w-7xl mx-auto px-8 sm:px-12 lg:px-20 pt-24 pb-16"
+        className="relative z-10 w-full max-w-7xl mx-auto px-8 sm:px-12 lg:px-20 pt-16 pb-16"
       >
         {/* Text block — constrained to left ~50% on desktop */}
         <div className="w-full max-w-lg lg:max-w-xl xl:max-w-2xl">
