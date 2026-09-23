@@ -25,14 +25,17 @@ export default function Hero() {
           muted
           loop
           playsInline
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-right sm:object-center"
           aria-hidden="true"
         >
           <source src={VIDEO_URL} type="video/mp4" />
         </video>
 
-        {/* Left heavy gradient — darker left (text readable), right stays clear (rabbit visible) */}
-        <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-black/10" />
+        {/* Mobile: full dark overlay so text readable over rabbit */}
+        <div className="absolute inset-0 bg-black/70 sm:bg-transparent" />
+
+        {/* Desktop: Left heavy gradient — darker left, right stays clear (rabbit visible) */}
+        <div className="absolute inset-0 hidden sm:block bg-gradient-to-r from-black/85 via-black/45 to-black/10" />
 
         {/* Top/bottom cinematic bars */}
         <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50" />
