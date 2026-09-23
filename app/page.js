@@ -1,9 +1,13 @@
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
+import HowItWorks from "@/components/HowItWorks";
 import Services from "@/components/Services";
+import WhyUs from "@/components/WhyUs";
 import Projects from "@/components/Projects";
+import BlogTeaser from "@/components/BlogTeaser";
 import Testimonials from "@/components/Testimonials";
+import FAQSection from "@/components/FAQSection";
 import Contact from "@/components/Contact";
 import Chatbot from "@/components/Chatbot";
 import Footer from "@/components/Footer";
@@ -14,9 +18,13 @@ export default function Home() {
       <Navbar />
       <Hero />
       <About preview />
+      <HowItWorks />
       <Services limit={3} />
+      <WhyUs />
       <Projects limit={3} />
+      <BlogTeaser />
       <Testimonials />
+      <FAQSection />
       <Contact />
       <Chatbot />
       <Footer />
