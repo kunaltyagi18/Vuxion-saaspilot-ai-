@@ -39,8 +39,11 @@ export default function Projects({ limit }) {
   }, []);
 
   return (
-    <section id="projects" className="py-24 px-6 bg-gray-50 dark:bg-gray-800/50 transition-colors duration-300">
-      <div className="max-w-6xl mx-auto">
+    <section id="projects" className="relative py-24 px-6 overflow-hidden bg-white dark:bg-[#080810] transition-colors duration-300">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#6366f108_1px,transparent_1px),linear-gradient(to_bottom,#6366f108_1px,transparent_1px)] bg-[size:48px_48px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute top-20 right-0 w-96 h-96 rounded-full bg-violet-500/10 dark:bg-violet-500/15 blur-[120px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute bottom-0 left-0 w-80 h-80 rounded-full bg-indigo-500/10 dark:bg-indigo-500/10 blur-[100px]" />
+      <div className="max-w-6xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -78,22 +81,23 @@ export default function Projects({ limit }) {
               return (
                 <motion.div
                   key={p._id}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 50, rotateX: 8 }}
+                  whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.12 }}
-                  whileHover={{ y: -8 }}
-                  className="bg-white dark:bg-gray-900 rounded-2xl overflow-hidden shadow-md hover:shadow-2xl border border-gray-100 dark:border-gray-800 transition-all flex flex-col group"
+                  transition={{ duration: 0.6, delay: i * 0.12, ease: "easeOut" }}
+                  className="card-3d glow-hover bg-white dark:bg-gray-900 rounded-2xl overflow-hidden
+                    shadow-md border border-gray-100 dark:border-gray-800
+                    flex flex-col group"
                 >
-                  {/* Project Image Banner */}
                   <div className="h-48 w-full overflow-hidden relative bg-gray-100 dark:bg-gray-800">
                     <Image
                       src={projectImg}
                       alt={p.title || "Project screenshot"}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   </div>
 
                   {/* Project Details */}

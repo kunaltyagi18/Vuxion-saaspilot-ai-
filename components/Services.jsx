@@ -99,7 +99,10 @@ export default function Services({ limit }) {
   }, []);
 
   return (
-    <section id="services" className="py-24 px-6 bg-white dark:bg-gray-900 transition-colors duration-300">
+    <section id="services" className="relative py-24 px-6 overflow-hidden bg-gray-50 dark:bg-[#0a0a14] transition-colors duration-300">
+      {/* 3D depth grid */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#6366f108_1px,transparent_1px),linear-gradient(to_bottom,#6366f108_1px,transparent_1px)] bg-[size:48px_48px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 blur-[120px]" />
       <div className="max-w-6xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -139,22 +142,25 @@ export default function Services({ limit }) {
               return (
                 <motion.div
                   key={s._id}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 50, rotateX: 10 }}
+                  whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                   viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.12 }}
-                  whileHover={{ y: -8 }}
-                  className="bg-indigo-50/50 dark:bg-gray-800/80 rounded-2xl overflow-hidden border border-indigo-100 dark:border-gray-700 shadow-sm hover:shadow-xl hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-all flex flex-col group"
+                  transition={{ duration: 0.6, delay: i * 0.12, ease: "easeOut" }}
+                  className="card-3d glow-hover bg-white dark:bg-gray-900 rounded-2xl overflow-hidden
+                    border border-gray-100 dark:border-gray-800
+                    shadow-md flex flex-col group"
                 >
                   {/* Service Card Image Section */}
-                  <div className="h-48 w-full overflow-hidden relative bg-gray-200 dark:bg-gray-700">
+                  <div className="h-48 w-full overflow-hidden relative bg-gray-100 dark:bg-gray-800">
                     <Image
                       src={cardImg}
                       alt={s.title || "Service image"}
                       fill
                       sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
                     />
+                    {/* Gradient overlay on image */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <div className="absolute top-3 right-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md text-indigo-600 dark:text-indigo-400 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
                       {s.price}
                     </div>
@@ -163,20 +169,21 @@ export default function Services({ limit }) {
                   {/* Card Content */}
                   <div className="p-6 flex-1 flex flex-col justify-between">
                     <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2
+                        group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                         {s.title}
                       </h3>
-                      <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">
+                      <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
                         {s.description}
                       </p>
                     </div>
-                    {/* CTA Button */}
-                    <a
-                      href="#contact"
-                      className="mt-5 inline-flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400 text-sm font-semibold hover:gap-2.5 transition-all duration-200 group/btn"
-                    >
+                    {/* CTA */}
+                    <a href="/contact"
+                      className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold
+                        text-indigo-600 dark:text-indigo-400
+                        hover:gap-3 transition-all duration-300">
                       Get Started
-                      <span className="transition-transform duration-200 group-hover/btn:translate-x-1">→</span>
+                      <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
                     </a>
                   </div>
                 </motion.div>

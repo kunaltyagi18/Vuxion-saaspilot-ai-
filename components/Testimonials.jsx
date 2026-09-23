@@ -60,9 +60,11 @@ export default function Testimonials() {
   return (
     <section
       id="testimonials"
-      className="py-24 px-6 bg-gradient-to-b from-white to-indigo-50/40 dark:from-gray-900 dark:to-indigo-950/20 transition-colors duration-300"
+      className="relative py-24 px-6 overflow-hidden bg-gray-50 dark:bg-[#0a0a14] transition-colors duration-300"
     >
-      <div className="max-w-6xl mx-auto">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#6366f108_1px,transparent_1px),linear-gradient(to_bottom,#6366f108_1px,transparent_1px)] bg-[size:48px_48px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-64 rounded-full bg-indigo-400/10 dark:bg-indigo-500/15 blur-[100px]" />
+      <div className="max-w-6xl mx-auto relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -87,12 +89,13 @@ export default function Testimonials() {
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 40, rotateX: 6 }}
+              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              whileHover={{ y: -4 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl p-7 border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-lg hover:border-indigo-200 dark:hover:border-indigo-700/50 transition-all duration-300 flex flex-col gap-4"
+              transition={{ duration: 0.55, delay: i * 0.1, ease: "easeOut" }}
+              className="card-3d glow-hover bg-white dark:bg-gray-900 rounded-2xl p-7
+                border border-gray-100 dark:border-gray-800
+                shadow-sm flex flex-col gap-4"
             >
               {/* Quote Icon */}
               <svg
