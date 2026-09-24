@@ -19,12 +19,14 @@ const CLOUDINARY_CONFIGURED =
   process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET !== "your_unsigned_preset";
 
 const NAV_ITEMS = [
-  { key: "dashboard", label: "Dashboard",     icon: "📊" },
-  { key: "about",     label: "About Us",      icon: "ℹ️" },
-  { key: "services",  label: "Services",      icon: "🛠️" },
-  { key: "projects",  label: "Projects",      icon: "🚀" },
-  { key: "faqs",      label: "Chatbot FAQs",  icon: "🤖" },
-  { key: "leads",     label: "Contact Leads", icon: "📩" },
+  { key: "dashboard",   label: "Dashboard",      icon: "📊" },
+  { key: "about",       label: "About Us",        icon: "ℹ️" },
+  { key: "services",    label: "Services",        icon: "🛠️" },
+  { key: "projects",    label: "Projects",        icon: "🚀" },
+  { key: "testimonials",label: "Testimonials",    icon: "💬" },
+  { key: "faqs",        label: "Chatbot FAQs",    icon: "🤖" },
+  { key: "leads",       label: "Contact Leads",   icon: "📩" },
+  { key: "settings",    label: "Site Settings",   icon: "⚙️" },
 ];
 
 // ── Small reusable input ──────────────────────────────────────────────────────
@@ -71,6 +73,16 @@ export default function AdminPage() {
   const [about, setAbout] = useState(null);
   const [aboutSaving, setAboutSaving] = useState(false);
 
+  // Testimonials state
+  const [testimonials, setTestimonials] = useState([]);
+  const [tForm, setTForm] = useState({ name: "", role: "", review: "", rating: 5, initials: "", color: "bg-indigo-600" });
+  const [tEditId, setTEditId] = useState(null);
+  const [tSaving, setTSaving] = useState(false);
+
+  // Site Settings state
+  const [settings, setSettings] = useState(null);
+  const [settingsSaving, setSettingsSaving] = useState(false);
+
   // Add Service form
   const [sTitle, setSTitle] = useState("");
   const [sDesc, setSDesc] = useState("");
@@ -106,18 +118,22 @@ export default function AdminPage() {
   }, []);
 
   async function loadAll() {
-    const [s, p, f, l, a] = await Promise.all([
+    const [s, p, f, l, a, t, st] = await Promise.all([
       fetch("/api/services").then(r => r.json()),
       fetch("/api/projects").then(r => r.json()),
       fetch("/api/faqs").then(r => r.json()),
       fetch("/api/contact").then(r => r.ok ? r.json() : []),
       fetch("/api/about").then(r => r.ok ? r.json() : null),
+      fetch("/api/testimonials").then(r => r.json()),
+      fetch("/api/settings").then(r => r.json()),
     ]);
     setServices(Array.isArray(s) ? s : []);
     setProjects(Array.isArray(p) ? p : []);
     setFaqs(Array.isArray(f) ? f : []);
     setLeads(Array.isArray(l) ? l : []);
     if (a) setAbout(a);
+    setTestimonials(Array.isArray(t) ? t : []);
+    if (st) setSettings(st);
   }
 
   // Save About
@@ -218,6 +234,52 @@ export default function AdminPage() {
   const reloadProjects = () => fetch("/api/projects").then(r => r.json()).then(d => setProjects(Array.isArray(d) ? d : []));
   const reloadFaqs = () => fetch("/api/faqs").then(r => r.json()).then(d => setFaqs(Array.isArray(d) ? d : []));
   const reloadLeads = () => fetch("/api/contact").then(r => r.ok ? r.json() : []).then(d => setLeads(Array.isArray(d) ? d : []));
+  const reloadTestimonials = () => fetch("/api/testimonials").then(r => r.json()).then(d => setTestimonials(Array.isArray(d) ? d : []));
+
+  // ── Testimonial handlers ───────────────────────────────────────────────────
+  async function saveTForm() {
+    setTSaving(true);
+    try {
+      if (tEditId) {
+        await fetch(`/api/testimonials/${tEditId}`, {
+          method: "PUT", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(tForm),
+        });
+        toast.success("Testimonial updated! ✅");
+        setTEditId(null);
+      } else {
+        await fetch("/api/testimonials", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(tForm),
+        });
+        toast.success("Testimonial add ho gaya! 💬");
+      }
+      setTForm({ name: "", role: "", review: "", rating: 5, initials: "", color: "bg-indigo-600" });
+      reloadTestimonials();
+    } catch { toast.error("Error!"); }
+    finally { setTSaving(false); }
+  }
+
+  function startEditT(t) {
+    setTEditId(t._id);
+    setTForm({ name: t.name, role: t.role, review: t.review, rating: t.rating, initials: t.initials || "", color: t.color || "bg-indigo-600" });
+  }
+
+  // ── Site Settings save ────────────────────────────────────────────────────
+  async function saveSettings() {
+    setSettingsSaving(true);
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
+      const updated = await res.json();
+      setSettings(updated);
+      toast.success("Settings saved! ⚙️");
+    } catch { toast.error("Save failed!"); }
+    finally { setSettingsSaving(false); }
+  }
+
 
   if (!isLoaded) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
@@ -850,7 +912,151 @@ export default function AdminPage() {
               </div>
             )}
 
-          </motion.div>
+
+          {/* ── TESTIMONIALS ──────────────────────────────────────────────────── */}
+          {activeSection === "testimonials" && (
+            <div className="space-y-8">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">💬 Testimonials</h2>
+
+              {/* Add / Edit Form */}
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <h3 className="font-semibold text-gray-800 dark:text-white mb-4">
+                  {tEditId ? "✏️ Edit Testimonial" : "➕ Add Testimonial"}
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Field placeholder="Client Name *" value={tForm.name} onChange={v => setTForm(p => ({ ...p, name: v }))} />
+                  <Field placeholder="Role / Company (e.g. CEO, TechStart)" value={tForm.role} onChange={v => setTForm(p => ({ ...p, role: v }))} />
+                  <Field placeholder="Initials (e.g. AM)" value={tForm.initials} onChange={v => setTForm(p => ({ ...p, initials: v }))} />
+                  <div>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Rating</label>
+                    <select value={tForm.rating} onChange={e => setTForm(p => ({ ...p, rating: Number(e.target.value) }))}
+                      className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                      {[5,4,3,2,1].map(n => <option key={n} value={n}>{n} Stars</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Avatar Color</label>
+                    <select value={tForm.color} onChange={e => setTForm(p => ({ ...p, color: e.target.value }))}
+                      className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 outline-none">
+                      {["bg-indigo-600","bg-violet-600","bg-purple-600","bg-sky-600","bg-emerald-600","bg-rose-600"].map(c =>
+                        <option key={c} value={c}>{c.replace("bg-","").replace("-600","")}</option>
+                      )}
+                    </select>
+                  </div>
+                  <div className="md:col-span-2">
+                    <TextArea placeholder="Review text *" value={tForm.review} onChange={v => setTForm(p => ({ ...p, review: v }))} rows={3} />
+                  </div>
+                </div>
+                <div className="flex gap-3 mt-4">
+                  <button onClick={saveTForm} disabled={tSaving}
+                    className="bg-indigo-600 text-white px-5 py-2 rounded-xl text-sm font-bold hover:bg-indigo-700 transition disabled:opacity-50">
+                    {tSaving ? "Saving..." : tEditId ? "Update" : "Add Testimonial"}
+                  </button>
+                  {tEditId && (
+                    <button onClick={() => { setTEditId(null); setTForm({ name: "", role: "", review: "", rating: 5, initials: "", color: "bg-indigo-600" }); }}
+                      className="px-5 py-2 rounded-xl text-sm font-bold border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* List */}
+              <div className="space-y-3">
+                {testimonials.map(t => (
+                  <motion.div key={t._id} layout
+                    className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-5 flex gap-4 items-start shadow-sm">
+                    <div className={`${t.color || "bg-indigo-600"} w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0`}>
+                      {t.initials || t.name?.slice(0,2)}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-sm text-gray-900 dark:text-white">{t.name}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{t.role}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2">{t.review}</p>
+                      <div className="flex gap-0.5 mt-1">
+                        {Array.from({length: t.rating}).map((_,i) => <span key={i} className="text-amber-400 text-xs">★</span>)}
+                      </div>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <button onClick={() => startEditT(t)}
+                        className="text-indigo-600 text-xs font-bold px-3 py-1.5 bg-indigo-50 dark:bg-indigo-950/30 rounded-lg hover:bg-indigo-100 transition">
+                        Edit
+                      </button>
+                      <button onClick={() => del("testimonials", t._id, "Testimonial", reloadTestimonials)}
+                        className="text-red-500 text-xs font-bold px-3 py-1.5 bg-red-50 dark:bg-red-950/30 rounded-lg hover:bg-red-100 transition">
+                        Delete
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* ── SITE SETTINGS ─────────────────────────────────────────────────── */}
+          {activeSection === "settings" && settings && (
+            <div className="space-y-8">
+              <h2 className="text-xl font-bold text-gray-900 dark:text-white">⚙️ Site Settings</h2>
+
+              {/* Hero Settings */}
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <h3 className="font-semibold text-gray-800 dark:text-white mb-4">🎬 Hero Section</h3>
+                <div className="space-y-3">
+                  <Field placeholder="Badge text" value={settings.hero?.badge || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, badge: v } }))} />
+                  <Field placeholder="Main headline" value={settings.hero?.headline || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, headline: v } }))} />
+                  <TextArea placeholder="Subtitle / description" value={settings.hero?.subtitle || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, subtitle: v } }))} rows={2} />
+                  <div className="grid grid-cols-2 gap-3">
+                    <Field placeholder="CTA Button 1 text" value={settings.hero?.cta1Text || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, cta1Text: v } }))} />
+                    <Field placeholder="CTA Button 2 text" value={settings.hero?.cta2Text || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, cta2Text: v } }))} />
+                  </div>
+                  <div className="grid grid-cols-3 gap-3">
+                    <Field placeholder="Stat 1 value (e.g. 50+)" value={settings.hero?.stat1Value || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, stat1Value: v } }))} />
+                    <Field placeholder="Stat 2 value (e.g. 30+)" value={settings.hero?.stat2Value || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, stat2Value: v } }))} />
+                    <Field placeholder="Stat 3 value (e.g. 5+)" value={settings.hero?.stat3Value || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, stat3Value: v } }))} />
+                    <Field placeholder="Stat 1 label" value={settings.hero?.stat1Label || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, stat1Label: v } }))} />
+                    <Field placeholder="Stat 2 label" value={settings.hero?.stat2Label || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, stat2Label: v } }))} />
+                    <Field placeholder="Stat 3 label" value={settings.hero?.stat3Label || ""} onChange={v => setSettings(p => ({ ...p, hero: { ...p.hero, stat3Label: v } }))} />
+                  </div>
+                </div>
+              </div>
+
+              {/* CTA Settings */}
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <h3 className="font-semibold text-gray-800 dark:text-white mb-4">🎯 CTA Section</h3>
+                <div className="space-y-3">
+                  <Field placeholder="Badge (e.g. Available for new projects)" value={settings.cta?.badge || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, badge: v } }))} />
+                  <Field placeholder="Headline" value={settings.cta?.headline || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, headline: v } }))} />
+                  <TextArea placeholder="Subtitle" value={settings.cta?.subtitle || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, subtitle: v } }))} rows={2} />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <Field placeholder="Trust item 1" value={settings.cta?.trust1 || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, trust1: v } }))} />
+                    <Field placeholder="Trust item 2" value={settings.cta?.trust2 || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, trust2: v } }))} />
+                    <Field placeholder="Trust item 3" value={settings.cta?.trust3 || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, trust3: v } }))} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact & Social */}
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <h3 className="font-semibold text-gray-800 dark:text-white mb-4">📞 Contact & Social Links</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Field placeholder="Email address" value={settings.contact?.email || ""} onChange={v => setSettings(p => ({ ...p, contact: { ...p.contact, email: v } }))} />
+                  <Field placeholder="Phone number" value={settings.contact?.phone || ""} onChange={v => setSettings(p => ({ ...p, contact: { ...p.contact, phone: v } }))} />
+                  <Field placeholder="Address" value={settings.contact?.address || ""} onChange={v => setSettings(p => ({ ...p, contact: { ...p.contact, address: v } }))} />
+                  <Field placeholder="GitHub URL" value={settings.contact?.githubUrl || ""} onChange={v => setSettings(p => ({ ...p, contact: { ...p.contact, githubUrl: v } }))} />
+                  <Field placeholder="Twitter/X URL" value={settings.contact?.twitterUrl || ""} onChange={v => setSettings(p => ({ ...p, contact: { ...p.contact, twitterUrl: v } }))} />
+                  <Field placeholder="LinkedIn URL" value={settings.contact?.linkedinUrl || ""} onChange={v => setSettings(p => ({ ...p, contact: { ...p.contact, linkedinUrl: v } }))} />
+                  <Field placeholder="Instagram URL" value={settings.contact?.instagramUrl || ""} onChange={v => setSettings(p => ({ ...p, contact: { ...p.contact, instagramUrl: v } }))} />
+                </div>
+              </div>
+
+              <button onClick={saveSettings} disabled={settingsSaving}
+                className="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-indigo-700 transition disabled:opacity-50">
+                {settingsSaving ? "Saving..." : "Save All Settings ⚙️"}
+              </button>
+            </div>
+          )}
+
+        </motion.div>
         </AnimatePresence>
       </main>
     </div>
