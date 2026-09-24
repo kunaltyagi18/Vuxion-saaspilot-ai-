@@ -8,6 +8,7 @@ import Projects from "@/components/Projects";
 import BlogTeaser from "@/components/BlogTeaser";
 import Testimonials from "@/components/Testimonials";
 import FAQSection from "@/components/FAQSection";
+import CTA from "@/components/CTA";
 import Contact from "@/components/Contact";
 import Chatbot from "@/components/Chatbot";
 import Footer from "@/components/Footer";
@@ -25,6 +26,7 @@ export default function Home() {
       <BlogTeaser />
       <Testimonials />
       <FAQSection />
+      <CTA />
       <Contact />
       <Chatbot />
       <Footer />

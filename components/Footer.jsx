@@ -202,17 +202,23 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-14 pt-6 border-t border-gray-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-gray-500 dark:text-gray-400 text-center sm:text-left">
-            © {new Date().getFullYear()}{" "}
-            <span className="font-semibold text-gray-700 dark:text-gray-300">
-              Vuxion
-            </span>
-            . All rights reserved. Built with{" "}
-            <span className="text-indigo-600 dark:text-indigo-400">Next.js</span>{" "}
-            &{" "}
-            <span className="text-indigo-600 dark:text-indigo-400">Tailwind</span>.
-          </p>
-
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-6">
+            <p className="text-xs text-gray-500 dark:text-gray-400 text-center sm:text-left">
+              © {new Date().getFullYear()}{" "}
+              <span className="font-semibold text-gray-700 dark:text-gray-300">Vuxion</span>.
+              {" "}All rights reserved.
+            </p>
+            {/* Legal links */}
+            <div className="flex items-center gap-4">
+              <Link href="/privacy" className="text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                Privacy Policy
+              </Link>
+              <span className="text-gray-300 dark:text-gray-700 text-xs">·</span>
+              <Link href="/terms" className="text-xs text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                Terms of Service
+              </Link>
+            </div>
+          </div>
           {/* Back to top button */}
           <button
             onClick={scrollToTop}
