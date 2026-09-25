@@ -24,8 +24,8 @@ export default function Home() {
       <Projects limit={3} />
       <BlogTeaser />
       <Testimonials />
-      <FAQSection />
       <CTA />
+      <FAQSection />
       <Chatbot />
       <Footer />
     </main>
