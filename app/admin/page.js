@@ -23,6 +23,7 @@ const NAV_ITEMS = [
   { key: "about",       label: "About Us",        icon: "ℹ️" },
   { key: "services",    label: "Services",        icon: "🛠️" },
   { key: "projects",    label: "Projects",        icon: "🚀" },
+  { key: "blog",        label: "Blog Posts",      icon: "📝" },
   { key: "testimonials",label: "Testimonials",    icon: "💬" },
   { key: "faqs",        label: "Chatbot FAQs",    icon: "🤖" },
   { key: "leads",       label: "Contact Leads",   icon: "📩" },
@@ -79,6 +80,12 @@ export default function AdminPage() {
   const [tEditId, setTEditId] = useState(null);
   const [tSaving, setTSaving] = useState(false);
 
+  // Blog Posts state
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [bForm, setBForm] = useState({ category: "", title: "", excerpt: "", readTime: "5 min read", date: "", emoji: "📝", color: "from-indigo-500 to-violet-500", image: "", link: "" });
+  const [bEditId, setBEditId] = useState(null);
+  const [bSaving, setBSaving] = useState(false);
+
   // Site Settings state
   const [settings, setSettings] = useState(null);
   const [settingsSaving, setSettingsSaving] = useState(false);
@@ -118,7 +125,7 @@ export default function AdminPage() {
   }, []);
 
   async function loadAll() {
-    const [s, p, f, l, a, t, st] = await Promise.all([
+    const [s, p, f, l, a, t, st, bl] = await Promise.all([
       fetch("/api/services").then(r => r.json()),
       fetch("/api/projects").then(r => r.json()),
       fetch("/api/faqs").then(r => r.json()),
@@ -126,14 +133,16 @@ export default function AdminPage() {
       fetch("/api/about").then(r => r.ok ? r.json() : null),
       fetch("/api/testimonials").then(r => r.json()),
       fetch("/api/settings").then(r => r.json()),
+      fetch("/api/blog").then(r => r.json()),
     ]);
     setServices(Array.isArray(s) ? s : []);
     setProjects(Array.isArray(p) ? p : []);
     setFaqs(Array.isArray(f) ? f : []);
     setLeads(Array.isArray(l) ? l : []);
-    if (a) setAbout(a);
+    if (a) setAbout({ ...a });
     setTestimonials(Array.isArray(t) ? t : []);
     if (st) setSettings(st);
+    setBlogPosts(Array.isArray(bl) ? bl : []);
   }
 
   // Save About
@@ -235,6 +244,7 @@ export default function AdminPage() {
   const reloadFaqs = () => fetch("/api/faqs").then(r => r.json()).then(d => setFaqs(Array.isArray(d) ? d : []));
   const reloadLeads = () => fetch("/api/contact").then(r => r.ok ? r.json() : []).then(d => setLeads(Array.isArray(d) ? d : []));
   const reloadTestimonials = () => fetch("/api/testimonials").then(r => r.json()).then(d => setTestimonials(Array.isArray(d) ? d : []));
+  const reloadBlog = () => fetch("/api/blog").then(r => r.json()).then(d => setBlogPosts(Array.isArray(d) ? d : []));
 
   // ── Testimonial handlers ───────────────────────────────────────────────────
   async function saveTForm() {
@@ -263,6 +273,35 @@ export default function AdminPage() {
   function startEditT(t) {
     setTEditId(t._id);
     setTForm({ name: t.name, role: t.role, review: t.review, rating: t.rating, initials: t.initials || "", color: t.color || "bg-indigo-600" });
+  }
+
+  // ── Blog Post handlers ────────────────────────────────────────────────────
+  async function saveBForm() {
+    setBSaving(true);
+    try {
+      if (bEditId) {
+        await fetch(`/api/blog/${bEditId}`, {
+          method: "PUT", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(bForm),
+        });
+        toast.success("Post updated! ✅");
+        setBEditId(null);
+      } else {
+        await fetch("/api/blog", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(bForm),
+        });
+        toast.success("Blog post add ho gaya! 📝");
+      }
+      setBForm({ category: "", title: "", excerpt: "", readTime: "5 min read", date: "", emoji: "📝", color: "from-indigo-500 to-violet-500", image: "", link: "" });
+      reloadBlog();
+    } catch { toast.error("Error!"); }
+    finally { setBSaving(false); }
+  }
+
+  function startEditB(b) {
+    setBEditId(b._id);
+    setBForm({ category: b.category, title: b.title, excerpt: b.excerpt, readTime: b.readTime || "5 min read", date: b.date || "", emoji: b.emoji || "📝", color: b.color || "from-indigo-500 to-violet-500", image: b.image || "", link: b.link || "" });
   }
 
   // ── Site Settings save ────────────────────────────────────────────────────
@@ -950,6 +989,126 @@ export default function AdminPage() {
               </div>
             )}
 
+
+          {/* ── BLOG POSTS ─────────────────────────────────────────────────────── */}
+          {activeSection === "blog" && (
+            <div className="space-y-8">
+              <div>
+                <h1 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-1">📝 Blog Posts</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-sm mb-6">Manage the blog cards shown on the home page.</p>
+              </div>
+
+              {/* Form */}
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <h2 className="text-xs font-bold uppercase text-gray-400 tracking-wider mb-4">
+                  {bEditId ? "✏️ Edit Post" : "➕ Add New Post"}
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <Field placeholder="Category (e.g. Web Development)" value={bForm.category} onChange={v => setBForm(p => ({ ...p, category: v }))} />
+                  <Field placeholder="Read Time (e.g. 5 min read)" value={bForm.readTime} onChange={v => setBForm(p => ({ ...p, readTime: v }))} />
+                  <Field placeholder="Title" value={bForm.title} onChange={v => setBForm(p => ({ ...p, title: v }))} />
+                  <Field placeholder="Date (e.g. Sep 2025)" value={bForm.date} onChange={v => setBForm(p => ({ ...p, date: v }))} />
+                  <div className="md:col-span-2">
+                    <TextArea placeholder="Excerpt / Short description..." value={bForm.excerpt} onChange={v => setBForm(p => ({ ...p, excerpt: v }))} rows={2} />
+                  </div>
+                  <Field placeholder="External link (optional)" value={bForm.link} onChange={v => setBForm(p => ({ ...p, link: v }))} />
+                  <div className="flex gap-2">
+                    <Field placeholder="Emoji (e.g. ⚡)" value={bForm.emoji} onChange={v => setBForm(p => ({ ...p, emoji: v }))} />
+                    <Field placeholder="Gradient (from-indigo-500 to-violet-500)" value={bForm.color} onChange={v => setBForm(p => ({ ...p, color: v }))} />
+                  </div>
+
+                  {/* Image Upload */}
+                  <div className="md:col-span-2">
+                    <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 block">🖼️ Blog Card Image (replaces gradient when set)</label>
+                    <div className="flex gap-2 items-center">
+                      {CLOUDINARY_CONFIGURED ? (
+                        <CldUploadWidget
+                          uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+                          onSuccess={({ info }) => setBForm(p => ({ ...p, image: info.secure_url }))}
+                        >
+                          {({ open }) => (
+                            <button type="button" onClick={open}
+                              className="px-4 py-2 rounded-xl text-sm font-bold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 transition">
+                              📤 Upload Image
+                            </button>
+                          )}
+                        </CldUploadWidget>
+                      ) : null}
+                      <input
+                        placeholder="Or paste image URL..."
+                        value={bForm.image}
+                        onChange={e => setBForm(p => ({ ...p, image: e.target.value }))}
+                        className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 transition"
+                      />
+                      {bForm.image && (
+                        <button onClick={() => setBForm(p => ({ ...p, image: "" }))}
+                          className="text-red-400 hover:text-red-600 font-bold text-lg px-2">×</button>
+                      )}
+                    </div>
+                    {bForm.image && (
+                      <div className="mt-3 w-full max-w-xs h-32 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                        <img src={bForm.image} alt="preview" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex gap-2 mt-4">
+                  <button onClick={saveBForm} disabled={bSaving}
+                    className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-bold hover:bg-indigo-700 transition disabled:opacity-50">
+                    {bSaving ? "Saving..." : bEditId ? "Update Post" : "Add Post"}
+                  </button>
+                  {bEditId && (
+                    <button onClick={() => { setBEditId(null); setBForm({ category: "", title: "", excerpt: "", readTime: "5 min read", date: "", emoji: "📝", color: "from-indigo-500 to-violet-500", image: "", link: "" }); }}
+                      className="px-4 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-400 hover:border-red-300 transition">
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* List */}
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <h2 className="text-xs font-bold uppercase text-gray-400 tracking-wider mb-4">All Blog Posts ({blogPosts.length})</h2>
+                {blogPosts.length === 0 ? (
+                  <p className="text-gray-400 text-sm text-center py-8">No posts yet — add one above!</p>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    {blogPosts.map(b => (
+                      <div key={b._id}
+                        className="flex items-start gap-4 border border-gray-100 dark:border-gray-800 rounded-xl p-4 hover:border-indigo-200 dark:hover:border-indigo-800 transition group">
+                        {/* Thumbnail */}
+                        <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+                          {b.image ? (
+                            <img src={b.image} alt={b.title} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className={`w-full h-full bg-gradient-to-br ${b.color || "from-indigo-500 to-violet-500"} flex items-center justify-center text-2xl`}>
+                              {b.emoji || "📝"}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-bold text-gray-900 dark:text-white text-sm truncate">{b.title}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{b.category} · {b.readTime} · {b.date}</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 line-clamp-1 mt-1">{b.excerpt}</p>
+                        </div>
+                        <div className="flex gap-2 shrink-0">
+                          <button onClick={() => startEditB(b)}
+                            className="text-xs font-bold text-indigo-600 dark:text-indigo-400 px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 transition">
+                            Edit
+                          </button>
+                          <button onClick={() => del("blog", b._id, "Post", reloadBlog)}
+                            className="text-xs font-bold text-red-500 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-950/30 hover:bg-red-100 transition">
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* ── TESTIMONIALS ──────────────────────────────────────────────────── */}
           {activeSection === "testimonials" && (

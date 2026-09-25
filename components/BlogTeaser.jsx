@@ -1,38 +1,20 @@
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
-const posts = [
-  {
-    category: "Web Development",
-    title: "10 Next.js Performance Tricks That Will Blow Your Mind",
-    excerpt: "From ISR to image optimization, these battle-tested techniques can cut your page load time by up to 70%.",
-    readTime: "5 min read",
-    date: "Sep 2025",
-    emoji: "⚡",
-    color: "from-indigo-500 to-violet-500",
-  },
-  {
-    category: "UI/UX Design",
-    title: "Why Your Website's First 3 Seconds Are Everything",
-    excerpt: "The science behind first impressions and how to design hero sections that instantly convert visitors into leads.",
-    readTime: "4 min read",
-    date: "Aug 2025",
-    emoji: "🎨",
-    color: "from-violet-500 to-fuchsia-500",
-  },
-  {
-    category: "SEO",
-    title: "The Complete 2025 SEO Checklist for New Websites",
-    excerpt: "A practical, no-fluff guide to ranking on Page 1 — from technical SEO to content strategy that actually works.",
-    readTime: "7 min read",
-    date: "Jul 2025",
-    emoji: "📈",
-    color: "from-fuchsia-500 to-pink-500",
-  },
-];
-
 export default function BlogTeaser() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetch("/api/blog")
+      .then(r => r.ok ? r.json() : [])
+      .then(setPosts)
+      .catch(() => setPosts([]));
+  }, []);
+
+  if (!posts.length) return null;
+
   return (
     <section className="relative py-24 px-6 overflow-hidden bg-gray-50 dark:bg-[#0a0a14] transition-colors duration-300">
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#6366f108_1px,transparent_1px),linear-gradient(to_bottom,#6366f108_1px,transparent_1px)] bg-[size:48px_48px]" />
@@ -65,9 +47,9 @@ export default function BlogTeaser() {
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {posts.map((post, i) => (
+          {posts.slice(0, 3).map((post, i) => (
             <motion.article
-              key={post.title}
+              key={post._id || i}
               initial={{ opacity: 0, y: 40, rotateX: 6 }}
               whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
               viewport={{ once: true }}
@@ -76,18 +58,37 @@ export default function BlogTeaser() {
                 border border-gray-100 dark:border-gray-800
                 rounded-2xl overflow-hidden shadow-sm group flex flex-col"
             >
-              {/* Card image / gradient banner */}
-              <div className={`h-36 bg-gradient-to-br ${post.color} flex items-center justify-center text-5xl relative overflow-hidden`}>
-                <span className="animate-float">{post.emoji}</span>
-                {/* Glow */}
-                <div className="absolute inset-0 opacity-30 bg-[radial-gradient(ellipse_at_center,white,transparent)]" />
+              {/* Card banner — real image if set, else gradient */}
+              <div className="h-44 w-full relative overflow-hidden shrink-0">
+                {post.image ? (
+                  <>
+                    <img
+                      src={post.image}
+                      alt={post.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                    {/* Category badge over image */}
+                    <span className="absolute top-3 left-3 text-xs font-bold uppercase tracking-wider text-white bg-black/40 backdrop-blur-sm px-3 py-1 rounded-full">
+                      {post.category}
+                    </span>
+                  </>
+                ) : (
+                  <div className={`w-full h-full bg-gradient-to-br ${post.color || "from-indigo-500 to-violet-500"} flex items-center justify-center relative`}>
+                    <span className="text-5xl animate-float">{post.emoji || "📝"}</span>
+                    <div className="absolute inset-0 opacity-30 bg-[radial-gradient(ellipse_at_center,white,transparent)]" />
+                  </div>
+                )}
               </div>
 
               <div className="p-6 flex flex-col flex-1">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-1 rounded-full">
-                    {post.category}
-                  </span>
+                  {!post.image && (
+                    <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-1 rounded-full">
+                      {post.category}
+                    </span>
+                  )}
                   <span className="text-xs text-gray-400 dark:text-gray-500">{post.readTime}</span>
                 </div>
                 <h3 className="font-bold text-gray-900 dark:text-white text-base leading-snug mb-3
@@ -99,9 +100,16 @@ export default function BlogTeaser() {
                 </p>
                 <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
                   <span className="text-xs text-gray-400 dark:text-gray-500">{post.date}</span>
-                  <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform inline-block">
-                    Read More →
-                  </span>
+                  {post.link ? (
+                    <a href={post.link} target="_blank" rel="noopener noreferrer"
+                      className="text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform inline-block">
+                      Read More →
+                    </a>
+                  ) : (
+                    <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform inline-block">
+                      Read More →
+                    </span>
+                  )}
                 </div>
               </div>
             </motion.article>
