@@ -528,8 +528,46 @@ export default function AdminPage() {
                       <div className="flex flex-col gap-3">
                         <Field placeholder="Tagline (e.g. We build digital experiences...)" value={about.tagline || ""} onChange={v => setAbout(p => ({ ...p, tagline: v }))} />
                         <TextArea placeholder="Description (main paragraph about the company)" value={about.description || ""} onChange={v => setAbout(p => ({ ...p, description: v }))} rows={3} />
+
+                        {/* About Image */}
+                        <div>
+                          <label className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2 block">
+                            🖼️ About Section Image (left side)
+                          </label>
+                          <div className="flex gap-2 items-center">
+                            {CLOUDINARY_CONFIGURED ? (
+                              <CldUploadWidget
+                                uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+                                onSuccess={({ info }) => setAbout(p => ({ ...p, image: info.secure_url }))}
+                              >
+                                {({ open }) => (
+                                  <button type="button" onClick={open}
+                                    className="px-4 py-2 rounded-xl text-sm font-bold bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 hover:bg-indigo-100 transition">
+                                    📤 Upload Image
+                                  </button>
+                                )}
+                              </CldUploadWidget>
+                            ) : null}
+                            <input
+                              placeholder="Or paste image URL here..."
+                              value={about.image || ""}
+                              onChange={e => setAbout(p => ({ ...p, image: e.target.value }))}
+                              className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 transition"
+                            />
+                            {about.image && (
+                              <button onClick={() => setAbout(p => ({ ...p, image: "" }))}
+                                className="text-red-400 hover:text-red-600 font-bold text-lg px-2">×</button>
+                            )}
+                          </div>
+                          {about.image && (
+                            <div className="mt-3 relative w-full max-w-xs h-40 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+                              <img src={about.image} alt="Preview" className="w-full h-full object-cover" />
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
+
 
                     {/* Mission & Vision */}
                     <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
