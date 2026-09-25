@@ -1,7 +1,8 @@
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-const techs = [
+const DEFAULT_TECHS = [
   { name: "Next.js",      icon: "▲" },
   { name: "React",        icon: "⚛️" },
   { name: "Node.js",      icon: "🟢" },
@@ -18,16 +19,30 @@ const techs = [
   { name: "Vercel",       icon: "▲" },
 ];
 
-const whyUs = [
-  { icon: "⚡", title: "Lightning Fast", desc: "Optimised for Core Web Vitals — 90+ Lighthouse scores as standard." },
-  { icon: "🎨", title: "Premium Design", desc: "Every pixel is intentional. We don't do average." },
-  { icon: "🔒", title: "Secure by Default", desc: "Auth, rate limiting, and encryption built-in from day one." },
-  { icon: "📈", title: "SEO Optimised", desc: "Structured data, meta tags, sitemaps — rank higher from launch." },
-  { icon: "🤝", title: "Dedicated Support", desc: "Slack access, weekly calls, and fast response times throughout." },
+const DEFAULT_WHY = [
+  { icon: "⚡", title: "Lightning Fast",       desc: "Optimised for Core Web Vitals — 90+ Lighthouse scores as standard." },
+  { icon: "🎨", title: "Premium Design",       desc: "Every pixel is intentional. We don't do average." },
+  { icon: "🔒", title: "Secure by Default",   desc: "Auth, rate limiting, and encryption built-in from day one." },
+  { icon: "📈", title: "SEO Optimised",        desc: "Structured data, meta tags, sitemaps — rank higher from launch." },
+  { icon: "🤝", title: "Dedicated Support",   desc: "Slack access, weekly calls, and fast response times throughout." },
   { icon: "💰", title: "Transparent Pricing", desc: "No hidden costs. Fixed quotes. You always know what you're paying." },
 ];
 
 export default function WhyUs() {
+  const [techs, setTechs]   = useState(DEFAULT_TECHS);
+  const [whyUs, setWhyUs]   = useState(DEFAULT_WHY);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then(r => r.ok ? r.json() : null)
+      .then(d => {
+        if (!d) return;
+        if (d.techStack?.length) setTechs(d.techStack);
+        if (d.whyUs?.length)    setWhyUs(d.whyUs);
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <>
       {/* ── WHY CHOOSE US ─────────────────────────────────────────────── */}
@@ -56,7 +71,7 @@ export default function WhyUs() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {whyUs.map((item, i) => (
               <motion.div
-                key={item.title}
+                key={i}
                 initial={{ opacity: 0, y: 40, rotateX: 6 }}
                 whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
                 viewport={{ once: true }}
@@ -86,9 +101,7 @@ export default function WhyUs() {
           </p>
         </div>
 
-        {/* Marquee wrapper */}
         <div className="relative">
-          {/* Fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white dark:from-[#080810] to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white dark:from-[#080810] to-transparent z-10 pointer-events-none" />
 

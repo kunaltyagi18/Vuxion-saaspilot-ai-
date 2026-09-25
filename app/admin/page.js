@@ -1087,11 +1087,108 @@ export default function AdminPage() {
                 </div>
               </div>
 
+
+              {/* Tech Stack Marquee */}
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-gray-800 dark:text-white">🛠️ Tech Stack Marquee</h3>
+                  <button
+                    onClick={() => setSettings(p => ({ ...p, techStack: [...(p.techStack || []), { icon: "⚙️", name: "" }] }))}
+                    className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                    + Add Tech
+                  </button>
+                </div>
+                <div className="flex flex-col gap-2">
+                  {(settings.techStack || []).map((tech, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <input
+                        placeholder="Icon (emoji)"
+                        value={tech.icon}
+                        onChange={e => {
+                          const arr = [...(settings.techStack || [])];
+                          arr[i] = { ...arr[i], icon: e.target.value };
+                          setSettings(p => ({ ...p, techStack: arr }));
+                        }}
+                        className="w-16 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white text-center"
+                      />
+                      <input
+                        placeholder="Tech name (e.g. Next.js)"
+                        value={tech.name}
+                        onChange={e => {
+                          const arr = [...(settings.techStack || [])];
+                          arr[i] = { ...arr[i], name: e.target.value };
+                          setSettings(p => ({ ...p, techStack: arr }));
+                        }}
+                        className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                      />
+                      <button
+                        onClick={() => setSettings(p => ({ ...p, techStack: p.techStack.filter((_, idx) => idx !== i) }))}
+                        className="text-red-400 hover:text-red-600 text-lg font-bold px-2">×</button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Why Us Cards */}
+              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-gray-800 dark:text-white">⭐ Why Us Cards</h3>
+                  <button
+                    onClick={() => setSettings(p => ({ ...p, whyUs: [...(p.whyUs || []), { icon: "✨", title: "", desc: "" }] }))}
+                    className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                    + Add Card
+                  </button>
+                </div>
+                <div className="flex flex-col gap-4">
+                  {(settings.whyUs || []).map((item, i) => (
+                    <div key={i} className="border border-gray-100 dark:border-gray-700 rounded-xl p-4 flex flex-col gap-2 relative">
+                      <button
+                        onClick={() => setSettings(p => ({ ...p, whyUs: p.whyUs.filter((_, idx) => idx !== i) }))}
+                        className="absolute top-3 right-3 text-red-400 hover:text-red-600 text-lg font-bold">×</button>
+                      <div className="flex gap-2">
+                        <input
+                          placeholder="Icon"
+                          value={item.icon}
+                          onChange={e => {
+                            const arr = [...(settings.whyUs || [])];
+                            arr[i] = { ...arr[i], icon: e.target.value };
+                            setSettings(p => ({ ...p, whyUs: arr }));
+                          }}
+                          className="w-16 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white text-center"
+                        />
+                        <input
+                          placeholder="Title (e.g. Lightning Fast)"
+                          value={item.title}
+                          onChange={e => {
+                            const arr = [...(settings.whyUs || [])];
+                            arr[i] = { ...arr[i], title: e.target.value };
+                            setSettings(p => ({ ...p, whyUs: arr }));
+                          }}
+                          className="flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white"
+                        />
+                      </div>
+                      <textarea
+                        rows={2}
+                        placeholder="Description..."
+                        value={item.desc}
+                        onChange={e => {
+                          const arr = [...(settings.whyUs || [])];
+                          arr[i] = { ...arr[i], desc: e.target.value };
+                          setSettings(p => ({ ...p, whyUs: arr }));
+                        }}
+                        className="w-full bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white resize-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
               <button onClick={saveSettings} disabled={settingsSaving}
                 className="w-full bg-indigo-600 text-white py-3 rounded-xl font-bold text-sm hover:bg-indigo-700 transition disabled:opacity-50">
                 {settingsSaving ? "Saving..." : "Save All Settings ⚙️"}
               </button>
             </div>
+
           )}
 
         </motion.div>

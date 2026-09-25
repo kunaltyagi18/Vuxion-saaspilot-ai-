@@ -35,6 +35,38 @@ const SiteSettingsSchema = new mongoose.Schema({
     linkedinUrl:  { type: String, default: "https://linkedin.com" },
     instagramUrl: { type: String, default: "https://instagram.com" },
   },
+  // Tech Stack Marquee
+  techStack: {
+    type: [{ name: String, icon: String }],
+    default: [
+      { name: "Next.js",      icon: "▲" },
+      { name: "React",        icon: "⚛️" },
+      { name: "Node.js",      icon: "🟢" },
+      { name: "MongoDB",      icon: "🍃" },
+      { name: "TypeScript",   icon: "🔷" },
+      { name: "Tailwind CSS", icon: "🎨" },
+      { name: "Figma",        icon: "🖌️" },
+      { name: "PostgreSQL",   icon: "🐘" },
+      { name: "AWS",          icon: "☁️" },
+      { name: "Docker",       icon: "🐳" },
+      { name: "GraphQL",      icon: "◈" },
+      { name: "Redis",        icon: "🔴" },
+      { name: "Stripe",       icon: "💳" },
+      { name: "Vercel",       icon: "▲" },
+    ],
+  },
+  // Why Us features
+  whyUs: {
+    type: [{ icon: String, title: String, desc: String }],
+    default: [
+      { icon: "⚡", title: "Lightning Fast",       desc: "Optimised for Core Web Vitals — 90+ Lighthouse scores as standard." },
+      { icon: "🎨", title: "Premium Design",       desc: "Every pixel is intentional. We don’t do average." },
+      { icon: "🔒", title: "Secure by Default",   desc: "Auth, rate limiting, and encryption built-in from day one." },
+      { icon: "📈", title: "SEO Optimised",        desc: "Structured data, meta tags, sitemaps — rank higher from launch." },
+      { icon: "🤝", title: "Dedicated Support",   desc: "Slack access, weekly calls, and fast response times throughout." },
+      { icon: "💰", title: "Transparent Pricing", desc: "No hidden costs. Fixed quotes. You always know what you’re paying." },
+    ],
+  },
 }, { timestamps: true });
 
 export default mongoose.models.SiteSettings ||
