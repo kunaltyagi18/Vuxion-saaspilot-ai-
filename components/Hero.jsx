@@ -25,14 +25,14 @@ export default function Hero() {
           muted
           loop
           playsInline
-          className="w-full h-full object-cover object-right sm:object-center"
+          className="w-full h-full object-cover object-[70%_center] sm:object-center"
           aria-hidden="true"
         >
           <source src={VIDEO_URL} type="video/mp4" />
         </video>
 
-        {/* Mobile: full dark overlay so text readable over rabbit */}
-        <div className="absolute inset-0 bg-black/70 sm:bg-transparent" />
+        {/* Mobile: semi-dark overlay — enough to read text but rabbit still visible */}
+        <div className="absolute inset-0 bg-black/55 sm:bg-transparent" />
 
         {/* Desktop: Left heavy gradient — darker left, right stays clear (rabbit visible) */}
         <div className="absolute inset-0 hidden sm:block bg-gradient-to-r from-black/85 via-black/45 to-black/10" />
@@ -187,23 +187,7 @@ export default function Hero() {
         </div>
       </motion.div>
 
-      {/* ── SCROLL INDICATOR — hidden on mobile ───────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.3 }}
-        className="hidden sm:flex absolute bottom-8 left-8 sm:left-16 lg:left-20 z-10 flex-col items-center gap-2"
-        aria-hidden="true"
-      >
-        <span className="text-white/40 text-[10px] tracking-widest uppercase font-medium">Scroll</span>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          className="w-5 h-8 rounded-full border-2 border-white/30 flex items-start justify-center pt-1.5"
-        >
-          <div className="w-1 h-2 rounded-full bg-white/60" />
-        </motion.div>
-      </motion.div>
+
     </section>
   );
 }
