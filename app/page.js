@@ -9,7 +9,6 @@ import ScrollScene3D from "@/components/ScrollScene3D";
 import BlogTeaser from "@/components/BlogTeaser";
 import Testimonials from "@/components/Testimonials";
 import FAQSection from "@/components/FAQSection";
-import CTA from "@/components/CTA";
 import Chatbot from "@/components/Chatbot";
 import Footer from "@/components/Footer";
 
@@ -26,7 +25,6 @@ export default function Home() {
       <ScrollScene3D />
       <BlogTeaser />
       <Testimonials />
-      <CTA />
       <FAQSection />
       <Chatbot />
       <Footer />

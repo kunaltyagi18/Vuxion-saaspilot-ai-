@@ -1217,21 +1217,6 @@ export default function AdminPage() {
                 </div>
               </div>
 
-              {/* CTA Settings */}
-              <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
-                <h3 className="font-semibold text-gray-800 dark:text-white mb-4">🎯 CTA Section</h3>
-                <div className="space-y-3">
-                  <Field placeholder="Badge (e.g. Available for new projects)" value={settings.cta?.badge || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, badge: v } }))} />
-                  <Field placeholder="Headline" value={settings.cta?.headline || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, headline: v } }))} />
-                  <TextArea placeholder="Subtitle" value={settings.cta?.subtitle || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, subtitle: v } }))} rows={2} />
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <Field placeholder="Trust item 1" value={settings.cta?.trust1 || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, trust1: v } }))} />
-                    <Field placeholder="Trust item 2" value={settings.cta?.trust2 || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, trust2: v } }))} />
-                    <Field placeholder="Trust item 3" value={settings.cta?.trust3 || ""} onChange={v => setSettings(p => ({ ...p, cta: { ...p.cta, trust3: v } }))} />
-                  </div>
-                </div>
-              </div>
-
               {/* Contact & Social */}
               <div className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm">
                 <h3 className="font-semibold text-gray-800 dark:text-white mb-4">📞 Contact & Social Links</h3>
