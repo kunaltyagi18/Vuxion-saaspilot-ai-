@@ -15,148 +15,125 @@ const HeroBG3DCanvas = dynamic(
 function TiltCard() {
   const cardRef = useRef(null);
 
-  // Raw mouse values
   const rawX = useMotionValue(0);
   const rawY = useMotionValue(0);
 
-  // Springy smooth follow
-  const springConfig = { stiffness: 120, damping: 18 };
+  const springConfig = { stiffness: 100, damping: 20 };
   const springX = useSpring(rawX, springConfig);
   const springY = useSpring(rawY, springConfig);
 
-  // Map to rotation
-  const rotateY = useTransform(springX, [-0.5, 0.5], [-22, 22]);
-  const rotateX = useTransform(springY, [-0.5, 0.5], [18, -18]);
-
-  // Glow position follows cursor
-  const glowX = useTransform(springX, [-0.5, 0.5], [0, 100]);
-  const glowY = useTransform(springY, [-0.5, 0.5], [0, 100]);
+  const rotateY = useTransform(springX, [-0.5, 0.5], [-18, 18]);
+  const rotateX = useTransform(springY, [-0.5, 0.5], [14, -14]);
 
   function onMouseMove(e) {
     const rect = cardRef.current.getBoundingClientRect();
     rawX.set((e.clientX - rect.left) / rect.width - 0.5);
     rawY.set((e.clientY - rect.top) / rect.height - 0.5);
   }
-
   function onMouseLeave() {
     rawX.set(0);
     rawY.set(0);
   }
 
+  const badges = [
+    { label: "React",   color: "#61dafb", top: "18%", left: "-52px" },
+    { label: "Next.js", color: "#e2e8f0", top: "28%", right: "-52px" },
+    { label: "MongoDB", color: "#47a248", top: "62%", left: "-52px" },
+    { label: "UI/UX",   color: "#c084fc", top: "72%", right: "-52px" },
+  ];
+
   return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      style={{
-        rotateY,
-        rotateX,
-        transformStyle: "preserve-3d",
-        perspective: 800,
-      }}
-      className="relative w-[320px] sm:w-[380px] lg:w-[420px] aspect-square
-        cursor-none select-none"
-    >
-      {/* Outer glow ring */}
+    <div className="relative" style={{ width: 340, height: 380 }}>
+      {/* Outer glow */}
       <motion.div
-        className="absolute -inset-4 rounded-full pointer-events-none"
-        style={{
-          background: "radial-gradient(circle at 50% 50%, #a855f740 0%, transparent 70%)",
-        }}
-        animate={{ scale: [1, 1.06, 1], opacity: [0.6, 1, 0.6] }}
-        transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute -inset-6 rounded-3xl pointer-events-none"
+        style={{ background: "radial-gradient(ellipse at center, #7c3aed33, transparent 70%)" }}
+        animate={{ opacity: [0.5, 0.9, 0.5] }}
+        transition={{ duration: 3, repeat: Infinity }}
       />
 
-      {/* Spinning neon ring — back layer */}
+      {/* Spinning rings */}
       <motion.div
-        className="absolute inset-0 rounded-full border-2 border-indigo-500/30 pointer-events-none"
-        style={{ translateZ: -20 }}
+        className="absolute -inset-4 rounded-full border border-indigo-500/25 pointer-events-none"
         animate={{ rotate: 360 }}
-        transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
       />
       <motion.div
-        className="absolute -inset-6 rounded-full border border-fuchsia-500/20 pointer-events-none"
-        style={{ translateZ: -40 }}
+        className="absolute -inset-8 rounded-full border border-fuchsia-500/15 pointer-events-none"
         animate={{ rotate: -360 }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
       />
 
-      {/* Main image card */}
+      {/* 3D tilt card */}
       <motion.div
-        className="relative w-full h-full rounded-3xl overflow-hidden
-          border border-white/10 shadow-2xl shadow-indigo-900/50
-          bg-gradient-to-b from-[#0d0d20] to-[#06060f]"
-        style={{ translateZ: 30 }}
+        ref={cardRef}
+        onMouseMove={onMouseMove}
+        onMouseLeave={onMouseLeave}
+        style={{ rotateY, rotateX, width: "100%", height: "100%" }}
+        className="relative rounded-3xl overflow-hidden cursor-none select-none
+          border border-white/10 shadow-2xl shadow-violet-900/50
+          bg-[#0d0d20]"
       >
-        {/* Cursor-following specular glint */}
-        <motion.div
-          className="absolute inset-0 pointer-events-none z-20 rounded-3xl"
-          style={{
-            background: useTransform(
-              [glowX, glowY],
-              ([x, y]) =>
-                `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.12) 0%, transparent 60%)`
-            ),
-          }}
-        />
-
         {/* Character image */}
-        <Image
+        <img
           src="/hero-character.jpg"
-          alt="Vuxion mascot — chibi tech developer"
-          fill
-          sizes="(max-width: 640px) 320px, (max-width: 1024px) 380px, 420px"
-          className="object-cover object-top"
-          priority
+          alt="Vuxion chibi tech mascot"
+          className="w-full h-full object-cover object-center"
+          style={{ display: "block" }}
         />
 
-        {/* Bottom gradient overlay */}
-        <div className="absolute bottom-0 inset-x-0 h-24 bg-gradient-to-t from-[#06060f] to-transparent z-10" />
+        {/* Subtle dark overlay so text stays readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#06060f]/80 via-transparent to-transparent" />
 
-        {/* Status badge */}
-        <motion.div
-          style={{ translateZ: 50 }}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1 }}
-          className="absolute bottom-5 left-1/2 -translate-x-1/2 z-20
-            flex items-center gap-2 whitespace-nowrap
-            bg-black/60 backdrop-blur-md border border-white/10
-            text-white text-xs font-bold px-4 py-2 rounded-full shadow-xl"
-        >
+        {/* Status pill */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2
+          flex items-center gap-2 whitespace-nowrap
+          bg-black/60 backdrop-blur-md border border-white/10
+          text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg z-10">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
           </span>
           Building your next product...
-        </motion.div>
+        </div>
+
+        {/* Specular glint on hover */}
+        <motion.div
+          className="absolute inset-0 pointer-events-none rounded-3xl"
+          style={{
+            background: useTransform(
+              [useTransform(springX, [-0.5, 0.5], [0, 100]),
+               useTransform(springY, [-0.5, 0.5], [0, 100])],
+              ([gx, gy]) =>
+                `radial-gradient(circle at ${gx}% ${gy}%, rgba(255,255,255,0.1) 0%, transparent 55%)`
+            ),
+          }}
+        />
       </motion.div>
 
-      {/* Floating tech badges — 3D depth */}
-      {[
-        { label: "React", color: "#61dafb", x: "-60px", y: "20%", z: 50, delay: 0.8 },
-        { label: "Next.js", color: "#ffffff", x: "calc(100% + 10px)", y: "30%", z: 40, delay: 1 },
-        { label: "MongoDB", color: "#47a248", x: "-50px", y: "65%", z: 60, delay: 1.2 },
-        { label: "UI/UX", color: "#a855f7", x: "calc(100% + 5px)", y: "70%", z: 45, delay: 1.4 },
-      ].map((b) => (
+      {/* Floating tech badges */}
+      {badges.map((b, i) => (
         <motion.div
           key={b.label}
-          style={{ translateZ: b.z, left: b.x, top: b.y }}
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1, y: [0, -6, 0] }}
-          transition={{
-            opacity: { delay: b.delay, duration: 0.4 },
-            scale:   { delay: b.delay, duration: 0.4 },
-            y:       { duration: 2.5 + Math.random(), repeat: Infinity, ease: "easeInOut", delay: b.delay },
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{
+            opacity: 1, scale: 1,
+            y: [0, -5, 0],
           }}
-          className="absolute px-3 py-1.5 rounded-xl text-xs font-bold
-            bg-black/70 backdrop-blur-md border border-white/10
-            shadow-lg shadow-black/40 pointer-events-none"
+          transition={{
+            opacity: { delay: 0.8 + i * 0.15, duration: 0.4 },
+            scale:   { delay: 0.8 + i * 0.15, duration: 0.4 },
+            y: { duration: 2.5 + i * 0.3, repeat: Infinity, ease: "easeInOut", delay: i * 0.4 },
+          }}
+          style={{ top: b.top, left: b.left, right: b.right, position: "absolute" }}
+          className="px-3 py-1.5 rounded-xl text-xs font-bold
+            bg-black/70 backdrop-blur-md border border-white/15
+            shadow-lg pointer-events-none z-20"
         >
           <span style={{ color: b.color }}>{b.label}</span>
         </motion.div>
       ))}
-    </motion.div>
+    </div>
   );
 }
 
