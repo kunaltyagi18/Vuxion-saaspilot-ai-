@@ -2,9 +2,13 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 
-const VIDEO_URL =
-  "https://pub-86dc5b5484314368ac5436a674b0d919.r2.dev/cloudinarry%20to%20cloudflare/202606021731-e_hqa6sn.mp4";
+// ── Three.js background — SSR-safe dynamic import ───────────────────────────
+const HeroBG3DCanvas = dynamic(
+  () => import("./HeroBG3DCanvas"),
+  { ssr: false, loading: () => null }
+);
 
 export default function Hero() {
   const ref = useRef(null);
@@ -16,53 +20,64 @@ export default function Hero() {
     <section
       ref={ref}
       aria-label="Hero"
-      className="relative min-h-screen flex items-center overflow-hidden"
+      className="relative min-h-screen flex items-center overflow-hidden bg-[#06060f]"
     >
-      {/* ── VIDEO BACKGROUND ────────────────────────────────────────── */}
+      {/* ── 3D BACKGROUND CANVAS ─────────────────────────────────────────── */}
       <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover object-[70%_center] sm:object-center"
-          aria-hidden="true"
-        >
-          <source src={VIDEO_URL} type="video/mp4" />
-        </video>
-
-        {/* Mobile: semi-dark overlay — enough to read text but rabbit still visible */}
-        <div className="absolute inset-0 bg-black/55 sm:bg-transparent" />
-
-        {/* Desktop: Left heavy gradient — darker left, right stays clear (rabbit visible) */}
-        <div className="absolute inset-0 hidden sm:block bg-gradient-to-r from-black/85 via-black/45 to-black/10" />
-
-        {/* Top/bottom cinematic bars */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/50" />
-
-        {/* Animated indigo tint — only on left half */}
-        <motion.div
-          className="absolute inset-0 bg-gradient-to-r from-indigo-900/50 via-indigo-900/10 to-transparent"
-          animate={{ opacity: [0.5, 0.8, 0.5] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        />
+        <HeroBG3DCanvas />
       </div>
 
-      {/* ── GRID OVERLAY ─────────────────────────────────────────────── */}
+      {/* ── OVERLAYS ─────────────────────────────────────────────────────── */}
+      {/* Radial vignette — keeps center darker so text pops */}
       <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 z-[1]
-          bg-[linear-gradient(to_right,#6366f10a_1px,transparent_1px),
-              linear-gradient(to_bottom,#6366f10a_1px,transparent_1px)]
+        aria-hidden
+        className="absolute inset-0 z-[1] pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 70% at 50% 50%, transparent 0%, #06060fcc 60%, #06060f 100%)",
+        }}
+      />
+
+      {/* Left gradient — text area stays readable */}
+      <div
+        aria-hidden
+        className="absolute inset-0 z-[1] pointer-events-none hidden sm:block"
+        style={{
+          background:
+            "linear-gradient(to right, #06060fdd 0%, #06060faa 35%, transparent 65%)",
+        }}
+      />
+
+      {/* Bottom fade into next section */}
+      <div
+        aria-hidden
+        className="absolute bottom-0 inset-x-0 h-40 z-[1] pointer-events-none
+          bg-gradient-to-t from-[#06060f] to-transparent"
+      />
+
+      {/* Grid overlay */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[2]
+          bg-[linear-gradient(to_right,#6366f108_1px,transparent_1px),
+              linear-gradient(to_bottom,#6366f108_1px,transparent_1px)]
           bg-[size:60px_60px]"
       />
 
-      {/* ── CONTENT — left aligned ────────────────────────────────────── */}
+      {/* Animated indigo tint pulse */}
+      <motion.div
+        aria-hidden
+        className="absolute inset-0 z-[2] pointer-events-none
+          bg-gradient-to-r from-indigo-900/40 via-indigo-900/10 to-transparent"
+        animate={{ opacity: [0.4, 0.7, 0.4] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* ── CONTENT ──────────────────────────────────────────────────────── */}
       <motion.div
         style={{ y, opacity }}
         className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 pt-24 sm:pt-20 pb-16"
       >
-        {/* Text block — constrained to left ~50% on desktop, full width on mobile */}
         <div className="w-full md:max-w-lg lg:max-w-xl xl:max-w-2xl">
 
           {/* Live badge */}
@@ -88,6 +103,7 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.15 }}
             className="text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.08] tracking-tight text-white"
+            style={{ textShadow: "0 0 80px rgba(99,102,241,0.4)" }}
           >
             We Craft{" "}
             <br className="hidden sm:block" />
@@ -95,14 +111,13 @@ export default function Hero() {
               <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-fuchsia-400 bg-clip-text text-transparent">
                 Immersive
               </span>
-              {/* Animated underline */}
               <motion.span
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ duration: 0.8, delay: 0.7, ease: "easeOut" }}
                 className="absolute -bottom-1 left-0 h-[3px] w-full rounded-full
                   bg-gradient-to-r from-indigo-400 to-fuchsia-400 origin-left"
-                aria-hidden="true"
+                aria-hidden
               />
             </span>
             <br />Digital Experiences
@@ -113,7 +128,7 @@ export default function Hero() {
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.35 }}
-            className="mt-6 text-white/75 text-base sm:text-lg leading-relaxed font-medium"
+            className="mt-6 text-white/70 text-base sm:text-lg leading-relaxed font-medium"
           >
             Full-stack web development, stunning UI/UX design &amp; SEO —
             engineered to be fast, scalable, and built for growth.
@@ -136,7 +151,7 @@ export default function Hero() {
                 active:scale-95 transition-all duration-200 overflow-hidden"
             >
               <span
-                aria-hidden="true"
+                aria-hidden
                 className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/15 to-white/0
                   -translate-x-full group-hover:translate-x-full transition-transform duration-700"
               />
@@ -187,7 +202,23 @@ export default function Hero() {
         </div>
       </motion.div>
 
-
+      {/* ── Cursor hint (mobile hidden) ───────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 2 }}
+        className="hidden lg:flex absolute bottom-8 right-12 z-10 items-center gap-2"
+        aria-hidden
+      >
+        <motion.div
+          animate={{ x: [-3, 3, -3] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="text-white/25 text-xs tracking-widest uppercase font-medium"
+        >
+          Move cursor to interact
+        </motion.div>
+        <div className="w-4 h-4 border border-white/25 rounded-full" />
+      </motion.div>
     </section>
   );
 }
