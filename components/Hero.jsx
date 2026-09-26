@@ -5,12 +5,6 @@ import Link from "next/link";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
-// ── Three.js background — SSR-safe ───────────────────────────────────────────
-const HeroBG3DCanvas = dynamic(
-  () => import("./HeroBG3DCanvas"),
-  { ssr: false, loading: () => null }
-);
-
 // ── 3D Tilt Card ─────────────────────────────────────────────────────────────
 function TiltCard() {
   const cardRef = useRef(null);
@@ -146,13 +140,7 @@ export default function Hero() {
       ref={ref}
       aria-label="Hero"
       className="relative min-h-screen flex items-center overflow-hidden bg-[#06060f]"
-    >
-      {/* 3D BG Canvas */}
-      <div className="absolute inset-0 z-0">
-        <HeroBG3DCanvas />
-      </div>
-
-      {/* Vignette */}
+    >      {/* Vignette */}
       <div
         aria-hidden
         className="absolute inset-0 z-[1] pointer-events-none"
