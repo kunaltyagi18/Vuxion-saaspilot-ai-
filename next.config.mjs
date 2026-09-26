@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ["three", "@react-three/fiber", "@react-three/drei"],
   images: {
     remotePatterns: [
       {
@@ -7,7 +8,6 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
       {
-        // Cloudinary images — needed when NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME is configured
         protocol: "https",
         hostname: "res.cloudinary.com",
       },

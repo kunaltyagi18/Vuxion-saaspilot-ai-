@@ -5,6 +5,7 @@ import HowItWorks from "@/components/HowItWorks";
 import Services from "@/components/Services";
 import WhyUs from "@/components/WhyUs";
 import Projects from "@/components/Projects";
+import ScrollScene3D from "@/components/ScrollScene3D";
 import BlogTeaser from "@/components/BlogTeaser";
 import Testimonials from "@/components/Testimonials";
 import FAQSection from "@/components/FAQSection";
@@ -22,6 +23,7 @@ export default function Home() {
       <Services limit={3} />
       <WhyUs />
       <Projects limit={3} />
+      <ScrollScene3D />
       <BlogTeaser />
       <Testimonials />
       <CTA />
