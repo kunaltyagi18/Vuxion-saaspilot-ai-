@@ -2,12 +2,18 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { SITE_URL } from "@/lib/config";
 import ToasterProvider from "@/components/ToasterProvider";
-import { Inter } from "next/font/google";
+import { Inter, Playfair_Display } from "next/font/google";
 
 // ── Premium Font — Inter (variable weight, auto-optimized by Next.js) ─────────
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
   display: "swap",
 });
 
@@ -53,7 +59,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`scroll-smooth ${inter.variable}`}>
+      <html lang="en" className={`scroll-smooth ${inter.variable} ${playfair.variable}`}>
         <body className="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
           {/* JSON-LD structured data */}
           <script
