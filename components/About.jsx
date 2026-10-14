@@ -26,14 +26,32 @@ const DEFAULT = {
   ],
 };
 
+const DEFAULT_ABOUT_IMAGE =
+  "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=85";
+
 // Fallback gradient image when no image is set
 function AboutImage({ src }) {
-  if (src) {
+  const imageSrc = src || DEFAULT_ABOUT_IMAGE;
+
+  if (imageSrc) {
     return (
-      <div className="relative w-full h-full min-h-[400px] rounded-3xl overflow-hidden shadow-2xl">
-        <Image src={src} alt="About Vuxion" fill className="object-cover" />
-        {/* Subtle gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-indigo-900/30 to-transparent" />
+      <div className="group relative h-full min-h-[400px] w-full overflow-hidden rounded-3xl shadow-2xl">
+        <Image
+          src={imageSrc}
+          alt="Vuxion team collaborating in a bright studio"
+          fill
+          sizes="(max-width: 1024px) 100vw, 50vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-105"
+          priority={!src}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/65 via-gray-950/5 to-transparent" />
+        <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between gap-4 text-white">
+          <div>
+            <p className="text-sm font-bold">Built together, built to last.</p>
+            <p className="mt-1 text-xs text-white/75">Strategy, design and engineering in one conversation.</p>
+          </div>
+          <span className="hidden rounded-full border border-white/30 bg-white/15 px-3 py-1.5 text-xs font-semibold backdrop-blur-sm sm:inline-flex">Vuxion studio</span>
+        </div>
       </div>
     );
   }

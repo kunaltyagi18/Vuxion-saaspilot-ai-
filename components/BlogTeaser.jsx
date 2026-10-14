@@ -3,6 +3,12 @@ import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
+const DEFAULT_BLOG_IMAGES = [
+  "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1000&q=85",
+  "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1000&q=85",
+  "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1000&q=85",
+];
+
 export default function BlogTeaser() {
   const [posts, setPosts] = useState([]);
 
@@ -12,6 +18,11 @@ export default function BlogTeaser() {
       .then(setPosts)
       .catch(() => setPosts([]));
   }, []);
+
+  const featuredPosts = posts.slice(0, 3).map((post, i) => ({
+    ...post,
+    cardImage: post.image || DEFAULT_BLOG_IMAGES[i % DEFAULT_BLOG_IMAGES.length],
+  }));
 
   if (!posts.length) return null;
 
@@ -47,7 +58,7 @@ export default function BlogTeaser() {
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {posts.slice(0, 3).map((post, i) => (
+          {featuredPosts.map((post, i) => (
             <motion.article
               key={post._id || i}
               initial={{ opacity: 0, y: 40, rotateX: 6 }}
@@ -60,10 +71,10 @@ export default function BlogTeaser() {
             >
               {/* Card banner — real image if set, else gradient */}
               <div className="h-44 w-full relative overflow-hidden shrink-0">
-                {post.image ? (
+                {post.cardImage ? (
                   <>
                     <img
-                      src={post.image}
+                      src={post.cardImage}
                       alt={post.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
@@ -84,11 +95,6 @@ export default function BlogTeaser() {
 
               <div className="p-6 flex flex-col flex-1">
                 <div className="flex items-center gap-2 mb-3">
-                  {!post.image && (
-                    <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-1 rounded-full">
-                      {post.category}
-                    </span>
-                  )}
                   <span className="text-xs text-gray-400 dark:text-gray-500">{post.readTime}</span>
                 </div>
                 <h3 className="font-bold text-gray-900 dark:text-white text-base leading-snug mb-3

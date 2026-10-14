@@ -17,13 +17,10 @@ export default function Navbar() {
   // Theme persistence on load
   useEffect(() => {
     const saved = localStorage.getItem("theme");
-    if (saved === "dark") {
-      setDarkMode(true);
-      document.documentElement.classList.add("dark");
-    } else {
-      setDarkMode(false);
-      document.documentElement.classList.remove("dark");
-    }
+    const isDark = saved === "dark";
+    document.documentElement.classList.toggle("dark", isDark);
+    // Defer the state update until after the initial DOM sync.
+    queueMicrotask(() => setDarkMode(isDark));
   }, []);
 
   const toggleDarkMode = () => {
@@ -101,8 +98,18 @@ export default function Navbar() {
               bg-gray-100 hover:bg-gray-200 text-gray-600
               dark:bg-white/10 dark:hover:bg-white/20 dark:text-white"
             title="Toggle Theme"
+            aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
-            {darkMode ? "🌞" : "🌙"}
+            {darkMode ? (
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path strokeLinecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.65 17.65l1.42 1.42M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.65 6.35l1.42-1.42" />
+              </svg>
+            ) : (
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M20.5 15.3A8.5 8.5 0 0 1 8.7 3.5 8.5 8.5 0 1 0 20.5 15.3Z" />
+              </svg>
+            )}
           </button>
 
           {isSignedIn ? (

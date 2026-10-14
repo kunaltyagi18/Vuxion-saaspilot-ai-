@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import Link from "next/link";
 
-const BACKGROUND_IMAGE_URL = "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?q=80&w=2070&auto=format&fit=crop";
+const BACKGROUND_IMAGE_URL = "https://images.unsplash.com/photo-1497366754035-f200968a6e72?q=85&w=2070&auto=format&fit=crop";
 
 export default function Hero() {
   const ref = useRef(null);
@@ -15,7 +15,7 @@ export default function Hero() {
     <section
       ref={ref}
       aria-label="Hero"
-      className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-white dark:bg-gray-950 transition-colors duration-300 pt-28 pb-16"
+      className="relative min-h-screen flex flex-col justify-center overflow-hidden bg-white dark:bg-gray-950 transition-colors duration-300 pt-28 pb-12"
     >
       {/* ── BACKGROUND IMAGE ────────────────────────────────────────── */}
       <div className="absolute inset-0 z-0">
@@ -26,7 +26,8 @@ export default function Hero() {
           className="w-full h-full object-cover object-right"
         />
         {/* Gradient overlay for text legibility (Left side white/black, right side transparent) */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent dark:from-gray-950 dark:via-gray-950/80 dark:to-transparent/20" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-white/25 dark:from-gray-950 dark:via-gray-950/90 dark:to-gray-950/20" />
+        <div className="absolute inset-0 bg-white/10 dark:bg-black/10" />
         
         {/* Bottom fade for smooth transition */}
         <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-white to-transparent dark:from-gray-950" />
@@ -36,16 +37,26 @@ export default function Hero() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col h-full">
         
         {/* Top Section: Text left, image right */}
-        <div className="flex-1 flex flex-col justify-center mt-12 md:mt-20">
+        <div className="flex-1 flex flex-col justify-center mt-10 md:mt-16">
           <div className="max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, ease: "easeOut" }}
+              className="inline-flex items-center gap-2 rounded-full border border-indigo-200/80 bg-white/70 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-indigo-700 shadow-sm backdrop-blur-sm dark:border-indigo-400/20 dark:bg-gray-900/70 dark:text-indigo-300"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              Digital product studio · Noida / Remote
+            </motion.div>
+
             {/* Main Heading */}
             <motion.h1
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 dark:text-white font-[family-name:var(--font-playfair)]"
+              className="mt-5 text-5xl sm:text-6xl lg:text-7xl font-bold tracking-[-0.04em] leading-[1.02] text-gray-900 dark:text-white font-[family-name:var(--font-playfair)]"
             >
-              Engineering Digital<br/>Excellence.
+              Engineering digital<br/><span className="text-indigo-600 dark:text-indigo-400">excellence.</span>
             </motion.h1>
 
             {/* Subheading */}
@@ -55,7 +66,7 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
               className="mt-6 text-lg sm:text-xl text-gray-700 dark:text-gray-300 leading-relaxed font-medium"
             >
-              We build bespoke software solutions, apps, and digital platforms that drive innovation and transform businesses globally.
+              We design and build thoughtful websites, web apps, and digital platforms that help ambitious teams launch with confidence.
             </motion.p>
 
             {/* CTA Button */}
@@ -63,14 +74,31 @@ export default function Hero() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
-              className="mt-10"
+              className="mt-9 flex flex-col sm:flex-row items-start sm:items-center gap-3"
             >
               <Link
                 href="/services"
-                className="inline-flex items-center justify-center px-8 py-3.5 text-base font-semibold rounded-lg bg-gray-900 text-white hover:bg-gray-800 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 transition-colors duration-200 shadow-md"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3.5 text-sm font-semibold rounded-xl bg-gray-900 text-white hover:bg-indigo-700 dark:bg-white dark:text-gray-900 dark:hover:bg-gray-200 transition-all duration-200 shadow-lg shadow-gray-900/15"
               >
-                Explore Services
+                Explore services <span aria-hidden="true">→</span>
               </Link>
+              <Link
+                href="/projects"
+                className="inline-flex items-center justify-center px-6 py-3.5 text-sm font-semibold rounded-xl border border-gray-300/90 bg-white/70 text-gray-800 hover:border-indigo-300 hover:text-indigo-700 dark:border-gray-700 dark:bg-gray-900/60 dark:text-gray-100 dark:hover:border-indigo-500 dark:hover:text-indigo-300 transition-all duration-200 backdrop-blur-sm"
+              >
+                See selected work
+              </Link>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3, ease: "easeOut" }}
+              className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs font-medium text-gray-600 dark:text-gray-400"
+            >
+              <span className="inline-flex items-center gap-2"><span className="text-emerald-600 dark:text-emerald-400">✓</span> Clear communication</span>
+              <span className="inline-flex items-center gap-2"><span className="text-emerald-600 dark:text-emerald-400">✓</span> Built for performance</span>
+              <span className="inline-flex items-center gap-2"><span className="text-emerald-600 dark:text-emerald-400">✓</span> 30-day support</span>
             </motion.div>
           </div>
         </div>
@@ -80,7 +108,7 @@ export default function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
-          className="mt-20 lg:mt-32 w-full pb-8"
+          className="mt-16 lg:mt-24 w-full pb-4"
         >
           <div className="text-center mb-10 lg:hidden">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white font-[family-name:var(--font-playfair)]">

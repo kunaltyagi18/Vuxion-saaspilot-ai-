@@ -3,6 +3,12 @@
 /* Tailwind CSS v4 custom variant for class-based dark mode */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Keep production builds independent from a Google Fonts network request. */
+:root {
+  --font-inter: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-playfair: "Playfair Display", Georgia, serif;
+}
+
 /* ── Custom Font Variable ──────────────────────────────────────────────────── */
 @theme {
   --font-inter: var(--font-inter), "Inter", system-ui, sans-serif;
