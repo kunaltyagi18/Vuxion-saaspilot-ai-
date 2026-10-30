@@ -23,15 +23,12 @@ export default function AboutPage() {
 
         <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:gap-20">
           <div>
-            <span className="inline-flex items-center gap-2 rounded-full border border-indigo-200 bg-indigo-50 px-3.5 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-indigo-700 dark:border-indigo-400/20 dark:bg-indigo-950/40 dark:text-indigo-300">
-              About Us
-            </span>
-            <h1 className="mt-7 max-w-xl text-5xl font-black leading-[1.04] tracking-[-0.045em] text-gray-950 dark:text-white sm:text-6xl">
-              We turn good ideas into <span className="text-indigo-600 dark:text-indigo-400">useful digital products.</span>
+            <h1 className="max-w-xl text-5xl font-black leading-[1.04] tracking-[-0.045em] text-gray-950 dark:text-white sm:text-6xl">
+              About <span className="text-indigo-600 dark:text-indigo-400">Us</span>
             </h1>
             <div className="mt-8 max-w-xl space-y-5 text-lg leading-relaxed text-gray-600 dark:text-gray-300">
               <p>
-                Vuxion is a full-stack digital studio helping startups, growing teams and ambitious businesses turn complex ideas into clear, useful experiences. We bring strategy, design and engineering together so your product looks sharp, works beautifully and supports real business goals.
+                Vuxion is a full-stack digital studio helping startups, growing teams and ambitious businesses turn complex ideas into clear, useful digital products. We bring strategy, design and engineering together so your product looks sharp, works beautifully and supports real business goals.
               </p>
               <p>
                 Our work starts with listening and understanding the problem behind the brief. We then shape a focused direction, create an intuitive experience and build dependable technology that is ready to grow with your team.
