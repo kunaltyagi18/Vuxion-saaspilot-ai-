@@ -4,30 +4,30 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 import Link from "next/link";
 import { useState } from "react";
 
-const clients = ["MONO", "KITE", "NORTHSTAR", "SABLE", "PULSE", "ORBIT", "HELIOS"];
+const clients = ["NORTHSTAR", "KITE", "ATLAS", "MOTION", "SABLE", "PULSE", "HELIOS"];
 
 const services = [
   {
     index: "01",
     type: "PRODUCT / SYSTEMS",
-    title: "Digital products that feel inevitable.",
-    copy: "From first frame to final interaction, we turn complex product ideas into clear, resilient interfaces.",
+    title: "The interface is the product.",
+    copy: "We turn a complicated offer into a clear, resilient digital experience people can actually use.",
     className: "studio-bento--wide",
     preview: "code",
   },
   {
     index: "02",
     type: "PERFORMANCE / BUILD",
-    title: "Fast by default.",
-    copy: "Lean architecture, purposeful motion, and the kind of performance users notice without thinking about it.",
+    title: "Speed is a design decision.",
+    copy: "Lean architecture, purposeful motion, and performance you can feel before the page has finished loading.",
     className: "studio-bento--tall",
     preview: "gauge",
   },
   {
     index: "03",
     type: "IDENTITY / DIRECTION",
-    title: "A sharper point of view.",
-    copy: "We build the visual language, voice, and launch surface that makes a good product impossible to miss.",
+    title: "Make the signal unmistakable.",
+    copy: "A visual language, voice, and launch surface that gives a good product somewhere memorable to land.",
     className: "studio-bento--standard",
     preview: "layers",
   },
@@ -36,7 +36,7 @@ const services = [
 const cases = [
   {
     client: "NORTHSTAR / B2B FINTECH",
-    title: "A new operating system for revenue teams.",
+    title: "A calmer operating system for revenue teams.",
     result: "+140%",
     metric: "CONVERSION RATE",
     secondary: "0.4s LCP",
@@ -44,7 +44,7 @@ const cases = [
   },
   {
     client: "KITE / CLIMATE INFRASTRUCTURE",
-    title: "Making invisible infrastructure visible.",
+    title: "Making invisible infrastructure legible.",
     result: "3.2×",
     metric: "QUALIFIED DEMOS",
     secondary: "−62% BOUNCE RATE",
@@ -154,22 +154,24 @@ export default function StudioHome() {
           <div className="studio-hero-meta studio-mono">[ SYS.2026 // NOIDA ]</div>
           <div className="studio-hero-index studio-mono">SCROLL TO EXPLORE <span>↓</span></div>
           <div className="studio-hero-content">
-            <p className="studio-eyebrow">Independent digital studio <span>—</span> est. 2018</p>
-            <h1>We make<br /><em>digital</em> <span>matter.</span></h1>
-            <p className="studio-hero-copy">Strategy, design, and technology for teams building what comes next.</p>
+            <p className="studio-eyebrow">Independent digital studio <span>—</span> Noida / India</p>
+            <h1>Build the<br /><em>thing</em> <span>people remember.</span></h1>
+            <p className="studio-hero-copy">Brand, interface, and code for teams with something specific to say.</p>
             <div className="studio-hero-actions">
               <Link className="studio-button studio-button--accent" href="/contact">Let&apos;s build <Arrow /></Link>
-              <a className="studio-text-link" href="#work">See the work <Arrow /></a>
+              <a className="studio-text-link" href="#work">Open the archive <Arrow /></a>
             </div>
+            <div className="studio-hero-specs studio-mono"><span><b>01</b> strategy</span><span><b>02</b> direction</span><span><b>03</b> build</span></div>
           </div>
+          <div className="studio-hero-plate" aria-hidden="true"><div className="hero-plate-cross">+</div><div className="hero-plate-top studio-mono"><span>V / 026</span><span>LIVE</span></div><div className="hero-plate-v">V</div><div className="hero-plate-bottom studio-mono"><span>MAKE<br />LESS<br />NOISE</span><span>↗</span></div></div>
           <div className="studio-hero-signal studio-mono"><span className="status-dot" /> accepting a few 2026 partners</div>
           <Ticker />
         </section>
 
         <section id="services" className="studio-section studio-grid-section studio-services">
           <div className="studio-section-head">
-            <div><span className="studio-label">01 / CAPABILITIES</span><h2>Make it <em>meaningful.</em></h2></div>
-            <p>We are a small, senior team for ambitious products that need a little more rigor and a lot less noise.</p>
+            <div><span className="studio-label">01 / CAPABILITIES</span><h2>Make it <em>specific.</em></h2></div>
+            <p>Senior people, close to the work. We help ambitious teams remove the distance between a good idea and a sharp digital product.</p>
           </div>
           <div className="studio-bento-grid">
             {services.map((service, index) => (
@@ -185,8 +187,8 @@ export default function StudioHome() {
 
         <section id="work" className="studio-section studio-grid-section studio-work">
           <div className="studio-section-head studio-section-head--work">
-            <div><span className="studio-label">02 / SELECTED WORK</span><h2>Proof, not <em>promises.</em></h2></div>
-            <Link className="studio-text-link" href="/projects">View all projects <Arrow /></Link>
+            <div><span className="studio-label">02 / SELECTED WORK</span><h2>Work with a <em>pulse.</em></h2></div>
+            <Link className="studio-text-link" href="/projects">Browse the archive <Arrow /></Link>
           </div>
           <div className="studio-case-tabs">
             {cases.map((item, index) => <button key={item.client} className={activeCase === index ? "active" : ""} onClick={() => setActiveCase(index)}><span>0{index + 1}</span>{item.client}</button>)}
@@ -209,12 +211,12 @@ export default function StudioHome() {
 
         <section id="about" className="studio-statement studio-grid-section">
           <div className="studio-statement-number studio-label">03 / THE STUDIO</div>
-          <div className="studio-statement-copy"><h2>Good work is<br /><em>felt</em> before it&apos;s explained.</h2><p>Vuxion is an independent digital studio in Noida. We partner with founders and teams to make complicated things feel simple, useful, and distinctly theirs.</p><Link className="studio-text-link" href="/about">Meet the studio <Arrow /></Link></div>
-          <div className="studio-statement-aside studio-mono">DESIGN × ENGINEERING<br />NO SHORTCUTS<br />NO DECORATION</div>
+          <div className="studio-statement-copy"><h2>Good work is<br /><em>felt</em> before it&apos;s explained.</h2><p>Vuxion is an independent studio in Noida. We work in the small gap between strategy and execution — where the best decisions tend to live.</p><Link className="studio-text-link" href="/about">How we work <Arrow /></Link></div>
+          <div className="studio-statement-aside studio-mono">DESIGN × ENGINEERING<br />SMALL TEAM / BIG CARE<br />NO DECORATION</div>
         </section>
 
         <section className="studio-contact studio-grid-section">
-          <span className="studio-label">04 / NEXT MOVE</span><h2>Have something<br /><em>worth making?</em></h2><Link className="studio-button studio-button--accent" href="/contact">Start a conversation <Arrow /></Link><span className="studio-contact-index studio-mono">[ 28.6139° N, 77.2090° E ]</span>
+          <span className="studio-label">04 / NEXT MOVE</span><h2>Give the good<br /><em>idea a body.</em></h2><Link className="studio-button studio-button--accent" href="/contact">Start a conversation <Arrow /></Link><span className="studio-contact-index studio-mono">[ 28.6139° N, 77.2090° E ]</span>
         </section>
       </main>
 
