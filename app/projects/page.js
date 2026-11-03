@@ -11,71 +11,101 @@ export const metadata = {
 
 export default function ProjectsPage() {
   return (
-    <main>
+    <main style={{ background: "var(--studio-bg)", minHeight: "100vh" }}>
       <Navbar />
-      <PageHero
-        eyebrow="Selected work and thinking"
-        title="Work that turns product thinking into"
-        accent="momentum."
-        description="A selection of digital products, platforms and experiences built with a clear purpose: make the business easier to understand, easier to use and ready for what comes next."
-        stats={[
-          { value: "50+", label: "projects delivered" },
-          { value: "4.9/5", label: "client experience" },
-          { value: "90+", label: "performance target" },
-          { value: "∞", label: "room to iterate" },
-        ]}
-        primaryLabel="Start a similar project"
-        primaryHref="/contact"
-      />
 
-      <section className="relative overflow-hidden bg-white px-6 py-24 dark:bg-[#080810]">
-        <div className="mx-auto max-w-6xl">
-          <div className="max-w-2xl">
-            <span className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-400">How we judge the work</span>
-            <h2 className="mt-3 text-3xl font-black tracking-tight text-gray-950 dark:text-white sm:text-4xl">A polished interface is the starting point.</h2>
-            <p className="mt-5 text-base leading-relaxed text-gray-600 dark:text-gray-400">The strongest projects balance business outcomes with the details users feel. That is why we look beyond the screenshot.</p>
+      <style>{`
+        .proj-card { background: var(--studio-panel); border: 1px solid var(--studio-line); padding: 28px 26px; transition: border-color .25s ease, background .25s ease; }
+        .proj-card:hover { border-color: var(--studio-line-light); background: #1a1a1e; }
+        .proj-detail-grid { display: grid; gap: 40px; grid-template-columns: 0.8fr 1.2fr; align-items: center; }
+        @media(max-width:768px) { .proj-detail-grid { grid-template-columns: 1fr !important; } }
+      `}</style>
+
+      <div style={{ paddingTop: 72 }}>
+        <PageHero
+          eyebrow="Selected work and thinking"
+          title="Work that turns product thinking into"
+          accent="momentum."
+          description="A selection of digital products, platforms and experiences built with a clear purpose: make the business easier to understand, easier to use and ready for what comes next."
+          stats={[
+            { value: "50+",   label: "projects delivered" },
+            { value: "4.9/5", label: "client experience" },
+            { value: "90+",   label: "performance target" },
+            { value: "∞",     label: "room to iterate" },
+          ]}
+          primaryLabel="Start a similar project"
+          primaryHref="/contact"
+        />
+
+        {/* How we judge the work */}
+        <section
+          className="studio-section studio-grid-section"
+          style={{ background: "var(--studio-panel-2, #141416)", borderTop: "1px solid var(--studio-line)" }}
+        >
+          <div className="studio-section-head">
+            <div>
+              <span className="studio-label">HOW WE JUDGE THE WORK</span>
+              <h2>Beyond the <em>screenshot.</em></h2>
+            </div>
+            <p>The strongest projects balance business outcomes with the details users feel.</p>
           </div>
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
+
+          <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
             {[
-              ["Business fit", "Does the product support a real goal—more qualified leads, faster operations, or a clearer buying decision?"],
-              ["User confidence", "Can someone understand what to do next without friction, guesswork or unnecessary complexity?"],
-              ["Long-term value", "Is the foundation flexible enough to evolve as the team, audience and product grow?"],
-            ].map(([title, text], index) => (
-              <div key={title} className="rounded-2xl border border-gray-200 bg-gray-50 p-7 dark:border-gray-800 dark:bg-gray-900">
-                <span className="text-xs font-black text-indigo-600 dark:text-indigo-400">0{index + 1}</span>
-                <h3 className="mt-8 text-lg font-bold text-gray-950 dark:text-white">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{text}</p>
+              ["01", "Business fit",    "Does the product support a real goal — more qualified leads, faster operations, or a clearer buying decision?"],
+              ["02", "User confidence", "Can someone understand what to do next without friction, guesswork or unnecessary complexity?"],
+              ["03", "Long-term value", "Is the foundation flexible enough to evolve as the team, audience and product grow?"],
+            ].map(([num, title, text]) => (
+              <div key={num} className="proj-card">
+                <span className="studio-mono" style={{ color: "var(--studio-orange)", fontSize: 10, display: "block", marginBottom: 20 }}>{num}</span>
+                <h3 style={{ fontFamily: "var(--studio-display)", fontSize: 22, fontWeight: 600, letterSpacing: "-.05em", color: "var(--studio-copy)", marginBottom: 10 }}>{title}</h3>
+                <p style={{ color: "#929297", fontSize: 13, lineHeight: 1.6 }}>{text}</p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      <Projects />
+        <Projects />
 
-      <section className="bg-gray-50 px-6 py-24 dark:bg-[#0a0a14]">
-        <div className="mx-auto max-w-6xl rounded-3xl border border-gray-200 bg-white p-8 dark:border-gray-800 dark:bg-gray-900 sm:p-12">
-          <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr] lg:items-center">
+        {/* What sits behind the screen */}
+        <section
+          className="studio-section studio-grid-section"
+          style={{ background: "var(--studio-bg)", borderTop: "1px solid var(--studio-line)" }}
+        >
+          <div className="proj-detail-grid">
             <div>
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-indigo-600 dark:text-indigo-400">What sits behind the screen</span>
-              <h2 className="mt-3 text-3xl font-black tracking-tight text-gray-950 dark:text-white">A project that is ready for real life.</h2>
+              <span className="studio-label">WHAT SITS BEHIND THE SCREEN</span>
+              <h2
+                style={{
+                  fontFamily: "var(--studio-display)",
+                  fontSize: "clamp(32px, 4vw, 55px)",
+                  fontWeight: 600,
+                  letterSpacing: "-.07em",
+                  lineHeight: 0.9,
+                  marginTop: 16,
+                  color: "var(--studio-copy)",
+                }}
+              >
+                A project ready for{" "}
+                <em style={{ color: "var(--studio-orange)", fontStyle: "normal" }}>real life.</em>
+              </h2>
             </div>
-            <div className="grid gap-5 sm:grid-cols-2">
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
               {[
                 ["Responsive by default", "Thoughtful behaviour across phones, tablets and large screens."],
-                ["Fast where it counts", "Lean assets, considered motion and performance-minded implementation."],
-                ["Easy to evolve", "A clean structure that your team can understand and extend."],
+                ["Fast where it counts",  "Lean assets, considered motion and performance-minded implementation."],
+                ["Easy to evolve",        "A clean structure that your team can understand and extend."],
                 ["Measured after launch", "We use feedback and data to decide what to improve next."],
               ].map(([title, text]) => (
-                <div key={title} className="border-l-2 border-indigo-500 pl-4">
-                  <h3 className="text-sm font-bold text-gray-950 dark:text-white">{title}</h3>
-                  <p className="mt-1 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{text}</p>
+                <div key={title} style={{ borderLeft: "2px solid var(--studio-orange)", paddingLeft: 14 }}>
+                  <h3 style={{ fontFamily: "var(--studio-display)", fontSize: 15, fontWeight: 600, letterSpacing: "-.03em", color: "var(--studio-copy)", marginBottom: 6 }}>{title}</h3>
+                  <p style={{ color: "#929297", fontSize: 12, lineHeight: 1.6 }}>{text}</p>
                 </div>
               ))}
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <Chatbot />
       <Footer />

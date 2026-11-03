@@ -29,66 +29,23 @@ const DEFAULT = {
 const DEFAULT_ABOUT_IMAGE =
   "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1200&q=85";
 
-// Fallback gradient image when no image is set
 function AboutImage({ src }) {
   const imageSrc = src || DEFAULT_ABOUT_IMAGE;
-
-  if (imageSrc) {
-    return (
-      <div className="group relative h-full min-h-[400px] w-full overflow-hidden rounded-3xl shadow-2xl">
-        <Image
-          src={imageSrc}
-          alt="Vuxion team collaborating in a bright studio"
-          fill
-          sizes="(max-width: 1024px) 100vw, 50vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
-          priority={!src}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-950/65 via-gray-950/5 to-transparent" />
-        <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between gap-4 text-white">
-          <div>
-            <p className="text-sm font-bold">Built together, built to last.</p>
-            <p className="mt-1 text-xs text-white/75">Strategy, design and engineering in one conversation.</p>
-          </div>
-          <span className="hidden rounded-full border border-white/30 bg-white/15 px-3 py-1.5 text-xs font-semibold backdrop-blur-sm sm:inline-flex">Vuxion studio</span>
-        </div>
-      </div>
-    );
-  }
-  // Beautiful placeholder when no image
   return (
-    <div className="relative w-full min-h-[400px] rounded-3xl overflow-hidden shadow-2xl
-      bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 flex flex-col items-center justify-center gap-6 p-10">
-      {/* Grid overlay */}
-      <div aria-hidden className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff10_1px,transparent_1px),linear-gradient(to_bottom,#ffffff10_1px,transparent_1px)] bg-[size:40px_40px]" />
-      {/* Glow blobs */}
-      <div aria-hidden className="absolute top-8 left-8 w-32 h-32 rounded-full bg-white/10 blur-2xl" />
-      <div aria-hidden className="absolute bottom-8 right-8 w-40 h-40 rounded-full bg-fuchsia-400/20 blur-2xl" />
-
-      <div className="relative z-10 text-center">
-        <div className="w-24 h-24 rounded-3xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-5xl mx-auto mb-6 shadow-xl">
-          V
-        </div>
-        <p className="text-white/90 font-bold text-xl">Vuxion</p>
-        <p className="text-white/60 text-sm mt-1">Digital Agency</p>
+    <div style={{ position: "relative", minHeight: 420, borderRadius: 0, overflow: "hidden", border: "1px solid var(--studio-line)" }}>
+      <Image
+        src={imageSrc}
+        alt="Vuxion team collaborating"
+        fill
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        className="object-cover transition-transform duration-700"
+        style={{ transition: "transform .7s ease" }}
+      />
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(9,9,11,.7) 0%, transparent 60%)" }} />
+      <div style={{ position: "absolute", bottom: 24, left: 24, right: 24, color: "var(--studio-copy)" }}>
+        <p className="studio-mono" style={{ fontSize: 9, color: "var(--studio-muted)", letterSpacing: ".12em", marginBottom: 6 }}>STUDIO / TEAM</p>
+        <p style={{ fontFamily: "var(--studio-display)", fontSize: 22, letterSpacing: "-.04em", fontWeight: 600 }}>Built together, built to last.</p>
       </div>
-
-      {/* Floating skill badges */}
-      {["Next.js", "React", "MongoDB", "UI/UX"].map((tag, i) => (
-        <motion.div
-          key={tag}
-          animate={{ y: [0, -8, 0] }}
-          transition={{ duration: 3 + i * 0.5, repeat: Infinity, delay: i * 0.4 }}
-          className="absolute bg-white/15 backdrop-blur-sm border border-white/25 text-white text-xs font-bold px-3 py-1.5 rounded-full"
-          style={{
-            top: `${20 + (i % 2) * 50}%`,
-            left: i < 2 ? `${5 + i * 5}%` : "auto",
-            right: i >= 2 ? `${5 + (i-2) * 5}%` : "auto",
-          }}
-        >
-          {tag}
-        </motion.div>
-      ))}
     </div>
   );
 }
@@ -106,154 +63,211 @@ export default function About({ preview = false }) {
   return (
     <section
       id="about"
-      className="relative py-24 px-6 overflow-hidden bg-white dark:bg-[#080810] transition-colors duration-300"
+      className="studio-section studio-grid-section"
+      style={{ background: "var(--studio-bg)" }}
     >
-      {/* BG grid */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#6366f108_1px,transparent_1px),linear-gradient(to_bottom,#6366f108_1px,transparent_1px)] bg-[size:48px_48px]" />
-      <div aria-hidden className="pointer-events-none absolute top-0 right-1/4 w-96 h-96 rounded-full bg-indigo-400/10 dark:bg-indigo-500/15 blur-[120px]" />
+      {/* Section header */}
+      <div className="studio-section-head">
+        <div>
+          <span className="studio-label">ABOUT / THE STUDIO</span>
+          <h2>
+            Who we <em>are.</em>
+          </h2>
+        </div>
+        <p>{data.tagline}</p>
+      </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
-
-        {/* Section badge */}
+      {/* Two-column layout */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 24,
+          alignItems: "start",
+        }}
+        className="about-grid"
+      >
+        {/* LEFT — Image */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -30 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-14"
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <span className="text-indigo-600 dark:text-indigo-400 text-sm font-semibold tracking-wider uppercase bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-900">
-            About Us
-          </span>
+          <AboutImage src={data.image} />
         </motion.div>
 
-        {/* ── TWO COLUMN LAYOUT ─────────────────────────────────────────── */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        {/* RIGHT — Content */}
+        <motion.div
+          initial={{ opacity: 0, x: 30 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+          style={{ display: "flex", flexDirection: "column", gap: 28 }}
+        >
+          {/* Description */}
+          <p className="about-description" style={{ color: "#929297", fontSize: 14, lineHeight: 1.65 }}>{data.description}</p>
 
-          {/* LEFT — Image */}
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: "easeOut" }}
+          {/* Mission */}
+          <div
+            style={{
+              background: "var(--studio-panel)",
+              border: "1px solid var(--studio-line)",
+              padding: "20px 22px",
+            }}
           >
-            <AboutImage src={data.image} />
-          </motion.div>
+            <p className="studio-label" style={{ marginBottom: 8 }}>MISSION</p>
+            <p style={{ color: "var(--studio-copy)", fontSize: 13, lineHeight: 1.6 }}>{data.mission}</p>
+          </div>
 
-          {/* RIGHT — Content */}
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.7, ease: "easeOut", delay: 0.1 }}
-            className="flex flex-col gap-6"
+          {/* Stats */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              border: "1px solid var(--studio-line)",
+            }}
           >
-            {/* Tagline */}
-            <h2 className="text-3xl sm:text-4xl font-black text-gray-900 dark:text-white leading-tight">
-              {data.tagline}
-            </h2>
-
-            {/* Description */}
-            <p className="text-gray-500 dark:text-gray-400 text-base leading-relaxed">
-              {data.description}
-            </p>
-
-            {/* Mission pill */}
-            <div className="flex items-start gap-3 bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60 rounded-2xl p-4">
-              <span className="text-xl shrink-0 mt-0.5">🎯</span>
-              <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
-                <strong className="text-gray-900 dark:text-white font-bold">Mission: </strong>
-                {data.mission}
-              </p>
-            </div>
-
-            {/* 4 Stats grid */}
-            <div className="grid grid-cols-2 gap-4">
-              {(data.stats || []).slice(0, 4).map((s, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.2 + i * 0.08 }}
-                  className="card-3d glow-hover bg-gray-50 dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-2xl p-5 text-center"
-                >
-                  <p className="text-3xl font-black text-indigo-600 dark:text-indigo-400 mb-1">
-                    {s.value}
-                  </p>
-                  <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                    {s.label}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* CTA */}
-            {preview ? (
-              <Link
-                href="/about"
-                className="self-start inline-flex items-center gap-2 bg-indigo-600 text-white
-                  px-6 py-3 rounded-xl font-bold text-sm
-                  hover:bg-indigo-700 hover:-translate-y-0.5 active:scale-95
-                  transition-all duration-200 shadow-lg shadow-indigo-500/20"
+            {(data.stats || []).slice(0, 4).map((s, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: 0.15 + i * 0.07 }}
+                style={{
+                  padding: "22px 18px",
+                  borderRight: i % 2 === 0 ? "1px solid var(--studio-line)" : "none",
+                  borderBottom: i < 2 ? "1px solid var(--studio-line)" : "none",
+                }}
               >
-                Learn More About Us →
-              </Link>
-            ) : null}
-          </motion.div>
-        </div>
+                <p
+                  style={{
+                    fontFamily: "var(--studio-display)",
+                    fontSize: 38,
+                    letterSpacing: "-.1em",
+                    color: "var(--studio-orange)",
+                    lineHeight: 0.9,
+                    marginBottom: 8,
+                  }}
+                >
+                  {s.value}
+                </p>
+                <p className="studio-mono" style={{ color: "var(--studio-muted)", fontSize: 9 }}>
+                  {s.label.toUpperCase()}
+                </p>
+              </motion.div>
+            ))}
+          </div>
 
-        {/* ── Full page extras (non-preview) ────────────────────────────── */}
-        {!preview && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mt-20"
-          >
-            {/* Vision */}
-            <div className="bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/30 dark:to-purple-950/20 rounded-2xl p-8 border border-violet-100 dark:border-violet-900/50 mb-12">
-              <div className="w-10 h-10 bg-violet-600 rounded-xl flex items-center justify-center text-white text-lg mb-4 shadow-md">🔭</div>
-              <h3 className="text-lg font-extrabold text-gray-900 dark:text-white mb-2">Our Vision</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{data.vision}</p>
-            </div>
-
-            {/* Team */}
-            {data.teamMembers?.length > 0 && (
-              <>
-                <h3 className="text-2xl font-extrabold text-gray-900 dark:text-white text-center mb-10">Meet the Team</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                  {data.teamMembers.map((member, i) => (
-                    <motion.div
-                      key={i}
-                      initial={{ opacity: 0, y: 30 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 0.4, delay: i * 0.1 }}
-                      className="card-3d glow-hover bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 p-6 shadow-sm"
-                    >
-                      <div className="flex items-center gap-4 mb-3">
-                        <div className="w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-xl font-extrabold shadow-md shrink-0 overflow-hidden">
-                          {member.image
-                            ? <img src={member.image} alt={member.name} className="w-full h-full object-cover" />
-                            : member.name?.[0]?.toUpperCase()
-                          }
-                        </div>
-                        <div>
-                          <p className="font-extrabold text-gray-900 dark:text-white text-sm">{member.name}</p>
-                          <p className="text-xs text-indigo-500 dark:text-indigo-400 font-semibold mt-0.5">{member.role}</p>
-                        </div>
-                      </div>
-                      <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">{member.bio}</p>
-                    </motion.div>
-                  ))}
-                </div>
-              </>
-            )}
-          </motion.div>
-        )}
-
+          {/* CTA */}
+          {preview ? (
+            <Link href="/about" className="studio-button studio-button--accent" style={{ alignSelf: "flex-start" }}>
+              How We Work <span className="studio-arrow">↗</span>
+            </Link>
+          ) : null}
+        </motion.div>
       </div>
+
+      {/* Full page extras (non-preview) */}
+      {!preview && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          style={{ marginTop: 80 }}
+        >
+          {/* Vision */}
+          <div
+            style={{
+              background: "var(--studio-panel)",
+              border: "1px solid var(--studio-line)",
+              padding: "32px 36px",
+              marginBottom: 48,
+            }}
+          >
+            <p className="studio-label" style={{ marginBottom: 12 }}>VISION</p>
+            <p style={{ fontFamily: "var(--studio-display)", fontSize: "clamp(22px, 2.5vw, 34px)", letterSpacing: "-.05em", lineHeight: 1, color: "var(--studio-copy)", fontWeight: 600 }}>
+              {data.vision}
+            </p>
+          </div>
+
+          {/* Team */}
+          {data.teamMembers?.length > 0 && (
+            <>
+              <div className="studio-section-head" style={{ marginBottom: 36 }}>
+                <div>
+                  <span className="studio-label">THE TEAM</span>
+                  <h2 style={{ fontSize: "clamp(38px, 5vw, 65px)", marginTop: 12 }}>
+                    Meet the <em>people.</em>
+                  </h2>
+                </div>
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+                {data.teamMembers.map((member, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.08 }}
+                    style={{
+                      background: "var(--studio-panel)",
+                      border: "1px solid var(--studio-line)",
+                      padding: "24px 26px",
+                      transition: "border-color .25s ease, background .25s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = "var(--studio-line-light)";
+                      e.currentTarget.style.background = "#141416";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = "var(--studio-line)";
+                      e.currentTarget.style.background = "var(--studio-panel)";
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
+                      <div
+                        style={{
+                          width: 44,
+                          height: 44,
+                          background: "var(--studio-orange)",
+                          color: "var(--studio-bg)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontFamily: "var(--studio-display)",
+                          fontSize: 20,
+                          fontWeight: 800,
+                          overflow: "hidden",
+                          flexShrink: 0,
+                        }}
+                      >
+                        {member.image
+                          ? <img src={member.image} alt={member.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          : member.name?.[0]?.toUpperCase()
+                        }
+                      </div>
+                      <div>
+                        <p style={{ fontFamily: "var(--studio-display)", fontSize: 15, fontWeight: 600, letterSpacing: "-.03em", color: "var(--studio-copy)" }}>{member.name}</p>
+                        <p className="studio-mono" style={{ color: "var(--studio-orange)", fontSize: 9, marginTop: 3 }}>{member.role?.toUpperCase()}</p>
+                      </div>
+                    </div>
+                    <p style={{ color: "#929297", fontSize: 13, lineHeight: 1.55 }}>{member.bio}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </>
+          )}
+        </motion.div>
+      )}
+
+      <style>{`
+        @media (max-width: 768px) {
+          .about-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

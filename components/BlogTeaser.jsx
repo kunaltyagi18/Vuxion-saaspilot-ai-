@@ -14,7 +14,7 @@ export default function BlogTeaser() {
 
   useEffect(() => {
     fetch("/api/blog")
-      .then(r => r.ok ? r.json() : [])
+      .then((r) => r.ok ? r.json() : [])
       .then(setPosts)
       .catch(() => setPosts([]));
   }, []);
@@ -27,100 +27,117 @@ export default function BlogTeaser() {
   if (!posts.length) return null;
 
   return (
-    <section className="relative py-24 px-6 overflow-hidden bg-gray-50 dark:bg-[#0a0a14] transition-colors duration-300">
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#6366f108_1px,transparent_1px),linear-gradient(to_bottom,#6366f108_1px,transparent_1px)] bg-[size:48px_48px]" />
-      <div aria-hidden className="pointer-events-none absolute top-0 left-1/3 w-80 h-80 rounded-full bg-indigo-400/10 blur-[100px]" />
+    <section
+      className="studio-section studio-grid-section"
+      style={{ background: "var(--studio-bg)", borderTop: "1px solid var(--studio-line)" }}
+    >
+      <div className="studio-section-head">
+        <div>
+          <span className="studio-label">INSIGHTS</span>
+          <h2>
+            From our <em>blog.</em>
+          </h2>
+        </div>
+        <Link href="/contact" className="studio-text-link" style={{ fontSize: 10 }}>
+          View All Posts <span className="studio-arrow">↗</span>
+        </Link>
+      </div>
 
-      <div className="max-w-6xl mx-auto relative z-10">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-14"
-        >
-          <div>
-            <span className="text-indigo-600 dark:text-indigo-400 text-sm font-semibold tracking-wider uppercase bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-900">
-              Insights
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mt-3">
-              From Our Blog
-            </h2>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-base">
-              Tips, trends, and deep-dives from the Vuxion team.
-            </p>
-          </div>
-          <Link href="/contact"
-            className="shrink-0 text-sm font-bold text-indigo-600 dark:text-indigo-400 hover:underline underline-offset-4">
-            View All Posts →
-          </Link>
-        </motion.div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+        {featuredPosts.map((post, i) => (
+          <motion.article
+            key={post._id || i}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
+            style={{
+              background: "var(--studio-panel)",
+              border: "1px solid var(--studio-line)",
+              overflow: "hidden",
+              display: "flex",
+              flexDirection: "column",
+              transition: "border-color .25s ease, background .25s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "var(--studio-line-light)";
+              e.currentTarget.style.background = "#141416";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "var(--studio-line)";
+              e.currentTarget.style.background = "var(--studio-panel)";
+            }}
+          >
+            {/* Image */}
+            <div style={{ height: 160, position: "relative", overflow: "hidden", flexShrink: 0 }}>
+              <img
+                src={post.cardImage}
+                alt={post.title}
+                style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s ease", display: "block" }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = "scale(1.05)"; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = "scale(1)"; }}
+              />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(9,9,11,.6) 0%, transparent 55%)" }} />
+              {post.category && (
+                <span
+                  className="studio-mono"
+                  style={{
+                    position: "absolute",
+                    top: 12,
+                    left: 12,
+                    background: "var(--studio-orange)",
+                    color: "var(--studio-bg)",
+                    fontSize: 8,
+                    letterSpacing: ".12em",
+                    padding: "4px 9px",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  {post.category}
+                </span>
+              )}
+            </div>
 
-        {/* Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {featuredPosts.map((post, i) => (
-            <motion.article
-              key={post._id || i}
-              initial={{ opacity: 0, y: 40, rotateX: 6 }}
-              whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.55, delay: i * 0.1, ease: "easeOut" }}
-              className="card-3d glow-hover bg-white dark:bg-gray-900
-                border border-gray-100 dark:border-gray-800
-                rounded-2xl overflow-hidden shadow-sm group flex flex-col"
-            >
-              {/* Card banner — real image if set, else gradient */}
-              <div className="h-44 w-full relative overflow-hidden shrink-0">
-                {post.cardImage ? (
-                  <>
-                    <img
-                      src={post.cardImage}
-                      alt={post.title}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
-                    {/* Category badge over image */}
-                    <span className="absolute top-3 left-3 text-xs font-bold uppercase tracking-wider text-white bg-black/40 backdrop-blur-sm px-3 py-1 rounded-full">
-                      {post.category}
-                    </span>
-                  </>
+            {/* Content */}
+            <div style={{ padding: "20px 22px", display: "flex", flexDirection: "column", flex: 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10 }}>
+                <span className="studio-mono" style={{ color: "var(--studio-muted)", fontSize: 8 }}>{post.date}</span>
+                <span className="studio-mono" style={{ color: "var(--studio-muted)", fontSize: 8 }}>{post.readTime}</span>
+              </div>
+
+              <h3
+                style={{
+                  fontFamily: "var(--studio-display)",
+                  fontSize: "clamp(16px, 1.8vw, 22px)",
+                  fontWeight: 600,
+                  letterSpacing: "-.04em",
+                  lineHeight: 0.97,
+                  color: "var(--studio-copy)",
+                  marginBottom: 12,
+                  flex: 1,
+                }}
+              >
+                {post.title}
+              </h3>
+
+              <p style={{ color: "#929297", fontSize: 12, lineHeight: 1.6, marginBottom: 16, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>
+                {post.excerpt}
+              </p>
+
+              <div style={{ borderTop: "1px solid var(--studio-line)", paddingTop: 14 }}>
+                {post.link ? (
+                  <a href={post.link} target="_blank" rel="noopener noreferrer" className="studio-text-link" style={{ fontSize: 9 }}>
+                    Read More <span className="studio-arrow">↗</span>
+                  </a>
                 ) : (
-                  <div className={`w-full h-full bg-gradient-to-br ${post.color || "from-indigo-500 to-violet-500"} flex items-center justify-center relative`}>
-                    <span className="text-5xl animate-float">{post.emoji || "📝"}</span>
-                    <div className="absolute inset-0 opacity-30 bg-[radial-gradient(ellipse_at_center,white,transparent)]" />
-                  </div>
+                  <span className="studio-text-link" style={{ fontSize: 9, color: "var(--studio-orange)" }}>
+                    Read More <span className="studio-arrow">↗</span>
+                  </span>
                 )}
               </div>
-
-              <div className="p-6 flex flex-col flex-1">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="text-xs text-gray-400 dark:text-gray-500">{post.readTime}</span>
-                </div>
-                <h3 className="font-bold text-gray-900 dark:text-white text-base leading-snug mb-3
-                  group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors flex-1">
-                  {post.title}
-                </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2">
-                  {post.excerpt}
-                </p>
-                <div className="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800">
-                  <span className="text-xs text-gray-400 dark:text-gray-500">{post.date}</span>
-                  {post.link ? (
-                    <a href={post.link} target="_blank" rel="noopener noreferrer"
-                      className="text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform inline-block">
-                      Read More →
-                    </a>
-                  ) : (
-                    <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:translate-x-1 transition-transform inline-block">
-                      Read More →
-                    </span>
-                  )}
-                </div>
-              </div>
-            </motion.article>
-          ))}
-        </div>
+            </div>
+          </motion.article>
+        ))}
       </div>
     </section>
   );

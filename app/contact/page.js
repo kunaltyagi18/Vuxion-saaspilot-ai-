@@ -10,9 +10,9 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main>
+    <main style={{ background: "var(--studio-bg)", minHeight: "100vh" }}>
       <Navbar />
-      <div className="pt-20">
+      <div style={{ paddingTop: 72 }}>
         <Contact />
       </div>
       <Chatbot />

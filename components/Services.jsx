@@ -24,14 +24,12 @@ const serviceImageMap = [
     images: [
       "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1561070791-2526d30994b8?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1545665277-5937489579f2?auto=format&fit=crop&w=800&q=80",
     ],
   },
   {
     keywords: ["seo", "search", "ranking", "marketing", "analytics", "growth"],
     images: [
       "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
     ],
   },
@@ -46,22 +44,18 @@ const serviceImageMap = [
     keywords: ["cloud", "devops", "aws", "azure", "deploy", "server", "hosting"],
     images: [
       "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
     ],
   },
   {
     keywords: ["ai", "ml", "machine learning", "chatbot", "automation", "data"],
     images: [
       "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80",
-      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80",
     ],
   },
 ];
 
-// Service title + index se best image pick karne ka helper
 function pickServiceImage(title, index) {
   if (!title) return defaultServiceImages[index % defaultServiceImages.length];
-
   const lower = title.toLowerCase();
   for (const category of serviceImageMap) {
     if (category.keywords.some((kw) => lower.includes(kw))) {
@@ -76,7 +70,6 @@ export default function Services({ limit }) {
   const [loading, setLoading] = useState(true);
   const displayed = limit ? services.slice(0, limit) : services;
 
-  // component load hone pe MongoDB API se services fetch karo
   useEffect(() => {
     fetch("/api/services")
       .then(async (res) => {
@@ -87,7 +80,6 @@ export default function Services({ limit }) {
         return res.json();
       })
       .then((data) => {
-        // kabhi bhi array na mile toh UI crash na ho — defensive guard
         setServices(Array.isArray(data) ? data : []);
         setLoading(false);
       })
@@ -99,117 +91,122 @@ export default function Services({ limit }) {
   }, []);
 
   return (
-    <section id="services" className="relative py-24 px-6 overflow-hidden bg-gray-50 dark:bg-[#0a0a14] transition-colors duration-300">
-      {/* 3D depth grid */}
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#6366f108_1px,transparent_1px),linear-gradient(to_bottom,#6366f108_1px,transparent_1px)] bg-[size:48px_48px]" />
-      <div aria-hidden="true" className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-indigo-500/10 dark:bg-indigo-500/20 blur-[120px]" />
-      <div className="max-w-6xl mx-auto">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
-        >
-          <span className="text-indigo-600 dark:text-indigo-400 text-sm font-semibold tracking-wider uppercase bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-900">
-            What We Do
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mt-3">
-            Our Premium Services
+    <section id="services" className="studio-section studio-grid-section" style={{ background: "var(--studio-bg)" }}>
+      {/* Section header */}
+      <div className="studio-section-head">
+        <div>
+          <span className="studio-label">CAPABILITIES</span>
+          <h2>
+            Our premium <em>services.</em>
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 text-base max-w-xl mx-auto">
-            High-quality solutions engineered to boost your digital presence.
-          </p>
-        </motion.div>
+        </div>
+        <p>High-quality solutions engineered to boost your digital presence and drive real results.</p>
+      </div>
 
-        {/* loading skeleton jab tak data fetch ho raha hai */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-gray-100 dark:bg-gray-800 rounded-2xl h-80 animate-pulse border border-gray-200 dark:border-gray-700" />
-            ))}
-          </div>
-        ) : services.length === 0 ? (
-          <p className="text-center text-gray-400 dark:text-gray-500 py-10">
-            Our services are coming soon — stay tuned!
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {displayed.map((s, i) => {
-              // agar database me custom image hai toh woh use karo, varna smart fallback
-              const cardImg = s.image || pickServiceImage(s.title, i);
+      {/* Loading skeleton */}
+      {loading ? (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+          {[1, 2, 3].map((i) => (
+            <div
+              key={i}
+              style={{
+                background: "var(--studio-panel)",
+                border: "1px solid var(--studio-line)",
+                height: 340,
+                animation: "pulse 1.5s ease-in-out infinite",
+              }}
+            />
+          ))}
+        </div>
+      ) : services.length === 0 ? (
+        <p className="studio-mono" style={{ color: "var(--studio-muted)", textAlign: "center", padding: "60px 0" }}>
+          Our services are coming soon — stay tuned.
+        </p>
+      ) : (
+        <div className="studio-bento-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gridTemplateRows: "unset" }}>
+          {displayed.map((s, i) => {
+            const cardImg = s.image || pickServiceImage(s.title, i);
+            const idx = String(i + 1).padStart(2, "0");
 
-              return (
-                <motion.div
-                  key={s._id}
-                  initial={{ opacity: 0, y: 50, rotateX: 10 }}
-                  whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: i * 0.12, ease: "easeOut" }}
-                  className="card-3d glow-hover bg-white dark:bg-gray-900 rounded-2xl overflow-hidden
-                    border border-gray-100 dark:border-gray-800
-                    shadow-md flex flex-col group"
-                >
-                  {/* Service Card Image Section */}
-                  <div className="h-48 w-full overflow-hidden relative bg-gray-100 dark:bg-gray-800">
-                    <Image
-                      src={cardImg}
-                      alt={s.title || "Service image"}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      className="object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
-                    {/* Gradient overlay on image */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    <div className="absolute top-3 right-3 bg-white/90 dark:bg-gray-900/90 backdrop-blur-md text-indigo-600 dark:text-indigo-400 text-xs font-bold px-3 py-1.5 rounded-full shadow-sm">
+            return (
+              <motion.article
+                key={s._id}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
+                whileHover={{ y: -4 }}
+                className="studio-bento"
+                style={{ minHeight: 360, padding: 0, overflow: "hidden", display: "flex", flexDirection: "column" }}
+              >
+                {/* Image */}
+                <div style={{ height: 180, position: "relative", flexShrink: 0, overflow: "hidden" }}>
+                  <Image
+                    src={cardImg}
+                    alt={s.title || "Service image"}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    style={{ objectFit: "cover", transition: "transform .6s ease" }}
+                  />
+                  <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to top, rgba(9,9,11,.75) 0%, transparent 55%)" }} />
+                  {s.price && (
+                    <div
+                      className="studio-mono"
+                      style={{
+                        position: "absolute",
+                        top: 14,
+                        right: 14,
+                        background: "var(--studio-orange)",
+                        color: "var(--studio-bg)",
+                        fontSize: 9,
+                        letterSpacing: ".1em",
+                        padding: "5px 10px",
+                      }}
+                    >
                       {s.price}
                     </div>
-                  </div>
+                  )}
+                </div>
 
-                  {/* Card Content */}
-                  <div className="p-6 flex-1 flex flex-col justify-between">
-                    <div>
-                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2
-                        group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
-                        {s.title}
-                      </h3>
-                      <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                        {s.description}
-                      </p>
+                {/* Content */}
+                <div style={{ flex: 1, padding: "22px 24px 24px", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                  <div>
+                    <div className="studio-bento-top" style={{ marginBottom: 0 }}>
+                      <span className="studio-label">{idx}</span>
                     </div>
-                    {/* CTA */}
-                    <a href="/contact"
-                      className="mt-5 inline-flex items-center gap-1.5 text-sm font-bold
-                        text-indigo-600 dark:text-indigo-400
-                        hover:gap-3 transition-all duration-300">
-                      Get Started
-                      <span className="transition-transform duration-200 group-hover:translate-x-1">→</span>
-                    </a>
+                    <div className="studio-bento-copy" style={{ maxWidth: "none", marginTop: 10 }}>
+                      <h3 style={{ fontSize: "clamp(18px, 2vw, 24px)", marginBottom: 10 }}>{s.title}</h3>
+                      <p style={{ fontSize: 13 }}>{s.description}</p>
+                    </div>
                   </div>
-                </motion.div>
-              );
-            })}
-          </div>
-        )}
+                  <Link
+                    href="/contact"
+                    className="studio-text-link"
+                    style={{ marginTop: 18, fontSize: 10 }}
+                  >
+                    Get started <span className="studio-arrow">↗</span>
+                  </Link>
+                </div>
+              </motion.article>
+            );
+          })}
+        </div>
+      )}
 
-        {/* View All CTA — only on home page (when limit is set) */}
-        {limit && services.length > limit && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4, delay: 0.3 }}
-            className="text-center mt-12"
-          >
-            <Link
-              href="/services"
-              className="inline-flex items-center gap-2 border-2 border-indigo-600 text-indigo-600 dark:text-indigo-400 dark:border-indigo-500 px-7 py-3 rounded-xl font-bold text-sm hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white transition-all"
-            >
-              View All Services →
-            </Link>
-          </motion.div>
-        )}
-      </div>
+      {/* View All CTA */}
+      {limit && services.length > limit && (
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4, delay: 0.3 }}
+          style={{ textAlign: "center", marginTop: 48 }}
+        >
+          <Link href="/services" className="studio-button studio-button--outline">
+            View All Services <span className="studio-arrow">↗</span>
+          </Link>
+        </motion.div>
+      )}
     </section>
   );
 }

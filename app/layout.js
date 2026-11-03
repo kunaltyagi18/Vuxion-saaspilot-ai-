@@ -47,8 +47,8 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ClerkProvider>
-      <html lang="en" className="scroll-smooth">
-        <body className="font-inter bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 transition-colors duration-300">
+      <html lang="en" className="scroll-smooth dark">
+        <body className="font-inter" style={{ background: "var(--studio-bg, #09090b)", color: "var(--studio-copy, #f4f4f5)" }}>
           {/* JSON-LD structured data */}
           <script
             type="application/ld+json"

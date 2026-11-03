@@ -9,7 +9,6 @@ export default function Contact() {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  // form submit handling function
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -22,189 +21,197 @@ export default function Contact() {
       });
 
       if (res.status === 429) {
-        // Rate limit hit
         const data = await res.json();
-        toast.error(data.error || "Too many requests. Please wait a minute.", {
-          duration: 5000,
-          icon: "⏳",
-        });
+        toast.error(data.error || "Too many requests. Please wait a minute.", { duration: 5000, icon: "⏳" });
         return;
       }
 
       if (res.ok) {
-        // Success toast
-        toast.success("Message sent! We'll reply within 24 hours. 🎉", {
-          duration: 5000,
-          style: {
-            background: "#f0fdf4",
-            color: "#166534",
-            border: "1px solid #bbf7d0",
-            fontWeight: "600",
-          },
-        });
-        // Clear form
+        toast.success("Message sent! We'll reply within 24 hours. 🎉", { duration: 5000 });
         setName("");
         setEmail("");
         setMessage("");
       } else {
         const data = await res.json().catch(() => ({}));
-        toast.error(data.error || "Something went wrong. Please try again.", {
-          duration: 4000,
-        });
+        toast.error(data.error || "Something went wrong. Please try again.", { duration: 4000 });
       }
     } catch (err) {
       console.error(err);
-      toast.error("Network error. Check your connection and try again.", {
-        duration: 4000,
-      });
+      toast.error("Network error. Check your connection and try again.", { duration: 4000 });
     } finally {
       setLoading(false);
     }
   }
 
+  const inputStyle = {
+    width: "100%",
+    background: "var(--studio-panel-2, #141416)",
+    border: "1px solid var(--studio-line)",
+    color: "var(--studio-copy)",
+    fontFamily: "var(--studio-sans)",
+    fontSize: 13,
+    padding: "13px 16px",
+    outline: "none",
+    transition: "border-color .2s ease",
+    boxSizing: "border-box",
+  };
+
+  const labelStyle = {
+    display: "block",
+    fontFamily: "var(--studio-mono)",
+    fontSize: 9,
+    letterSpacing: ".12em",
+    color: "var(--studio-muted)",
+    marginBottom: 6,
+    textTransform: "uppercase",
+  };
+
   return (
-    <section id="contact" className="py-24 px-6 bg-white dark:bg-gray-900 transition-colors duration-300">
-      <div className="max-w-5xl mx-auto">
+    <section id="contact" className="studio-section studio-grid-section" style={{ background: "var(--studio-bg)" }}>
+      {/* Section header */}
+      <div className="studio-section-head">
+        <div>
+          <span className="studio-label">CONTACT / START A PROJECT</span>
+          <h2>
+            Give the good <em>idea a body.</em>
+          </h2>
+        </div>
+        <p>Have a question or want to work with us? Drop a message and we'll get back within 24 hours.</p>
+      </div>
+
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "0.9fr 1.5fr",
+          gap: 12,
+          alignItems: "start",
+        }}
+        className="contact-grid"
+      >
+        {/* Left — Info cards */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          style={{ display: "flex", flexDirection: "column", gap: 12 }}
         >
-          <span className="text-indigo-600 dark:text-indigo-400 text-sm font-semibold tracking-wider uppercase bg-indigo-50 dark:bg-indigo-950/60 px-3 py-1 rounded-full border border-indigo-100 dark:border-indigo-900">
-            Contact Us
-          </span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-gray-900 dark:text-white mt-3">
-            Let&apos;s Start A Project Together
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400 mt-2 text-base max-w-xl mx-auto">
-            Have a question or want to work with us? Drop a message below!
-          </p>
+          {[
+            { label: "LOCATION", value: "Vuxion, Noida, India" },
+            { label: "EMAIL", value: "hello@vuxion.com" },
+            { label: "PHONE", value: "+91 74280 XXXXX" },
+            { label: "RESPONSE TIME", value: "Within 24 hours" },
+          ].map((item) => (
+            <div
+              key={item.label}
+              style={{
+                background: "var(--studio-panel)",
+                border: "1px solid var(--studio-line)",
+                padding: "20px 22px",
+                transition: "border-color .25s ease, background .25s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = "var(--studio-line-light)";
+                e.currentTarget.style.background = "#141416";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = "var(--studio-line)";
+                e.currentTarget.style.background = "var(--studio-panel)";
+              }}
+            >
+              <p className="studio-label" style={{ marginBottom: 8 }}>{item.label}</p>
+              <p style={{ fontFamily: "var(--studio-sans)", fontSize: 14, color: "var(--studio-copy)", lineHeight: 1.4 }}>{item.value}</p>
+            </div>
+          ))}
+
+          {/* Coordinates decoration */}
+          <div className="studio-mono" style={{ color: "var(--studio-muted)", fontSize: 9, padding: "12px 0", letterSpacing: ".1em" }}>
+            [ 28.6139° N, 77.2090° E ]
+          </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-10 items-start">
-          {/* Contact Details Side Cards */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="md:col-span-2 flex flex-col gap-6"
-          >
-            <div className="bg-indigo-50/60 dark:bg-gray-800/60 p-6 rounded-2xl border border-indigo-100 dark:border-gray-700 flex items-start gap-4">
-              <div className="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xl shrink-0 shadow-md">
-                📍
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-900 dark:text-white text-base">Our Office</h4>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">Vuxion, Noida, India</p>
-              </div>
+        {/* Right — Form */}
+        <motion.div
+          initial={{ opacity: 0, x: 20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          style={{
+            background: "var(--studio-panel)",
+            border: "1px solid var(--studio-line)",
+            padding: "36px 38px",
+          }}
+        >
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            {/* Name */}
+            <div>
+              <label style={labelStyle}>Your Name</label>
+              <input
+                required
+                type="text"
+                placeholder="Rahul Sharma"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = "var(--studio-orange)")}
+                onBlur={(e) => (e.target.style.borderColor = "var(--studio-line)")}
+              />
             </div>
 
-            <div className="bg-indigo-50/60 dark:bg-gray-800/60 p-6 rounded-2xl border border-indigo-100 dark:border-gray-700 flex items-start gap-4">
-              <div className="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xl shrink-0 shadow-md">
-                ✉️
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-900 dark:text-white text-base">Email Us</h4>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">hello@vuxion.com</p>
-              </div>
+            {/* Email */}
+            <div>
+              <label style={labelStyle}>Your Email</label>
+              <input
+                required
+                type="email"
+                placeholder="rahul@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = "var(--studio-orange)")}
+                onBlur={(e) => (e.target.style.borderColor = "var(--studio-line)")}
+              />
             </div>
 
-            <div className="bg-indigo-50/60 dark:bg-gray-800/60 p-6 rounded-2xl border border-indigo-100 dark:border-gray-700 flex items-start gap-4">
-              <div className="w-12 h-12 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-xl shrink-0 shadow-md">
-                📞
-              </div>
-              <div>
-                <h4 className="font-bold text-gray-900 dark:text-white text-base">Call Us</h4>
-                <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">+91 74280 XXXXX</p>
-              </div>
+            {/* Message */}
+            <div>
+              <label style={labelStyle}>Your Message</label>
+              <textarea
+                required
+                rows={5}
+                placeholder="Tell us about your project or inquiry..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                style={{ ...inputStyle, resize: "none" }}
+                onFocus={(e) => (e.target.style.borderColor = "var(--studio-orange)")}
+                onBlur={(e) => (e.target.style.borderColor = "var(--studio-line)")}
+              />
             </div>
-          </motion.div>
 
-          {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="md:col-span-3 bg-white dark:bg-gray-800 p-8 rounded-3xl border border-gray-100 dark:border-gray-700 shadow-xl"
-          >
-            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
-              {/* Name Input */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1 uppercase tracking-wider">
-                  Your Name
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 dark:text-gray-500 text-base">
-                    👤
-                  </span>
-                  <input
-                    required
-                    type="text"
-                    placeholder="Rahul Sharma"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Email Input */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1 uppercase tracking-wider">
-                  Your Email
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400 dark:text-gray-500 text-base">
-                    📧
-                  </span>
-                  <input
-                    required
-                    type="email"
-                    placeholder="rahul@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white transition-all"
-                  />
-                </div>
-              </div>
-
-              {/* Message Textarea */}
-              <div>
-                <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1 uppercase tracking-wider">
-                  Your Message
-                </label>
-                <div className="relative">
-                  <span className="absolute top-3 left-4 flex items-center pointer-events-none text-gray-400 dark:text-gray-500 text-base">
-                    💬
-                  </span>
-                  <textarea
-                    required
-                    rows={4}
-                    placeholder="Tell us about your project or inquiry..."
-                    value={message}
-                    onChange={(e) => setMessage(e.target.value)}
-                    className="w-full pl-11 pr-4 py-3 bg-gray-50 dark:bg-gray-900/80 border border-gray-200 dark:border-gray-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-white transition-all resize-none"
-                  />
-                </div>
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-indigo-600 text-white py-3.5 rounded-xl font-bold text-sm hover:bg-indigo-700 active:scale-95 transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 mt-2 disabled:opacity-70 disabled:cursor-not-allowed"
-              >
-                <span>{loading ? "Sending..." : "Send Message"}</span>
-                <span className="text-base">{loading ? "⏳" : "🚀"}</span>
-              </button>
-            </form>
-          </motion.div>
-        </div>
+            {/* Submit */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="studio-button studio-button--accent"
+              style={{
+                justifyContent: "center",
+                marginTop: 4,
+                opacity: loading ? 0.7 : 1,
+                cursor: loading ? "not-allowed" : "pointer",
+              }}
+            >
+              {loading ? "Sending..." : "Send Message"}
+              <span className="studio-arrow">↗</span>
+            </button>
+          </form>
+        </motion.div>
       </div>
+
+      <style>{`
+        @media (max-width: 768px) {
+          .contact-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }
