@@ -378,8 +378,9 @@ body {
 .chatbot-header .chatbot-bot-icon { height: 27px; width: 27px; }
 .chatbot-avatar--message .chatbot-bot-icon { height: 22px; width: 22px; }
 .chatbot-fab-logo { height: 31px; width: 31px; }
-.chatbot-fab-state { align-items: center; display: inline-flex; font-size: 0; justify-content: center; }
-.chatbot-fab-state--close::after { content: "×"; font-size: 28px; line-height: 1; }
+.chatbot-fab-state { align-items: center; color: transparent !important; display: inline-flex; font-size: 0 !important; height: 31px; justify-content: center; line-height: 0; overflow: hidden; position: relative; text-indent: -9999px; width: 31px; }
+.chatbot-fab-state .chatbot-fab-logo { inset: 0; margin: auto; position: absolute; text-indent: 0; }
+.chatbot-fab-state--close::after { color: #09090b; content: "×"; font-size: 28px; line-height: 1; position: absolute; text-indent: 0; }
 .chatbot-header,
 .chatbot-fab,
 .chatbot-bubble--user,
