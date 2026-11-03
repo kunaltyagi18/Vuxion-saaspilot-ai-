@@ -374,6 +374,12 @@ body {
   border-color: var(--studio-line) !important;
   color: var(--studio-copy);
 }
+.chatbot-bot-icon { display: block; height: 24px; width: 24px; }
+.chatbot-header .chatbot-bot-icon { height: 27px; width: 27px; }
+.chatbot-avatar--message .chatbot-bot-icon { height: 22px; width: 22px; }
+.chatbot-fab-logo { height: 31px; width: 31px; }
+.chatbot-fab-state { align-items: center; display: inline-flex; font-size: 0; justify-content: center; }
+.chatbot-fab-state--close::after { content: "×"; font-size: 28px; line-height: 1; }
 .chatbot-header,
 .chatbot-fab,
 .chatbot-bubble--user,
