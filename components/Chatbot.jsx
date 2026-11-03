@@ -12,14 +12,14 @@ const welcomeMsg = {
 function BotLogo({ className = "" }) {
   return (
     <svg className={`chatbot-bot-icon ${className}`} viewBox="0 0 48 48" fill="none" aria-hidden="true">
-      <path d="M24 8V12" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
-      <circle cx="24" cy="6" r="2.5" fill="currentColor" />
-      <rect x="9" y="12" width="30" height="27" rx="10" fill="#18181b" />
-      <rect x="14" y="18" width="20" height="13" rx="5" fill="#f7f5f0" />
-      <circle cx="20" cy="24.5" r="2.2" fill="#ff4a00" />
-      <circle cx="28" cy="24.5" r="2.2" fill="#ff4a00" />
-      <path d="M20 35H28" stroke="#f7f5f0" strokeWidth="2" strokeLinecap="round" />
-      <path d="M9 23H6M39 23H42" stroke="#18181b" strokeWidth="2.5" strokeLinecap="round" />
+      <path d="M24 8V12" stroke="#5b54c7" strokeWidth="2.5" strokeLinecap="round" />
+      <circle cx="24" cy="6" r="2.5" fill="#5b54c7" />
+      <rect x="9" y="12" width="30" height="27" rx="10" fill="#5b54c7" />
+      <rect x="14" y="18" width="20" height="13" rx="5" fill="#c9e8ff" />
+      <circle cx="20" cy="24.5" r="2.2" fill="#352c83" />
+      <circle cx="28" cy="24.5" r="2.2" fill="#352c83" />
+      <path d="M20 35H28" stroke="#c9e8ff" strokeWidth="2" strokeLinecap="round" />
+      <path d="M9 23H6M39 23H42" stroke="#5b54c7" strokeWidth="2.5" strokeLinecap="round" />
     </svg>
   );
 }
