@@ -414,6 +414,13 @@ body {
 .chatbot-fab { border-color: #ff8a62 !important; box-shadow: 0 12px 28px rgba(255, 74, 0, .26) !important; }
 .chatbot-fab:hover, .chatbot-send:hover { background: #ff6730 !important; }
 
+html.light .chatbot-window { box-shadow: 0 18px 45px rgba(43, 35, 28, .2) !important; }
+html.light .chatbot-messages { background: #f0ece5 !important; }
+html.light .chatbot-bubble--bot { background: #fffdfa !important; color: #101012 !important; }
+html.light .chatbot-user-avatar { background: #d8d0c5 !important; color: #101012 !important; }
+html.light .chatbot-input-wrap { background: #fffdfa !important; }
+html.light .chatbot-input { background: #f7f5f0 !important; color: #101012 !important; }
+
 @media (max-width: 480px) {
   .chatbot-window {
     bottom: 88px !important;

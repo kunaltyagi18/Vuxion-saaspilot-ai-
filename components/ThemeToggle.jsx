@@ -20,7 +20,7 @@ function getTheme() {
 }
 
 function getServerTheme() {
-  return "dark";
+  return "light";
 }
 
 export default function ThemeToggle() {
@@ -28,7 +28,7 @@ export default function ThemeToggle() {
 
   useEffect(() => {
     const saved = window.localStorage.getItem("vuxion-theme");
-    const preferred = saved || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    const preferred = saved || "light";
     if (preferred !== getTheme()) setTheme(preferred);
   }, []);
 
