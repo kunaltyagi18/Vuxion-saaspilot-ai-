@@ -56,6 +56,33 @@ export default function StudioHome() {
           <Link href="/about">About us <Arrow /></Link>
         </section>
 
+        <section className="human-approach studio-grid-section">
+          <div className="human-approach-head">
+            <div>
+              <span className="studio-label">WHAT WE BUILD</span>
+              <h2>Useful work,<br /><em>without the noise.</em></h2>
+            </div>
+            <p>Small, focused digital products that are clear to use, easy to maintain, and ready for the next stage.</p>
+          </div>
+          <div className="human-approach-grid">
+            <article className="human-approach-card">
+              <strong>01 / WEBSITES</strong>
+              <h3>Make the first impression count.</h3>
+              <p>Fast, responsive websites that make your offer easier to understand.</p>
+            </article>
+            <article className="human-approach-card">
+              <strong>02 / INTERNAL TOOLS</strong>
+              <h3>Turn daily friction into flow.</h3>
+              <p>Dashboards and tools that help teams spend less time working around their software.</p>
+            </article>
+            <article className="human-approach-card">
+              <strong>03 / MVPs</strong>
+              <h3>Get a real idea moving.</h3>
+              <p>A practical first version that gives you something useful to learn from.</p>
+            </article>
+          </div>
+        </section>
+
         <section className="human-contact studio-grid-section">
           <div>
             <span className="studio-label">04 / NEXT STEP</span>
