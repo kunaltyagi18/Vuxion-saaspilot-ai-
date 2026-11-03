@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
+import Chatbot from "@/components/Chatbot";
 
 function Arrow() {
   return <span aria-hidden="true" className="studio-arrow">↗</span>;
@@ -78,6 +79,8 @@ export default function StudioHome() {
           <Link href="/contact">Contact</Link>
         </div>
       </footer>
+
+      <Chatbot />
     </div>
   );
 }

@@ -407,6 +407,17 @@ body {
 .chatbot-fab { border-color: #ff8a62 !important; box-shadow: 0 12px 28px rgba(255, 74, 0, .26) !important; }
 .chatbot-fab:hover, .chatbot-send:hover { background: #ff6730 !important; }
 
+@media (max-width: 480px) {
+  .chatbot-window {
+    bottom: 88px !important;
+    height: min(460px, calc(100vh - 120px)) !important;
+    left: 16px !important;
+    right: 16px !important;
+    width: auto !important;
+  }
+  .chatbot-fab { bottom: 16px !important; right: 16px !important; }
+}
+
 /* --------------------------------------------------------------------------
    Theme mode
    -------------------------------------------------------------------------- */
