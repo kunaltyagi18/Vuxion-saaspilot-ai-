@@ -15,8 +15,8 @@ export default function ProjectsPage() {
       <Navbar />
 
       <style>{`
-        .proj-card { background: var(--studio-panel); border: 1px solid var(--studio-line); padding: 28px 26px; transition: border-color .25s ease, background .25s ease; }
-        .proj-card:hover { border-color: var(--studio-line-light); background: #1a1a1e; }
+        .proj-card { background: var(--studio-panel); border: 1px solid var(--studio-line); padding: 28px 26px; transition: border-color .25s ease; }
+        .proj-card:hover { border-color: var(--studio-orange); }
         .proj-detail-grid { display: grid; gap: 40px; grid-template-columns: 0.8fr 1.2fr; align-items: center; }
         @media(max-width:768px) { .proj-detail-grid { grid-template-columns: 1fr !important; } }
       `}</style>

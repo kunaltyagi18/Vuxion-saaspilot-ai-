@@ -237,7 +237,7 @@ body {
 .studio-section-head--work { margin-bottom: 50px; }
 .studio-bento-grid { display: grid; gap: 12px; grid-template-columns: 1.2fr .8fr; grid-template-rows: auto auto; }
 .studio-bento { background: var(--studio-panel); border: 1px solid var(--studio-line); min-height: 370px; overflow: hidden; padding: 25px 27px; position: relative; transition: border-color .25s ease, background .25s ease; }
-.studio-bento:hover { background: #141416; border-color: var(--studio-line-light); }
+.studio-bento:hover { border-color: var(--studio-orange); }
 .studio-bento--wide { grid-row: span 2; min-height: 630px; }
 .studio-bento--tall { min-height: 305px; }
 .studio-bento-top { display: flex; justify-content: space-between; position: relative; z-index: 2; }
@@ -278,8 +278,8 @@ body {
 
 /* ── Server-component card hover classes ──────────────────────────────────── */
 .studio-panel-card { background: var(--studio-panel); border: 1px solid var(--studio-line); transition: border-color .25s ease, background .25s ease; }
-.studio-panel-card:hover { border-color: var(--studio-line-light); background: #141416; }
-.studio-panel-card--orange:hover { border-color: var(--studio-orange); background: #141416; }
+.studio-panel-card:hover { border-color: var(--studio-orange); }
+.studio-panel-card--orange:hover { border-color: var(--studio-orange); }
 
 /* Keep fixed navigation from creating a second oversized top gap on inner pages. */
 .studio-page-hero { padding: 88px max(28px, calc((100vw - 1328px) / 2)) 64px !important; }
@@ -290,15 +290,15 @@ body {
 
 /* Human-first homepage: less decoration, more clarity and real-world detail. */
 .human-home::before { opacity: .18; }
-.human-hero { align-items: center; display: grid; gap: 8vw; grid-template-columns: minmax(0, 1fr) minmax(280px, 360px); min-height: 680px; overflow: hidden; padding: 108px max(28px, calc((100vw - 1328px) / 2)) 86px; }
-.human-hero-main { max-width: 730px; position: relative; z-index: 1; }
+.human-hero { align-items: flex-end; display: grid; gap: 8vw; grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); min-height: 700px; overflow: visible; padding: 108px max(28px, calc((100vw - 1328px) / 2)) 0; }
+.human-hero-main { align-self: center; max-width: 730px; position: relative; z-index: 1; padding-bottom: 86px; }
 .human-kicker { color: var(--studio-orange); font-family: var(--studio-mono); font-size: 10px; letter-spacing: .14em; margin: 0 0 27px; }
 .human-hero h1 { color: var(--studio-copy); font-family: var(--studio-display); font-size: clamp(64px, 9vw, 142px); font-weight: 600; letter-spacing: -.09em; line-height: .84; margin: 0; }
 .human-hero h1 em, .human-section h2 em, .human-process h2 em, .human-about h2 em, .human-contact h2 em { color: var(--studio-orange); font-style: normal; }
 .human-hero-copy { color: #b4b4ba; font-size: 17px; line-height: 1.6; margin: 34px 0 30px 4px; max-width: 440px; }
 .human-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 24px; margin-left: 4px; }
-.human-hero-card { background: #151518; border: 1px solid #45454b; display: flex; flex-direction: column; height: 390px; justify-content: space-between; padding: 24px; position: relative; transform: rotate(3deg); }
-.human-hero-card::before { border: 1px solid #2f2f34; content: ""; inset: 12px; pointer-events: none; position: absolute; }
+.human-hero-card { background: #0e0e11; border: 1px solid #45454b; display: flex; flex-direction: column; height: 390px; justify-content: space-between; padding: 24px; position: relative; transform: rotate(3deg); overflow: visible; }
+.human-hero-card::before { display: none; }
 .human-card-top, .human-card-bottom { color: #85858b; display: flex; font-family: var(--studio-mono); font-size: 9px; justify-content: space-between; letter-spacing: .1em; position: relative; text-transform: uppercase; z-index: 1; }
 .human-card-top span:first-child { color: var(--studio-orange); }
 .human-card-mark { color: var(--studio-orange); font-family: var(--studio-display); font-size: 220px; font-weight: 700; left: 50%; letter-spacing: -.2em; line-height: .7; position: absolute; top: 50%; transform: translate(-57%, -42%); }
@@ -326,7 +326,7 @@ body {
 .human-section-head > p { color: #99999f; font-size: 14px; line-height: 1.65; margin: 0 2% 4px 0; max-width: 330px; }
 .human-services-grid { display: grid; gap: 12px; grid-template-columns: repeat(3, 1fr); }
 .human-service-card { background: var(--studio-panel); border: 1px solid var(--studio-line); min-height: 290px; padding: 24px; transition: background .2s ease, border-color .2s ease, transform .2s ease; }
-.human-service-card:hover { background: #17171a; border-color: var(--studio-orange); transform: translateY(-4px); }
+.human-service-card:hover { border-color: var(--studio-orange); transform: translateY(-4px); }
 .human-service-number, .human-process-number { color: var(--studio-orange); font-family: var(--studio-mono); font-size: 10px; letter-spacing: .1em; }
 .human-service-card h3 { color: var(--studio-copy); font-family: var(--studio-display); font-size: clamp(23px, 2.4vw, 32px); font-weight: 600; letter-spacing: -.06em; line-height: .98; margin: 52px 0 14px; max-width: 250px; }
 .human-service-card p, .human-process-grid p { color: #929297; font-size: 13px; line-height: 1.65; margin: 0; max-width: 275px; }
@@ -479,8 +479,8 @@ html.light .studio-menu span { background: var(--studio-copy); }
 html.light .studio-button--outline { border-color: var(--studio-line-light); color: var(--studio-copy); }
 html.light .studio-text-link { color: var(--studio-copy); }
 html.light .studio-label, html.light .studio-mono { color: #45413c !important; }
-html.light .human-hero-card { background: #eeeae2; border-color: #aaa299; }
-html.light .human-hero-card::before { border-color: #c7c0b6; }
+html.light .human-hero-card { background: #0d0d0f; border-color: #45454b; }
+html.light .human-hero-card::before { border-color: rgba(255,255,255,0.1); }
 html.light .human-card-top, html.light .human-card-bottom { color: #706b65; }
 html.light .human-hero h1, html.light .human-section-head h2, html.light .human-process h2, html.light .human-contact h2 { color: var(--studio-copy); }
 html.light .human-hero-copy, html.light .human-section-head > p, html.light .human-contact-copy p { color: #4e4943; }
@@ -488,7 +488,7 @@ html.light .human-approach { background: #eeeae2; }
 html.light .human-approach-head p, html.light .human-approach-card p { color: #4e4943; }
 html.light .human-approach-card { background: #fffdfa; }
 html.light .human-service-card { background: var(--studio-panel); }
-html.light .human-service-card:hover { background: #fff; }
+html.light .human-service-card:hover { background: var(--studio-panel); }
 html.light .human-service-card p, html.light .human-process-grid p { color: #4b4640; }
 html.light .human-tags span { border-color: #a9a198; color: #4b4640; }
 html.light .human-process-grid { border-color: #c6bfb5; }
@@ -501,6 +501,19 @@ html.light .studio-footer a { color: #4b4640 !important; }
 html.light .studio-section-head > p, html.light .studio-bento-copy p, html.light .studio-case-info p { color: #4e4943 !important; }
 html.light .about-description { color: #4e4943 !important; }
 html.light [style*="#929297"], html.light [style*="#a1a1a6"], html.light [style*="#b4b4bb"] { color: #4e4943 !important; }
+/* Hover overrides: dark bg kicks in → force light text even in light mode */
+/* (light mode hover text overrides removed — no dark bg on hover anymore) */
+
+/* ── Privacy page responsive ──────────────────────────────────────────────── */
+@media (max-width: 640px) {
+  .privacy-row { grid-template-columns: 1fr !important; gap: 14px !important; }
+}
+
+/* ── Pricing grid responsive ──────────────────────────────────────────────── */
+@media (max-width: 800px) {
+  .pricing-grid { grid-template-columns: 1fr !important; }
+  .process-grid { grid-template-columns: 1fr 1fr !important; }
+}
 
 .theme-toggle { align-items: center; background: transparent; border: 1px solid var(--studio-line-light); color: var(--studio-copy); cursor: pointer; display: inline-flex; padding: 7px 8px; transition: border-color .2s ease, color .2s ease; }
 .theme-toggle:hover { border-color: var(--studio-orange); color: var(--studio-orange); }

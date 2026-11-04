@@ -16,10 +16,10 @@ export default function ServicesPage() {
 
       {/* Hover styles for server component cards */}
       <style>{`
-        .srv-card { background: var(--studio-panel); border: 1px solid var(--studio-line); padding: 28px 26px; transition: border-color .25s ease, background .25s ease; }
-        .srv-card:hover { border-color: var(--studio-line-light); background: #1a1a1e; }
-        .way-card { background: var(--studio-panel); border: 1px solid var(--studio-line); padding: 32px 28px; transition: border-color .25s ease, background .25s ease; position: relative; }
-        .way-card:hover { border-color: var(--studio-orange); background: #141416; }
+        .srv-card { background: var(--studio-panel); border: 1px solid var(--studio-line); padding: 28px 26px; transition: border-color .25s ease; }
+        .srv-card:hover { border-color: var(--studio-orange); }
+        .way-card { background: var(--studio-panel); border: 1px solid var(--studio-line); padding: 32px 28px; transition: border-color .25s ease; position: relative; }
+        .way-card:hover { border-color: var(--studio-orange); }
       `}</style>
 
       <div style={{ paddingTop: 72 }}>

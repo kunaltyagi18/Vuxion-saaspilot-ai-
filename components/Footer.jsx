@@ -61,33 +61,6 @@ export default function Footer() {
         >
           Privacy
         </Link>
-
-        <button
-          onClick={scrollToTop}
-          aria-label="Back to top"
-          className="studio-mono"
-          style={{
-            background: "none",
-            border: "1px solid var(--studio-line-light)",
-            color: "var(--studio-muted)",
-            cursor: "pointer",
-            fontSize: 10,
-            letterSpacing: ".08em",
-            padding: "6px 12px",
-            textTransform: "uppercase",
-            transition: "border-color .2s ease, color .2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = "var(--studio-orange)";
-            e.currentTarget.style.color = "var(--studio-orange)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = "var(--studio-line-light)";
-            e.currentTarget.style.color = "var(--studio-muted)";
-          }}
-        >
-          ↑ TOP
-        </button>
       </div>
     </footer>
   );

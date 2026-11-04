@@ -73,11 +73,9 @@ export default function WhyUs() {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = "var(--studio-orange)";
-                e.currentTarget.style.background = "#141416";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "var(--studio-line)";
-                e.currentTarget.style.background = "var(--studio-panel)";
               }}
             >
               <span

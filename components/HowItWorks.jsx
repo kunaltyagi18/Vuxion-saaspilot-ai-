@@ -46,8 +46,12 @@ export default function HowItWorks() {
               padding: "32px 26px",
               transition: "background .25s ease, border-color .25s ease",
             }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#141416"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "var(--studio-panel)"; }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = "var(--studio-orange)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = "var(--studio-line)";
+            }}
           >
             <p
               className="studio-mono"

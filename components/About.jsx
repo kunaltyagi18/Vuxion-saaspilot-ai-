@@ -219,12 +219,10 @@ export default function About({ preview = false }) {
                       transition: "border-color .25s ease, background .25s ease",
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "var(--studio-line-light)";
-                      e.currentTarget.style.background = "#141416";
+                      e.currentTarget.style.borderColor = "var(--studio-orange)";
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.borderColor = "var(--studio-line)";
-                      e.currentTarget.style.background = "var(--studio-panel)";
                     }}
                   >
                     <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>

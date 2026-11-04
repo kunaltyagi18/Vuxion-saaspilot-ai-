@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata = {
   title: "Privacy Policy — Vuxion",
@@ -76,53 +78,97 @@ const sections = [
 
 export default function PrivacyPolicy() {
   return (
-    <main className="min-h-screen bg-white dark:bg-gray-950 transition-colors duration-300">
-      {/* Header */}
-      <div className="relative py-20 px-6 bg-gradient-to-br from-indigo-600 via-violet-600 to-fuchsia-600 overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff08_1px,transparent_1px),linear-gradient(to_bottom,#ffffff08_1px,transparent_1px)] bg-[size:48px_48px]" />
-        <div className="max-w-3xl mx-auto relative z-10">
-          <Link href="/" className="inline-flex items-center gap-2 text-white/70 hover:text-white text-sm font-medium mb-8 transition-colors">
-            ← Back to Home
-          </Link>
-          <h1 className="text-4xl sm:text-5xl font-black text-white mb-4">Privacy Policy</h1>
-          <p className="text-white/75 text-base">Last updated: September 2025</p>
-          <p className="text-white/75 text-base mt-2">
-            At Vuxion, your privacy is important to us. This policy explains how we collect, use, and protect your information.
-          </p>
-        </div>
-      </div>
+    <main style={{ background: "var(--studio-bg)", minHeight: "100vh" }}>
+      <Navbar />
 
-      {/* Content */}
-      <div className="max-w-3xl mx-auto px-6 py-16">
-        <div className="space-y-10">
-          {sections.map((section) => (
-            <div key={section.title} className="border-b border-gray-100 dark:border-gray-800 pb-10 last:border-0">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">{section.title}</h2>
-              <div className="space-y-3">
-                {section.content.map((para, i) => (
-                  <p key={i} className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
-                    {para.split("**").map((part, j) =>
-                      j % 2 === 1
-                        ? <strong key={j} className="text-gray-800 dark:text-gray-200 font-semibold">{part}</strong>
-                        : part
-                    )}
-                  </p>
-                ))}
+      <div style={{ paddingTop: 72 }}>
+        {/* Hero */}
+        <section className="studio-page-hero studio-grid-section" style={{ borderBottom: "1px solid var(--studio-line)" }}>
+          <div style={{ maxWidth: 720 }}>
+            <span className="studio-label" style={{ marginBottom: 22, display: "block" }}>Legal</span>
+            <h1
+              style={{
+                fontFamily: "var(--studio-display)",
+                fontSize: "clamp(42px, 6vw, 80px)",
+                fontWeight: 600,
+                letterSpacing: "-.075em",
+                lineHeight: 0.9,
+                color: "var(--studio-copy)",
+                margin: "0 0 24px",
+              }}
+            >
+              Privacy <em style={{ color: "var(--studio-orange)", fontStyle: "normal" }}>Policy.</em>
+            </h1>
+            <p style={{ color: "#8c8c92", fontSize: 14, lineHeight: 1.6, margin: 0 }}>
+              Last updated: September 2025 — At Vuxion, your privacy matters. This policy explains how we collect, use, and protect your information.
+            </p>
+          </div>
+        </section>
+
+        {/* Content */}
+        <section className="studio-section studio-grid-section">
+          <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1fr)", gap: 0 }}>
+            {sections.map((section, i) => (
+              <div
+                key={section.title}
+                className="privacy-row"
+                style={{
+                  borderBottom: "1px solid var(--studio-line)",
+                  display: "grid",
+                  gridTemplateColumns: "200px 1fr",
+                  gap: "0 48px",
+                  padding: "36px 0",
+                }}
+              >
+                {/* Section number + title */}
+                <div>
+                  <span className="studio-mono" style={{ color: "var(--studio-orange)", fontSize: 10, display: "block", marginBottom: 10 }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <h2
+                    style={{
+                      fontFamily: "var(--studio-display)",
+                      fontSize: 18,
+                      fontWeight: 600,
+                      letterSpacing: "-.04em",
+                      color: "var(--studio-copy)",
+                      margin: 0,
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    {section.title.replace(/^\d+\.\s*/, "")}
+                  </h2>
+                </div>
+
+                {/* Content */}
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {section.content.map((para, j) => (
+                    <p key={j} style={{ color: "#929297", fontSize: 14, lineHeight: 1.7, margin: 0 }}>
+                      {para.split("**").map((part, k) =>
+                        k % 2 === 1
+                          ? <strong key={k} style={{ color: "var(--studio-copy)", fontWeight: 600 }}>{part}</strong>
+                          : part
+                      )}
+                    </p>
+                  ))}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* Footer CTA */}
-        <div className="mt-12 p-6 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900 text-center">
-          <p className="text-gray-700 dark:text-gray-300 text-sm mb-3">
-            Have questions about our privacy practices?
-          </p>
-          <Link href="/contact" className="inline-flex items-center gap-2 bg-indigo-600 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-700 transition">
-            Contact Us →
-          </Link>
-        </div>
+          {/* CTA */}
+          <div style={{ marginTop: 64, display: "flex", alignItems: "center", gap: 24 }}>
+            <Link href="/contact" className="studio-button studio-button--accent">
+              Contact Us <span className="studio-arrow">↗</span>
+            </Link>
+            <Link href="/" className="studio-text-link" style={{ fontSize: 10 }}>
+              Back to Home <span className="studio-arrow">↗</span>
+            </Link>
+          </div>
+        </section>
       </div>
+
+      <Footer />
     </main>
   );
 }

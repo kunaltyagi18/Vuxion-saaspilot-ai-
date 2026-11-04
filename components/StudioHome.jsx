@@ -1,11 +1,56 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Chatbot from "@/components/Chatbot";
 
 function Arrow() {
   return <span aria-hidden="true" className="studio-arrow">↗</span>;
+}
+
+function PricingCard({ num, title, desc, features }) {
+  const [active, setActive] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const showOrange = active || hovered;
+
+  return (
+    <div
+      style={{
+        background: "var(--studio-panel)",
+        border: `1px solid ${showOrange ? "var(--studio-orange)" : "var(--studio-line)"}`,
+        padding: "36px 32px",
+        display: "flex",
+        flexDirection: "column",
+        transition: "border-color .25s ease",
+        cursor: "pointer",
+      }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={() => setActive(a => !a)}
+    >
+      <span className="studio-mono" style={{ color: "var(--studio-orange)", fontSize: 10, marginBottom: 24, display: "block" }}>{num}</span>
+      <h3 style={{ fontFamily: "var(--studio-display)", fontSize: 32, fontWeight: 600, letterSpacing: "-.07em", color: "var(--studio-copy)", margin: "0 0 6px" }}>{title}</h3>
+      <p style={{ color: "#929297", fontSize: 13, lineHeight: 1.65, margin: "0 0 28px" }}>{desc}</p>
+      <ul style={{ listStyle: "none", margin: "0 0 auto", padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
+        {features.map(f => (
+          <li key={f} style={{ color: "#929297", fontSize: 13, display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ color: "var(--studio-orange)", fontSize: 14, lineHeight: 1 }}>—</span> {f}
+          </li>
+        ))}
+      </ul>
+      <div style={{ borderTop: "1px solid var(--studio-line)", marginTop: 32, paddingTop: 24 }}>
+        <Link
+          href="/contact"
+          className="studio-button studio-button--outline"
+          style={{ width: "100%", justifyContent: "space-between" }}
+          onClick={e => e.stopPropagation()}
+        >
+          Discuss a quote <Arrow />
+        </Link>
+      </div>
+    </div>
+  );
 }
 
 export default function StudioHome() {
@@ -31,17 +76,24 @@ export default function StudioHome() {
             </div>
           </div>
 
-          <aside className="human-hero-card" aria-label="Vuxion studio introduction">
-            <div className="human-card-top">
-              <span>VUXION</span>
-              <span>NOIDA / INDIA</span>
-            </div>
-            <div className="human-card-mark">V</div>
-            <div className="human-card-bottom">
-              <span>DESIGN<br />&amp; DEVELOPMENT</span>
-              <span>2026</span>
-            </div>
-          </aside>
+          {/* Boy — no card, just floating image */}
+          <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+            <img
+              src="/hero-boy-nobg.png"
+              alt="Developer"
+              className="hero-boy-img"
+              style={{
+                width: "100%",
+                maxWidth: 420,
+                height: "auto",
+                display: "block",
+                objectFit: "contain",
+                pointerEvents: "none",
+                maskImage: "linear-gradient(to top, transparent 0%, black 18%)",
+                WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 18%)",
+              }}
+            />
+          </div>
 
           <div className="human-hero-foot">
             <span>Small team, close to the work</span>
@@ -83,6 +135,76 @@ export default function StudioHome() {
           </div>
         </section>
 
+        {/* ── How We Work ────────────────────────────────────────────── */}
+        <section className="studio-section studio-grid-section" style={{ borderTop: "1px solid var(--studio-line)" }}>
+          <div className="studio-section-head">
+            <div>
+              <span className="studio-label">OUR PROCESS</span>
+              <h2>How we <em>work.</em></h2>
+            </div>
+            <p>A simple, transparent process so you always know where your project stands and what comes next.</p>
+          </div>
+
+          <div className="process-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", borderTop: "1px solid var(--studio-line)" }}>
+            {[
+              ["01", "Discovery", "We listen first. You walk us through the idea, the users, and the problem you're solving."],
+              ["02", "Proposal", "We map out the scope, timeline, and a fixed price — no surprises mid-project."],
+              ["03", "Build", "Regular check-ins, live previews, and a short feedback loop so nothing drifts."],
+              ["04", "Launch", "We deploy, hand over everything you need, and stay available for questions after go-live."],
+            ].map(([num, title, desc]) => (
+              <div
+                key={num}
+                style={{
+                  borderRight: "1px solid var(--studio-line)",
+                  padding: "28px 24px 28px 0",
+                  marginLeft: 24,
+                }}
+              >
+                <span className="studio-mono" style={{ color: "var(--studio-orange)", fontSize: 10 }}>{num}</span>
+                <h3 style={{ fontFamily: "var(--studio-display)", fontSize: 22, fontWeight: 600, letterSpacing: "-.05em", color: "var(--studio-copy)", margin: "28px 0 12px" }}>{title}</h3>
+                <p style={{ color: "#929297", fontSize: 13, lineHeight: 1.65, margin: 0 }}>{desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* ── Pricing Plans ──────────────────────────────────────────────── */}
+        <section className="studio-section studio-grid-section" style={{ borderTop: "1px solid var(--studio-line)" }}>
+          <div className="studio-section-head">
+            <div>
+              <span className="studio-label">PRICING</span>
+              <h2>Simple, honest <em>plans.</em></h2>
+            </div>
+            <p>Fixed prices. No hourly billing. No hidden fees. Pick the scope that fits your stage, then let's talk details.</p>
+          </div>
+
+          <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+            <PricingCard
+              num="01 / STARTER"
+              title="Landing Page"
+              desc="A clean, fast marketing page that makes your offer impossible to misread."
+              features={["Single-page design", "Mobile responsive", "Contact form", "SEO fundamentals", "2 revision rounds"]}
+            />
+            <PricingCard
+              num="02 / GROWTH"
+              title="Full Website"
+              desc="Multi-page site with CMS, animations and everything a growing business needs online."
+              features={["Up to 8 pages", "CMS integration", "Custom animations", "Analytics setup", "SEO & performance audit", "3 revision rounds"]}
+            />
+            <PricingCard
+              num="03 / PRODUCT"
+              title="Web App / MVP"
+              desc="A real working product — auth, database, dashboards — built to survive real users."
+              features={["Full-stack Next.js", "Auth & user roles", "Database + API", "Admin dashboard", "Deployment + CI/CD", "Ongoing retainer option"]}
+            />
+          </div>
+
+          <p style={{ color: "#929297", fontSize: 12, marginTop: 20, textAlign: "center" }}>
+            All prices are project-based. Final quote after a free 30-min call. No retainer required.
+          </p>
+        </section>
+
+        {/* ── Contact CTA ────────────────────────────────────────────────── */}
         <section className="human-contact studio-grid-section">
           <div>
             <span className="studio-label">04 / NEXT STEP</span>

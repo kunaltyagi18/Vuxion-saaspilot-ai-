@@ -111,12 +111,10 @@ export default function Contact() {
                 transition: "border-color .25s ease, background .25s ease",
               }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = "var(--studio-line-light)";
-                e.currentTarget.style.background = "#141416";
+                e.currentTarget.style.borderColor = "var(--studio-orange)";
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.borderColor = "var(--studio-line)";
-                e.currentTarget.style.background = "var(--studio-panel)";
               }}
             >
               <p className="studio-label" style={{ marginBottom: 8 }}>{item.label}</p>
