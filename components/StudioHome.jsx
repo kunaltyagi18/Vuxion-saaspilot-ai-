@@ -148,15 +148,15 @@ export default function StudioHome() {
             <span className="studio-label">THE WORK IN PRACTICE</span>
             <h2>Ideas become <em>useful things.</em></h2>
             <p>From the first rough sketch to the final responsive screen, we keep the work tangible, focused, and close to the people who will use it.</p>
-            <Link href="/projects" className="studio-text-link">See selected work <Arrow /></Link>
+            <Link href="/projects" className="studio-button studio-button--accent human-visual-cta">See selected work <Arrow /></Link>
           </div>
           <div className="human-visual-grid">
             <figure className="human-visual-feature">
-              <Image src="/studio-workspace.png" alt="Desktop and mobile product interfaces in a studio workspace" fill sizes="(max-width: 800px) 100vw, 58vw" />
+              <Image src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1400&q=85" alt="Real product workspace with a laptop and desk setup" fill sizes="(max-width: 800px) 100vw, 58vw" />
               <figcaption>01 / BUILT FOR THE REAL WORLD</figcaption>
             </figure>
             <figure className="human-visual-detail">
-              <Image src="/studio-process.png" alt="Paper interface sketches and product design materials" fill sizes="(max-width: 800px) 100vw, 30vw" />
+              <Image src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=900&q=85" alt="Real design workspace with sketches and creative materials" fill sizes="(max-width: 800px) 100vw, 30vw" />
               <figcaption>02 / START WITH CLARITY</figcaption>
             </figure>
           </div>
