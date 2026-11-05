@@ -58,7 +58,7 @@ export default function RootLayout({ children }) {
                 "@type": "Organization",
                 name: "Vuxion",
                 url: SITE_URL,
-                logo: `${SITE_URL}/favicon.ico`,
+                logo: `${SITE_URL}/icon.svg`,
                 contactPoint: {
                   "@type": "ContactPoint",
                   telephone: "+91-74280-XXXXX",

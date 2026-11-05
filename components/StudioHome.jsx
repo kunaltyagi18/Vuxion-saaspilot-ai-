@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import Navbar from "@/components/Navbar";
 import Chatbot from "@/components/Chatbot";
@@ -139,6 +140,25 @@ export default function StudioHome() {
               <h3>Ready to grow.</h3>
               <p>You get a fast product today and a foundation your team can understand, maintain, and improve tomorrow.</p>
             </article>
+          </div>
+        </section>
+
+        <section className="human-visual-section studio-grid-section">
+          <div className="human-visual-copy">
+            <span className="studio-label">THE WORK IN PRACTICE</span>
+            <h2>Ideas become <em>useful things.</em></h2>
+            <p>From the first rough sketch to the final responsive screen, we keep the work tangible, focused, and close to the people who will use it.</p>
+            <Link href="/projects" className="studio-text-link">See selected work <Arrow /></Link>
+          </div>
+          <div className="human-visual-grid">
+            <figure className="human-visual-feature">
+              <Image src="/studio-workspace.png" alt="Desktop and mobile product interfaces in a studio workspace" fill sizes="(max-width: 800px) 100vw, 58vw" />
+              <figcaption>01 / BUILT FOR THE REAL WORLD</figcaption>
+            </figure>
+            <figure className="human-visual-detail">
+              <Image src="/studio-process.png" alt="Paper interface sketches and product design materials" fill sizes="(max-width: 800px) 100vw, 30vw" />
+              <figcaption>02 / START WITH CLARITY</figcaption>
+            </figure>
           </div>
         </section>
 
