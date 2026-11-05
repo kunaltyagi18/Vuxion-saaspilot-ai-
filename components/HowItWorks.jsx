@@ -26,9 +26,10 @@ export default function HowItWorks() {
 
       {/* Steps — horizontal numbered grid */}
       <div
+        className="responsive-card-grid"
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+          gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 220px), 1fr))",
           gap: 0,
           border: "1px solid var(--studio-line)",
         }}

@@ -105,7 +105,7 @@ export default function Services({ limit }) {
 
       {/* Loading skeleton */}
       {loading ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+        <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))" }}>
           {[1, 2, 3].map((i) => (
             <div
               key={i}
@@ -123,7 +123,7 @@ export default function Services({ limit }) {
           Our services are coming soon — stay tuned.
         </p>
       ) : (
-        <div className="studio-bento-grid" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gridTemplateRows: "unset" }}>
+        <div className="studio-bento-grid responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))", gridTemplateRows: "unset" }}>
           {displayed.map((s, i) => {
             const cardImg = s.image || pickServiceImage(s.title, i);
             const idx = String(i + 1).padStart(2, "0");

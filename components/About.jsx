@@ -127,6 +127,7 @@ export default function About({ preview = false }) {
               gridTemplateColumns: "1fr 1fr",
               border: "1px solid var(--studio-line)",
             }}
+            className="about-stats-grid"
           >
             {(data.stats || []).slice(0, 4).map((s, i) => (
               <motion.div
@@ -204,7 +205,7 @@ export default function About({ preview = false }) {
                   </h2>
                 </div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+              <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))" }}>
                 {data.teamMembers.map((member, i) => (
                   <motion.div
                     key={i}
@@ -258,6 +259,43 @@ export default function About({ preview = false }) {
               </div>
             </>
           )}
+
+          <div className="about-principles">
+            <div className="about-principles-head">
+              <div>
+                <span className="studio-label">HOW WE THINK</span>
+                <h2>Small details, <em>big trust.</em></h2>
+              </div>
+              <p>Our best work comes from staying curious, communicating early, and caring about what happens after launch.</p>
+            </div>
+            <div className="about-principles-grid">
+              <article className="about-principle">
+                <span>01</span>
+                <h3>Start with the real problem.</h3>
+                <p>We ask questions before recommending tools, features, or a larger build than you actually need.</p>
+              </article>
+              <article className="about-principle">
+                <span>02</span>
+                <h3>Make complexity feel simple.</h3>
+                <p>Good design gives people confidence. We turn complicated workflows into clear next steps.</p>
+              </article>
+              <article className="about-principle">
+                <span>03</span>
+                <h3>Leave things better documented.</h3>
+                <p>Your team should be able to run, update, and build on the product without waiting on us.</p>
+              </article>
+            </div>
+          </div>
+          <div className="about-relationship">
+            <div>
+              <span className="studio-label">THE WORKING RELATIONSHIP</span>
+              <h2>Close enough to care. <em>Clear enough to trust.</em></h2>
+            </div>
+            <div>
+              <p>We work in small loops: understand the context, make the next useful thing, share it early, and improve it together.</p>
+              <Link href="/contact" className="studio-button studio-button--accent">Start a conversation <span className="studio-arrow">↗</span></Link>
+            </div>
+          </div>
         </motion.div>
       )}
 

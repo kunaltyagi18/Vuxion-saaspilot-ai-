@@ -42,7 +42,7 @@ export default function Testimonials() {
           Loading testimonials...
         </p>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 12 }}>
+        <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 340px), 1fr))" }}>
           {testimonials.map((t, i) => (
             <motion.div
               key={t._id}
@@ -76,7 +76,7 @@ export default function Testimonials() {
                   letterSpacing: "-.05em",
                 }}
               >
-                "
+                &quot;
               </span>
 
               <StarRating count={t.rating} />

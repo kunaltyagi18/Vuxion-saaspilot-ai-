@@ -53,7 +53,7 @@ export default function ServicesPage() {
             <p>Every engagement is shaped around the stage you are in, with the context and documentation needed to keep decisions moving.</p>
           </div>
 
-          <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fill, minmax(230px, 1fr))" }}>
+          <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 230px), 1fr))" }}>
             {[
               ["01", "A clear plan",       "Goals, milestones and responsibilities agreed before production starts."],
               ["02", "Weekly visibility",  "Working demos and concise updates so progress never feels opaque."],
@@ -97,7 +97,7 @@ export default function ServicesPage() {
             </div>
           </div>
 
-          <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))" }}>
+          <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 280px), 1fr))" }}>
             {[
               ["01", "Discovery sprint", "A focused engagement to clarify the opportunity, user journeys, scope and a practical roadmap."],
               ["02", "Build and launch", "A complete design and development partnership for a website, web app or new digital product."],
@@ -132,6 +132,39 @@ export default function ServicesPage() {
                 </a>
               </div>
             ))}
+          </div>
+        </section>
+
+        <section className="service-fit studio-grid-section">
+          <div className="service-fit-copy">
+            <span className="studio-label">NOT SURE WHERE TO START?</span>
+            <h2>Bring us the messy part. <em>We&apos;ll shape it.</em></h2>
+            <p>
+              You do not need a perfect brief. Tell us what is slowing the business down, what customers keep asking for, or what you want to make possible next.
+            </p>
+            <a href="/contact" className="studio-button studio-button--accent">
+              Book a discovery call <span className="studio-arrow">↗</span>
+            </a>
+          </div>
+          <div className="service-fit-list">
+            <div><span>01</span><p>We clarify the opportunity</p></div>
+            <div><span>02</span><p>We recommend the right-sized next step</p></div>
+            <div><span>03</span><p>We show you what success can look like</p></div>
+          </div>
+        </section>
+
+        <section className="service-steps studio-grid-section">
+          <div className="studio-section-head">
+            <div>
+              <span className="studio-label">WHAT HAPPENS NEXT</span>
+              <h2>A simple start to <em>good work.</em></h2>
+            </div>
+            <p>No long procurement maze. We keep the first step small, useful, and focused on getting the right context.</p>
+          </div>
+          <div className="service-steps-grid">
+            <article><span>01 / TALK</span><h3>Tell us what is happening.</h3><p>Share the goal, the friction, and what you have already tried.</p></article>
+            <article><span>02 / SHAPE</span><h3>Find the right scope.</h3><p>We turn the conversation into a practical plan, timeline, and fixed next step.</p></article>
+            <article><span>03 / MOVE</span><h3>Start with momentum.</h3><p>You leave with clarity—even if the right answer is not a large build yet.</p></article>
           </div>
         </section>
       </div>

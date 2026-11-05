@@ -54,10 +54,10 @@ export default function WhyUs() {
               Why clients <em>choose us.</em>
             </h2>
           </div>
-          <p>We don't just build websites — we build digital assets that grow your business.</p>
+          <p>We don&apos;t just build websites — we build digital assets that grow your business.</p>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+        <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))" }}>
           {whyUs.map((item, i) => (
             <motion.div
               key={i}

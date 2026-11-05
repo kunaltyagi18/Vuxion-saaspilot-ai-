@@ -1,3 +1,4 @@
+
 import connectDB from "@/lib/mongodb";
 import About from "@/models/About";
 import { NextResponse } from "next/server";

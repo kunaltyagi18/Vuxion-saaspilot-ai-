@@ -77,21 +77,12 @@ export default function StudioHome() {
           </div>
 
           {/* Boy — no card, just floating image */}
-          <div style={{ position: "relative", display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+          <div className="hero-boy-wrap">
             <img
               src="/hero-boy-nobg.png"
               alt="Developer"
               className="hero-boy-img"
-              style={{
-                width: "100%",
-                maxWidth: 420,
-                height: "auto",
-                display: "block",
-                objectFit: "contain",
-                pointerEvents: "none",
-                maskImage: "linear-gradient(to top, transparent 0%, black 18%)",
-                WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 18%)",
-              }}
+              style={{ maskImage: "linear-gradient(to top, transparent 0%, black 18%)", WebkitMaskImage: "linear-gradient(to top, transparent 0%, black 18%)" }}
             />
           </div>
 
@@ -106,6 +97,49 @@ export default function StudioHome() {
           <Link href="/services">Services <Arrow /></Link>
           <Link href="/projects">Projects <Arrow /></Link>
           <Link href="/about">About us <Arrow /></Link>
+        </section>
+
+        <section className="human-fit-section studio-grid-section">
+          <div className="human-fit-section-head">
+            <div>
+              <span className="studio-label">A GOOD FIT FOR</span>
+              <h2>Teams with something <em>worth building.</em></h2>
+            </div>
+            <p>Whether you are starting from a sketch or improving something already live, we help turn momentum into a product people can use.</p>
+          </div>
+          <div className="human-fit-grid">
+            <article><span>01</span><h3>New ideas</h3><p>Shape an opportunity into a focused, useful first release.</p></article>
+            <article><span>02</span><h3>Growing teams</h3><p>Give your business a stronger website, workflow, or customer experience.</p></article>
+            <article><span>03</span><h3>Busy operations</h3><p>Replace spreadsheets and repeated manual work with simple internal tools.</p></article>
+            <article><span>04</span><h3>Existing products</h3><p>Improve clarity, performance, and the next important feature.</p></article>
+          </div>
+        </section>
+
+        <section className="human-proof studio-grid-section">
+          <div className="human-proof-intro">
+            <span className="studio-label">THE VUXION DIFFERENCE</span>
+            <h2>Good work should feel <em>clear.</em></h2>
+            <p>
+              You should always know what is being built, why it matters, and what happens next. We keep the process close, practical, and easy to follow.
+            </p>
+          </div>
+          <div className="human-proof-grid">
+            <article className="human-proof-card">
+              <strong>01 / CLARITY</strong>
+              <h3>Less guesswork.</h3>
+              <p>We turn a loose idea into a shared plan with clear priorities, milestones, and decisions.</p>
+            </article>
+            <article className="human-proof-card">
+              <strong>02 / CRAFT</strong>
+              <h3>More intention.</h3>
+              <p>Every screen, interaction, and line of code has a job: help people move forward with confidence.</p>
+            </article>
+            <article className="human-proof-card">
+              <strong>03 / OWNERSHIP</strong>
+              <h3>Ready to grow.</h3>
+              <p>You get a fast product today and a foundation your team can understand, maintain, and improve tomorrow.</p>
+            </article>
+          </div>
         </section>
 
         <section className="human-approach studio-grid-section">
@@ -145,7 +179,7 @@ export default function StudioHome() {
             <p>A simple, transparent process so you always know where your project stands and what comes next.</p>
           </div>
 
-          <div className="process-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", borderTop: "1px solid var(--studio-line)" }}>
+          <div className="process-grid">
             {[
               ["01", "Discovery", "We listen first. You walk us through the idea, the users, and the problem you're solving."],
               ["02", "Proposal", "We map out the scope, timeline, and a fixed price — no surprises mid-project."],
@@ -175,10 +209,10 @@ export default function StudioHome() {
               <span className="studio-label">PRICING</span>
               <h2>Simple, honest <em>plans.</em></h2>
             </div>
-            <p>Fixed prices. No hourly billing. No hidden fees. Pick the scope that fits your stage, then let's talk details.</p>
+            <p>Fixed prices. No hourly billing. No hidden fees. Pick the scope that fits your stage, then let&apos;s talk details.</p>
           </div>
 
-          <div className="pricing-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+          <div className="pricing-grid">
             <PricingCard
               num="01 / STARTER"
               title="Landing Page"

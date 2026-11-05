@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -29,6 +29,20 @@ const NAV_ITEMS = [
   { key: "leads",       label: "Contact Leads",   icon: "📩" },
   { key: "settings",    label: "Site Settings",   icon: "⚙️" },
 ];
+
+function CustomTooltip({ active, payload, label }) {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white dark:bg-gray-900 border border-indigo-100 dark:border-gray-700 rounded-xl px-4 py-3 shadow-lg">
+        <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">{label}</p>
+        <p className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">
+          {payload[0].value} <span className="text-xs font-semibold">leads</span>
+        </p>
+      </div>
+    );
+  }
+  return null;
+}
 
 // ── Small reusable input ──────────────────────────────────────────────────────
 function Field({ placeholder, value, onChange, type = "text" }) {
@@ -120,11 +134,7 @@ export default function AdminPage() {
   }, [isLoaded, isSignedIn, user, router]);
 
   // ── Load all data on mount ──────────────────────────────────────────────────
-  useEffect(() => {
-    loadAll();
-  }, []);
-
-  async function loadAll() {
+  const loadAll = useCallback(async () => {
     const [s, p, f, l, a, t, st, bl] = await Promise.all([
       fetch("/api/services").then(r => r.json()),
       fetch("/api/projects").then(r => r.json()),
@@ -143,7 +153,11 @@ export default function AdminPage() {
     setTestimonials(Array.isArray(t) ? t : []);
     if (st) setSettings(st);
     setBlogPosts(Array.isArray(bl) ? bl : []);
-  }
+  }, []);
+
+  useEffect(() => {
+    void Promise.resolve().then(loadAll);
+  }, [loadAll]);
 
   // Save About
   async function saveAbout() {
@@ -356,21 +370,6 @@ export default function AdminPage() {
   };
 
   const leadsChartData = buildChartData(chartView);
-
-  // Custom tooltip for line chart
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white dark:bg-gray-900 border border-indigo-100 dark:border-gray-700 rounded-xl px-4 py-3 shadow-lg">
-          <p className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-1">{label}</p>
-          <p className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">
-            {payload[0].value} <span className="text-xs font-semibold">leads</span>
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex transition-colors duration-300">

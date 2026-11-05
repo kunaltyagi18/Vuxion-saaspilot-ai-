@@ -48,7 +48,7 @@ export default function Projects({ limit }) {
       </div>
 
       {loading ? (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+        <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))" }}>
           {[1, 2, 3].map((i) => (
             <div
               key={i}
@@ -66,7 +66,7 @@ export default function Projects({ limit }) {
           Exciting projects coming soon — check back shortly!
         </p>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+        <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))" }}>
           {displayed.map((p, i) => {
             const projectImg = p.image || defaultProjectImages[i % defaultProjectImages.length];
             const idx = String(i + 1).padStart(2, "0");

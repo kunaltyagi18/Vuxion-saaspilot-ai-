@@ -50,7 +50,7 @@ export default function ProjectsPage() {
             <p>The strongest projects balance business outcomes with the details users feel.</p>
           </div>
 
-          <div style={{ display: "grid", gap: 12, gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))" }}>
+          <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 260px), 1fr))" }}>
             {[
               ["01", "Business fit",    "Does the product support a real goal — more qualified leads, faster operations, or a clearer buying decision?"],
               ["02", "User confidence", "Can someone understand what to do next without friction, guesswork or unnecessary complexity?"],
@@ -66,6 +66,46 @@ export default function ProjectsPage() {
         </section>
 
         <Projects />
+
+        <section className="project-outcomes studio-grid-section">
+          <div className="studio-section-head">
+            <div>
+              <span className="studio-label">THE OUTCOME</span>
+              <h2>Not just shipped. <em>Useful.</em></h2>
+            </div>
+            <p>We measure a project by what it helps people do better after launch—not just by how polished it looks in a portfolio.</p>
+          </div>
+          <div className="project-outcome-grid">
+            <article className="project-outcome-card">
+              <span>01</span>
+              <h3>More qualified conversations</h3>
+              <p>A clearer story and a better path to action for the right customers.</p>
+            </article>
+            <article className="project-outcome-card">
+              <span>02</span>
+              <h3>Faster team workflows</h3>
+              <p>Tools that remove repetitive steps and give teams more time for meaningful work.</p>
+            </article>
+            <article className="project-outcome-card">
+              <span>03</span>
+              <h3>Confidence to keep moving</h3>
+              <p>A maintainable foundation that makes the next feature, insight, or experiment easier.</p>
+            </article>
+          </div>
+        </section>
+
+        <section className="project-journey studio-grid-section">
+          <div className="project-journey-copy">
+            <span className="studio-label">BEHIND EVERY PROJECT</span>
+            <h2>Good outcomes start with <em>good questions.</em></h2>
+            <p>Before the visual polish, we make sure the product has a clear job to do and a sensible path to get there.</p>
+          </div>
+          <div className="project-journey-list">
+            <div><span>01</span><p>Understand the people and the business.</p></div>
+            <div><span>02</span><p>Prioritise the smallest useful release.</p></div>
+            <div><span>03</span><p>Build, learn, and improve from real feedback.</p></div>
+          </div>
+        </section>
 
         {/* What sits behind the screen */}
         <section
@@ -90,7 +130,7 @@ export default function ProjectsPage() {
                 <em style={{ color: "var(--studio-orange)", fontStyle: "normal" }}>real life.</em>
               </h2>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+            <div className="responsive-two-column" style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 20 }}>
               {[
                 ["Responsive by default", "Thoughtful behaviour across phones, tablets and large screens."],
                 ["Fast where it counts",  "Lean assets, considered motion and performance-minded implementation."],

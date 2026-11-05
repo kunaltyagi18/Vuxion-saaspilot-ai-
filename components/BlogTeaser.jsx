@@ -43,7 +43,7 @@ export default function BlogTeaser() {
         </Link>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 12 }}>
+      <div className="responsive-card-grid" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(min(100%, 300px), 1fr))" }}>
         {featuredPosts.map((post, i) => (
           <motion.article
             key={post._id || i}

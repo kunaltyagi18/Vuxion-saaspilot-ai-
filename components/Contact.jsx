@@ -76,7 +76,7 @@ export default function Contact() {
             Give the good <em>idea a body.</em>
           </h2>
         </div>
-        <p>Have a question or want to work with us? Drop a message and we'll get back within 24 hours.</p>
+        <p>Have a question or want to work with us? Drop a message and we&apos;ll get back within 24 hours.</p>
       </div>
 
       <div
