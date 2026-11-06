@@ -88,6 +88,7 @@ export default function Projects({ limit }) {
                     src={projectImg}
                     alt={p.title || "Project screenshot"}
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 100vw, 33vw"
                     style={{ objectFit: "cover", transition: "transform .6s ease" }}
                   />

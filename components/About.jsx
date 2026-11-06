@@ -37,6 +37,7 @@ function AboutImage({ src }) {
         src={imageSrc}
         alt="Vuxion team collaborating"
         fill
+        unoptimized
         sizes="(max-width: 1024px) 100vw, 50vw"
         className="object-cover transition-transform duration-700"
         style={{ transition: "transform .7s ease" }}

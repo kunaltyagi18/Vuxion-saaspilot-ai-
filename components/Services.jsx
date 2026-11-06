@@ -145,6 +145,7 @@ export default function Services({ limit }) {
                     src={cardImg}
                     alt={s.title || "Service image"}
                     fill
+                    unoptimized
                     sizes="(max-width: 768px) 100vw, 33vw"
                     style={{ objectFit: "cover", transition: "transform .6s ease" }}
                   />

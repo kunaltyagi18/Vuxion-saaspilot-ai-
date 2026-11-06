@@ -152,11 +152,11 @@ export default function StudioHome() {
           </div>
           <div className="human-visual-grid">
             <figure className="human-visual-feature">
-              <Image src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1400&q=85" alt="Real product workspace with a laptop and desk setup" fill sizes="(max-width: 800px) 100vw, 58vw" />
+              <Image src="https://images.unsplash.com/photo-1499951360447-b19be8fe80f5?auto=format&fit=crop&w=1400&q=85" alt="Real product workspace with a laptop and desk setup" fill unoptimized sizes="(max-width: 800px) 100vw, 58vw" />
               <figcaption>01 / BUILT FOR THE REAL WORLD</figcaption>
             </figure>
             <figure className="human-visual-detail">
-              <Image src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=900&q=85" alt="Real design workspace with sketches and creative materials" fill sizes="(max-width: 800px) 100vw, 30vw" />
+              <Image src="https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e?auto=format&fit=crop&w=900&q=85" alt="Real design workspace with sketches and creative materials" fill unoptimized sizes="(max-width: 800px) 100vw, 30vw" />
               <figcaption>02 / START WITH CLARITY</figcaption>
             </figure>
           </div>
