@@ -69,6 +69,16 @@ function TextArea({ placeholder, value, onChange, rows = 3 }) {
   );
 }
 
+async function fetchJson(url, fallback) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) return fallback;
+    return await response.json();
+  } catch {
+    return fallback;
+  }
+}
+
 export default function AdminPage() {
   const { isSignedIn, isLoaded, user } = useUser();
   const router = useRouter();
@@ -136,14 +146,14 @@ export default function AdminPage() {
   // ── Load all data on mount ──────────────────────────────────────────────────
   const loadAll = useCallback(async () => {
     const [s, p, f, l, a, t, st, bl] = await Promise.all([
-      fetch("/api/services").then(r => r.json()),
-      fetch("/api/projects").then(r => r.json()),
-      fetch("/api/faqs").then(r => r.json()),
-      fetch("/api/contact").then(r => r.ok ? r.json() : []),
-      fetch("/api/about").then(r => r.ok ? r.json() : null),
-      fetch("/api/testimonials").then(r => r.json()),
-      fetch("/api/settings").then(r => r.json()),
-      fetch("/api/blog").then(r => r.json()),
+      fetchJson("/api/services", []),
+      fetchJson("/api/projects", []),
+      fetchJson("/api/faqs", []),
+      fetchJson("/api/contact", []),
+      fetchJson("/api/about", null),
+      fetchJson("/api/testimonials", []),
+      fetchJson("/api/settings", null),
+      fetchJson("/api/blog", []),
     ]);
     setServices(Array.isArray(s) ? s : []);
     setProjects(Array.isArray(p) ? p : []);

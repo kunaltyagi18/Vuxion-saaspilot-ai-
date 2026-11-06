@@ -19,6 +19,11 @@ const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 export default clerkMiddleware(async (auth, req) => {
   // Sirf admin routes pe extra check lagao
   if (isAdminRoute(req)) {
+    // Clerk ka built-in protection session ko reliably validate karta hai.
+    // Admin email check client page aur API mutations par bhi hota hai.
+    await auth.protect();
+    return;
+
     // Step 1: User logged in hai ya nahi check karo
     const { userId } = await auth();
 
