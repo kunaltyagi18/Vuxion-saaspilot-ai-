@@ -5,6 +5,8 @@ import Project from "@/models/Project";
 import { NextResponse } from "next/server";
 import { checkRateLimit } from "@/lib/ratelimit";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(request) {
   // ── Rate Limiting: max 10 chatbot messages per IP per minute ────────────────
   const ip =
@@ -22,8 +24,6 @@ export async function POST(request) {
   // ────────────────────────────────────────────────────────────────────────────
 
   try {
-    await connectDB();
-
     const { message } = await request.json();
     const cleanMsg = message.toLowerCase().trim();
     const userWords = cleanMsg.split(/\s+/);
@@ -39,29 +39,47 @@ export async function POST(request) {
     // ── 2. Smart Intent Check: Services & Pricing (Live MongoDB Data) ──
     const serviceKeywords = ["service", "services", "offer", "package", "pricing", "price", "cost", "charge", "rate"];
     if (serviceKeywords.some((k) => cleanMsg.includes(k))) {
-      const dbServices = await Service.find({}).lean();
-      if (dbServices && dbServices.length > 0) {
-        const listText = dbServices
-          .map((s) => `• ${s.title}: ${s.description} (${s.price})`)
-          .join("\n");
-        return NextResponse.json({
-          answer: `Here are our current services:\n\n${listText}\n\nFeel free to ask for more details!`,
-        });
+      try {
+        await connectDB();
+        const dbServices = await Service.find({}).lean();
+        if (dbServices && dbServices.length > 0) {
+          const listText = dbServices
+            .map((s) => `• ${s.title}: ${s.description} (${s.price})`)
+            .join("\n");
+          return NextResponse.json({
+            answer: `Here are our current services:\n\n${listText}\n\nFeel free to ask for more details!`,
+          });
+        }
+      } catch (err) {
+        console.error("Chat services lookup failed:", err);
       }
+
+      return NextResponse.json({
+        answer: "We offer web development, UI/UX design, and SEO services. Please contact us for the latest packages and pricing.",
+      });
     }
 
     // ── 3. Smart Intent Check: Projects & Portfolio (Live MongoDB Data) ──
     const projectKeywords = ["project", "projects", "portfolio", "built", "work done", "examples", "case study"];
     if (projectKeywords.some((k) => cleanMsg.includes(k))) {
-      const dbProjects = await Project.find({}).lean();
-      if (dbProjects && dbProjects.length > 0) {
-        const listText = dbProjects
-          .map((p) => `• ${p.title}: Built with ${p.techStack?.join(", ") || "Modern Tech"}`)
-          .join("\n");
-        return NextResponse.json({
-          answer: `Check out some of our latest projects:\n\n${listText}\n\nYou can see full details in the Projects section above!`,
-        });
+      try {
+        await connectDB();
+        const dbProjects = await Project.find({}).lean();
+        if (dbProjects && dbProjects.length > 0) {
+          const listText = dbProjects
+            .map((p) => `• ${p.title}: Built with ${p.techStack?.join(", ") || "Modern Tech"}`)
+            .join("\n");
+          return NextResponse.json({
+            answer: `Check out some of our latest projects:\n\n${listText}\n\nYou can see full details in the Projects section above!`,
+          });
+        }
+      } catch (err) {
+        console.error("Chat projects lookup failed:", err);
       }
+
+      return NextResponse.json({
+        answer: "Our portfolio is being updated. Please visit the Projects section or contact us to see our latest work.",
+      });
     }
 
     // ── 4. Smart Intent Check: Contact Info ──
@@ -73,7 +91,13 @@ export async function POST(request) {
     }
 
     // ── 5. MongoDB FAQs keyword matching logic ──
-    const allFAQs = await FAQ.find({});
+    let allFAQs = [];
+    try {
+      await connectDB();
+      allFAQs = await FAQ.find({});
+    } catch (err) {
+      console.error("Chat FAQ lookup failed:", err);
+    }
     let bestMatch = null;
     let highestScore = 0;
 
@@ -107,4 +131,4 @@ export async function POST(request) {
       { status: 500 }
     );
   }
-}
+}

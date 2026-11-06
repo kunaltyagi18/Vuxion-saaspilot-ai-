@@ -9,6 +9,23 @@ const welcomeMsg = {
   text: "Hi! 👋 I'm your assistant. Ask me anything about our services, projects, or timings!",
 };
 
+const DEFAULT_QUICK_REPLIES = [
+  { label: "Services", message: "services" },
+  { label: "Projects", message: "projects" },
+  { label: "Pricing", message: "pricing" },
+  { label: "Contact", message: "contact" },
+];
+
+function makeQuickReply(keyword) {
+  const message = String(keyword || "").trim();
+  if (!message) return null;
+
+  return {
+    message,
+    label: message.replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
+  };
+}
+
 function BotLogo({ className = "" }) {
   return (
     <svg className={`chatbot-bot-icon ${className}`} viewBox="0 0 48 48" fill="none" aria-hidden="true">
@@ -29,6 +46,34 @@ export default function Chatbot() {
   const [messages, setMessages] = useState([welcomeMsg]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [quickReplies, setQuickReplies] = useState(DEFAULT_QUICK_REPLIES);
+
+  // Admin ke FAQ keywords ko chatbot ke quick-reply buttons me dikhayein.
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/faqs", { cache: "no-store" })
+      .then((response) => (response.ok ? response.json() : []))
+      .then((faqs) => {
+        const adminReplies = Array.isArray(faqs)
+          ? faqs
+              .flatMap((faq) => faq.keywords || [])
+              .map(makeQuickReply)
+              .filter(Boolean)
+              .filter((reply, index, all) => all.findIndex((item) => item.message.toLowerCase() === reply.message.toLowerCase()) === index)
+              .slice(0, 6)
+          : [];
+
+        if (active) setQuickReplies(adminReplies.length ? adminReplies : DEFAULT_QUICK_REPLIES);
+      })
+      .catch(() => {
+        if (active) setQuickReplies(DEFAULT_QUICK_REPLIES);
+      });
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   // scroll to bottom jab bhi naya message aaye
   const bottomRef = useRef(null);
@@ -37,10 +82,10 @@ export default function Chatbot() {
   }, [messages]);
 
   // real API call function message send karne ke liye
-  async function sendMessage() {
-    if (!input.trim()) return;
+  async function sendMessage(messageValue = input) {
+    if (!messageValue.trim()) return;
 
-    const userText = input.trim();
+    const userText = messageValue.trim();
     const userMsg = { role: "user", text: userText };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
@@ -160,6 +205,21 @@ export default function Chatbot() {
                   )}
                 </motion.div>
               ))}
+
+              {messages.length === 1 && !loading && (
+                <div className="chatbot-quick-replies" aria-label="Suggested questions">
+                  {quickReplies.map((reply) => (
+                    <button
+                      key={reply.message}
+                      type="button"
+                      className="chatbot-quick-reply"
+                      onClick={() => sendMessage(reply.message)}
+                    >
+                      {reply.label}
+                    </button>
+                  ))}
+                </div>
+              )}
 
               {/* typing indicator jab bot soch raha ho */}
               {loading && (

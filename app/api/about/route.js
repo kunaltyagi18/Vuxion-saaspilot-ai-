@@ -4,6 +4,8 @@ import About from "@/models/About";
 import { NextResponse } from "next/server";
 import { isAdminUser } from "@/lib/adminGuard";
 
+export const dynamic = "force-dynamic";
+
 // GET — Public: fetch about content (creates default if none exists)
 export async function GET() {
   try {

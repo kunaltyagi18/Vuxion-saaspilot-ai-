@@ -3,6 +3,8 @@ import FAQ from "@/models/FAQ";
 import { NextResponse } from "next/server";
 import { isAdminUser } from "@/lib/adminGuard";
 
+export const dynamic = "force-dynamic";
+
 // GET - saare FAQs fetch karo (PUBLIC — chatbot isse use karta hai)
 export async function GET() {
   try {

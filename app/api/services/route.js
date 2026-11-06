@@ -3,6 +3,8 @@ import Service from "@/models/Service";
 import { NextResponse } from "next/server";
 import { isAdminUser } from "@/lib/adminGuard";
 
+export const dynamic = "force-dynamic";
+
 // GET - saari services fetch karo (PUBLIC — homepage isse use karta hai)
 export async function GET() {
   try {

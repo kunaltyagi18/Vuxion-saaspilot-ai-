@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Testimonial from "@/models/Testimonial";
+import { isAdminUser } from "@/lib/adminGuard";
+
+export const dynamic = "force-dynamic";
 
 // Seed data if DB empty
 const SEED = [
@@ -26,6 +29,9 @@ export async function GET() {
 }
 
 export async function POST(req) {
+  const isAdmin = await isAdminUser();
+  if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   await connectDB();
   const body = await req.json();
   const t = await Testimonial.create(body);

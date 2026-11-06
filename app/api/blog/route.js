@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import BlogPost from "@/models/BlogPost";
+import { isAdminUser } from "@/lib/adminGuard";
+
+export const dynamic = "force-dynamic";
 
 const SEED = [
   { category: "Web Development", title: "10 Next.js Performance Tricks That Will Blow Your Mind", excerpt: "From ISR to image optimization, these battle-tested techniques can cut your page load time by up to 70%.", readTime: "5 min read", date: "Sep 2025", emoji: "⚡", color: "from-indigo-500 to-violet-500", order: 1 },
@@ -24,6 +27,9 @@ export async function GET() {
 }
 
 export async function POST(req) {
+  const isAdmin = await isAdminUser();
+  if (!isAdmin) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   await connectDB();
   const body = await req.json();
   const post = await BlogPost.create(body);

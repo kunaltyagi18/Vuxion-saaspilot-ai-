@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CldUploadWidget } from "next-cloudinary";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
+import ThemeToggle from "@/components/ThemeToggle";
 import {
   LineChart, Line, XAxis, YAxis, Tooltip,
   ResponsiveContainer, CartesianGrid
@@ -75,6 +76,13 @@ async function fetchJson(url, fallback) {
   } catch {
     return fallback;
   }
+}
+
+async function requestAdmin(url, options = {}) {
+  const response = await fetch(url, options);
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data?.error || "Request complete nahi hui");
+  return data;
 }
 
 export default function AdminPage() {
@@ -185,12 +193,11 @@ export default function AdminPage() {
   async function saveAbout() {
     setAboutSaving(true);
     try {
-      const res = await fetch("/api/about", {
+      const updated = await requestAdmin("/api/about", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(about),
       });
-      const updated = await res.json();
       setAbout(updated);
       toast.success("About Us save ho gaya! ℹ️");
     } catch {
@@ -203,10 +210,14 @@ export default function AdminPage() {
   // ── Add handlers ────────────────────────────────────────────────────────────
   async function addService() {
     if (!sTitle || !sDesc || !sPrice) return toast.error("Saare fields bharo!");
-    await fetch("/api/services", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: sTitle, description: sDesc, price: sPrice, image: sImage }),
-    });
+    try {
+      await requestAdmin("/api/services", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: sTitle, description: sDesc, price: sPrice, image: sImage }),
+      });
+    } catch (error) {
+      return toast.error(error.message || "Service save nahi hui");
+    }
     toast.success("Service add ho gayi! 🛠️");
     setSTitle(""); setSDesc(""); setSPrice(""); setSImage("");
     fetch("/api/services").then(r => r.json()).then(d => setServices(Array.isArray(d) ? d : []));
@@ -215,10 +226,14 @@ export default function AdminPage() {
   async function addProject() {
     if (!pTitle || !pDesc) return toast.error("Title aur description bharo!");
     const techArray = pTech.split(",").map(t => t.trim()).filter(Boolean);
-    await fetch("/api/projects", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: pTitle, description: pDesc, techStack: techArray, link: pLink, image: pImage }),
-    });
+    try {
+      await requestAdmin("/api/projects", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: pTitle, description: pDesc, techStack: techArray, link: pLink, image: pImage }),
+      });
+    } catch (error) {
+      return toast.error(error.message || "Project save nahi hua");
+    }
     toast.success("Project add ho gaya! 🚀");
     setPTitle(""); setPDesc(""); setPTech(""); setPLink(""); setPImage("");
     fetch("/api/projects").then(r => r.json()).then(d => setProjects(Array.isArray(d) ? d : []));
@@ -227,10 +242,14 @@ export default function AdminPage() {
   async function addFAQ() {
     if (!fKeywords || !fAnswer) return toast.error("Keywords aur answer dono bharo!");
     const keywordsArray = fKeywords.split(",").map(k => k.trim()).filter(Boolean);
-    await fetch("/api/faqs", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ keywords: keywordsArray, answer: fAnswer }),
-    });
+    try {
+      await requestAdmin("/api/faqs", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ keywords: keywordsArray, answer: fAnswer }),
+      });
+    } catch (error) {
+      return toast.error(error.message || "FAQ save nahi hua");
+    }
     toast.success("FAQ add ho gaya! 🤖");
     setFKeywords(""); setFAnswer("");
     fetch("/api/faqs").then(r => r.json()).then(d => setFaqs(Array.isArray(d) ? d : []));
@@ -239,7 +258,11 @@ export default function AdminPage() {
   // ── Delete handlers ─────────────────────────────────────────────────────────
   async function del(endpoint, id, label, refreshFn) {
     if (!window.confirm(`Delete karna chahte ho?`)) return;
-    await fetch(`/api/${endpoint}/${id}`, { method: "DELETE" });
+    try {
+      await requestAdmin(`/api/${endpoint}/${id}`, { method: "DELETE" });
+    } catch (error) {
+      return toast.error(error.message || "Delete nahi hua");
+    }
     toast.success(`${label} delete ho gaya! 🗑️`);
     refreshFn();
   }
@@ -266,10 +289,14 @@ export default function AdminPage() {
     if (section === "faqs") {
       body.keywords = editData.keywords.split(",").map(k => k.trim()).filter(Boolean);
     }
-    await fetch(`/api/${endpoint}/${editingId}`, {
-      method: "PUT", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    try {
+      await requestAdmin(`/api/${endpoint}/${editingId}`, {
+        method: "PUT", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+    } catch (error) {
+      return toast.error(error.message || "Update nahi hua");
+    }
     toast.success("Update ho gaya! ✅");
     cancelEdit();
     refreshFn();
@@ -287,14 +314,14 @@ export default function AdminPage() {
     setTSaving(true);
     try {
       if (tEditId) {
-        await fetch(`/api/testimonials/${tEditId}`, {
+        await requestAdmin(`/api/testimonials/${tEditId}`, {
           method: "PUT", headers: { "Content-Type": "application/json" },
           body: JSON.stringify(tForm),
         });
         toast.success("Testimonial updated! ✅");
         setTEditId(null);
       } else {
-        await fetch("/api/testimonials", {
+        await requestAdmin("/api/testimonials", {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify(tForm),
         });
@@ -316,14 +343,14 @@ export default function AdminPage() {
     setBSaving(true);
     try {
       if (bEditId) {
-        await fetch(`/api/blog/${bEditId}`, {
+        await requestAdmin(`/api/blog/${bEditId}`, {
           method: "PUT", headers: { "Content-Type": "application/json" },
           body: JSON.stringify(bForm),
         });
         toast.success("Post updated! ✅");
         setBEditId(null);
       } else {
-        await fetch("/api/blog", {
+        await requestAdmin("/api/blog", {
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify(bForm),
         });
@@ -344,11 +371,10 @@ export default function AdminPage() {
   async function saveSettings() {
     setSettingsSaving(true);
     try {
-      const res = await fetch("/api/settings", {
+      const updated = await requestAdmin("/api/settings", {
         method: "PUT", headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
       });
-      const updated = await res.json();
       setSettings(updated);
       toast.success("Settings saved! ⚙️");
     } catch { toast.error("Save failed!"); }
@@ -406,8 +432,8 @@ export default function AdminPage() {
         {/* Logo */}
         <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800">
           <Link href="/" className="flex items-center gap-2">
-            <span className="bg-indigo-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">V</span>
-            <span className="text-lg font-extrabold text-indigo-600 dark:text-indigo-400">Vuxion</span>
+            <span className="bg-orange-500 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm font-black">V</span>
+            <span className="text-lg font-extrabold text-orange-500 dark:text-orange-400">Vuxion</span>
           </Link>
           <p className="text-xs text-gray-400 mt-1 ml-10">Admin Panel</p>
         </div>
@@ -456,6 +482,13 @@ export default function AdminPage() {
 
       {/* ── MAIN CONTENT ─────────────────────────────────────────────────────── */}
       <main className="admin-main flex-1 p-8 overflow-auto">
+        <div className="flex items-center justify-between gap-4 mb-5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400">Admin control center</p>
+          <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-2 shadow-sm">
+            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Theme</span>
+            <ThemeToggle />
+          </div>
+        </div>
         <AnimatePresence mode="wait">
           <motion.div
             key={activeSection}
