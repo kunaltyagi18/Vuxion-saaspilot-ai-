@@ -3,18 +3,15 @@ import { motion, useScroll, useSpring } from "framer-motion";
 import { UserButton, SignInButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import { useState } from "react";
-import { ADMIN_EMAIL } from "@/lib/config";
 import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Navbar() {
-  const { isSignedIn, user } = useUser();
+  const { isSignedIn } = useUser();
   const [open, setOpen] = useState(false);
 
   // Scroll progress bar
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-
-  const isAdmin = isSignedIn && user?.primaryEmailAddress?.emailAddress === ADMIN_EMAIL;
 
   const navLinks = [
     { href: "/about",    label: "About" },
@@ -46,11 +43,9 @@ export default function Navbar() {
               {l.label.toUpperCase()}
             </Link>
           ))}
-          {isAdmin && (
-            <Link href="/admin" onClick={() => setOpen(false)}>
-              ADMIN
-            </Link>
-          )}
+          <Link href="/admin" onClick={() => setOpen(false)}>
+            ADMIN
+          </Link>
         </div>
 
         {/* Right actions */}

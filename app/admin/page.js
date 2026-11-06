@@ -1,9 +1,7 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ADMIN_EMAIL } from "@/lib/config";
 import { CldUploadWidget } from "next-cloudinary";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
@@ -80,8 +78,8 @@ async function fetchJson(url, fallback) {
 }
 
 export default function AdminPage() {
-  const { isSignedIn, isLoaded, user } = useUser();
   const router = useRouter();
+  const [authReady, setAuthReady] = useState(false);
 
   // Active sidebar section
   const [activeSection, setActiveSection] = useState("dashboard");
@@ -137,11 +135,25 @@ export default function AdminPage() {
 
   // ── Auth guard ──────────────────────────────────────────────────────────────
   useEffect(() => {
-    if (!isLoaded) return;
-    if (!isSignedIn) { router.push("/"); return; }
-    const email = user?.primaryEmailAddress?.emailAddress;
-    if (email && email !== ADMIN_EMAIL) router.push("/");
-  }, [isLoaded, isSignedIn, user, router]);
+    let active = true;
+
+    fetch("/api/admin/session")
+      .then((response) => {
+        if (!response.ok) {
+          router.replace("/admin/login?redirect_url=/admin");
+          return false;
+        }
+        return true;
+      })
+      .then((authenticated) => {
+        if (active && authenticated) setAuthReady(true);
+      })
+      .catch(() => router.replace("/admin/login?redirect_url=/admin"));
+
+    return () => {
+      active = false;
+    };
+  }, [router]);
 
   // ── Load all data on mount ──────────────────────────────────────────────────
   const loadAll = useCallback(async () => {
@@ -344,7 +356,7 @@ export default function AdminPage() {
   }
 
 
-  if (!isLoaded) return (
+  if (!authReady) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="animate-spin w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full" />
     </div>
@@ -380,6 +392,11 @@ export default function AdminPage() {
   };
 
   const leadsChartData = buildChartData(chartView);
+
+  async function logoutAdmin() {
+    await fetch("/api/admin/logout", { method: "POST" });
+    router.replace("/admin/login");
+  }
 
   return (
       <div className="admin-shell min-h-screen bg-gray-50 dark:bg-gray-950 flex transition-colors duration-300">
@@ -427,6 +444,13 @@ export default function AdminPage() {
           >
             ← Back to Site
           </Link>
+          <button
+            type="button"
+            onClick={logoutAdmin}
+            className="mt-2 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-medium text-red-500 transition hover:bg-red-50 dark:hover:bg-red-950/30"
+          >
+            Sign out
+          </button>
         </div>
       </aside>
 

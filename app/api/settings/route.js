@@ -3,11 +3,16 @@ import connectDB from "@/lib/mongodb";
 import SiteSettings from "@/models/SiteSettings";
 
 export async function GET() {
-  await connectDB();
-  // Always return one document — create with defaults if missing
-  let settings = await SiteSettings.findOne();
-  if (!settings) settings = await SiteSettings.create({});
-  return NextResponse.json(settings);
+  try {
+    await connectDB();
+    // Always return one document — create with defaults if missing
+    let settings = await SiteSettings.findOne();
+    if (!settings) settings = await SiteSettings.create({});
+    return NextResponse.json(settings);
+  } catch (err) {
+    console.error("GET /api/settings failed:", err);
+    return NextResponse.json({});
+  }
 }
 
 export async function PUT(req) {

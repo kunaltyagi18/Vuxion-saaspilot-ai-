@@ -10,7 +10,8 @@ export async function GET() {
     const faqs = await FAQ.find({});
     return NextResponse.json(faqs);
   } catch (err) {
-    return NextResponse.json({ error: "FAQs nahi mile" }, { status: 500 });
+    console.error("GET /api/faqs failed:", err);
+    return NextResponse.json([]);
   }
 }
 

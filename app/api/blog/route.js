@@ -9,13 +9,18 @@ const SEED = [
 ];
 
 export async function GET() {
-  await connectDB();
-  let posts = await BlogPost.find({ active: true }).sort({ order: 1 });
-  if (posts.length === 0) {
-    await BlogPost.insertMany(SEED);
-    posts = await BlogPost.find({ active: true }).sort({ order: 1 });
+  try {
+    await connectDB();
+    let posts = await BlogPost.find({ active: true }).sort({ order: 1 });
+    if (posts.length === 0) {
+      await BlogPost.insertMany(SEED);
+      posts = await BlogPost.find({ active: true }).sort({ order: 1 });
+    }
+    return NextResponse.json(posts);
+  } catch (err) {
+    console.error("GET /api/blog failed:", err);
+    return NextResponse.json([]);
   }
-  return NextResponse.json(posts);
 }
 
 export async function POST(req) {

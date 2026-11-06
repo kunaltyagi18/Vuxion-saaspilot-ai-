@@ -18,7 +18,7 @@ export async function GET() {
     return NextResponse.json(Array.isArray(leads) ? leads : []);
   } catch (err) {
     console.error("GET /api/contact failed:", err);
-    return NextResponse.json({ error: "Leads fetch nahi ho paaye" }, { status: 500 });
+    return NextResponse.json([]);
   }
 }
 

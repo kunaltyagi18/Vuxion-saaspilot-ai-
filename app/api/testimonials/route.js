@@ -11,13 +11,18 @@ const SEED = [
 ];
 
 export async function GET() {
-  await connectDB();
-  let testimonials = await Testimonial.find({ active: true }).sort({ order: 1 });
-  if (testimonials.length === 0) {
-    await Testimonial.insertMany(SEED);
-    testimonials = await Testimonial.find({ active: true }).sort({ order: 1 });
+  try {
+    await connectDB();
+    let testimonials = await Testimonial.find({ active: true }).sort({ order: 1 });
+    if (testimonials.length === 0) {
+      await Testimonial.insertMany(SEED);
+      testimonials = await Testimonial.find({ active: true }).sort({ order: 1 });
+    }
+    return NextResponse.json(testimonials);
+  } catch (err) {
+    console.error("GET /api/testimonials failed:", err);
+    return NextResponse.json([]);
   }
-  return NextResponse.json(testimonials);
 }
 
 export async function POST(req) {

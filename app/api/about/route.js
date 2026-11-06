@@ -15,7 +15,8 @@ export async function GET() {
     }
     return NextResponse.json(about);
   } catch (err) {
-    return NextResponse.json({ error: "Fetch nahi hua" }, { status: 500 });
+    console.error("GET /api/about failed:", err);
+    return NextResponse.json({});
   }
 }
 

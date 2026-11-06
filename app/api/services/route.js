@@ -12,13 +12,7 @@ export async function GET() {
     return NextResponse.json(Array.isArray(services) ? services : []);
   } catch (err) {
     console.error("GET /api/services failed:", err);
-    return NextResponse.json(
-      {
-        error: "Services fetch nahi ho paayi",
-        hint: err?.message ?? String(err),
-      },
-      { status: 500 }
-    );
+    return NextResponse.json([]);
   }
 }
 

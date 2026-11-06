@@ -1,7 +1,7 @@
-import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import { SITE_URL } from "@/lib/config";
 import ToasterProvider from "@/components/ToasterProvider";
+import AuthBoundary from "@/components/AuthBoundary";
  
 
 // ── Premium Font — Inter (variable weight, auto-optimized by Next.js) ─────────
@@ -46,8 +46,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
-      <html lang="en" className="scroll-smooth dark">
+    <html lang="en" className="scroll-smooth dark">
         <body className="font-inter" style={{ background: "var(--studio-bg, #09090b)", color: "var(--studio-copy, #f4f4f5)" }}>
           {/* JSON-LD structured data */}
           <script
@@ -67,10 +66,9 @@ export default function RootLayout({ children }) {
               }),
             }}
           />
-          {children}
+          <AuthBoundary>{children}</AuthBoundary>
           <ToasterProvider />
         </body>
       </html>
-    </ClerkProvider>
   );
 }
