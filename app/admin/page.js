@@ -372,10 +372,10 @@ export default function AdminPage() {
   const leadsChartData = buildChartData(chartView);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex transition-colors duration-300">
+      <div className="admin-shell min-h-screen bg-gray-50 dark:bg-gray-950 flex transition-colors duration-300">
 
       {/* ── LEFT SIDEBAR ──────────────────────────────────────────────────────── */}
-      <aside className="w-64 shrink-0 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col min-h-screen sticky top-0">
+      <aside className="admin-sidebar w-64 shrink-0 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col min-h-screen sticky top-0">
         {/* Logo */}
         <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-800">
           <Link href="/" className="flex items-center gap-2">
@@ -421,7 +421,7 @@ export default function AdminPage() {
       </aside>
 
       {/* ── MAIN CONTENT ─────────────────────────────────────────────────────── */}
-      <main className="flex-1 p-8 overflow-auto">
+      <main className="admin-main flex-1 p-8 overflow-auto">
         <AnimatePresence mode="wait">
           <motion.div
             key={activeSection}

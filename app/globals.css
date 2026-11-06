@@ -872,3 +872,409 @@ html.light [style*="#929297"], html.light [style*="#a1a1a6"], html.light [style*
   .human-visual-grid { width: 100%; }
   .human-visual-detail { transform: none; }
 }
+
+/* --------------------------------------------------------------------------
+   Final responsive foundation
+   Keep layout sizing content-driven at every viewport width. These rules are
+   intentionally small and shared by all public pages and the admin area.
+   -------------------------------------------------------------------------- */
+html,
+body {
+  max-width: 100%;
+}
+
+body {
+  min-width: 0;
+}
+
+img,
+svg,
+video,
+canvas,
+iframe {
+  max-width: 100%;
+}
+
+button,
+input,
+textarea,
+select {
+  max-width: 100%;
+}
+
+.studio-shell,
+.studio-shell main,
+.studio-grid-section,
+.studio-section,
+.studio-page-hero,
+.human-hero,
+.human-approach,
+.human-process,
+.human-about,
+.human-contact,
+.human-proof,
+.human-visual-section,
+.service-fit,
+.service-steps,
+.project-outcomes,
+.project-journey {
+  min-width: 0;
+}
+
+.studio-shell h1,
+.studio-shell h2,
+.studio-shell h3,
+.studio-shell p,
+.studio-shell a,
+.studio-shell span,
+.studio-shell button,
+.studio-shell label {
+  overflow-wrap: anywhere;
+}
+
+.studio-bento-grid > *,
+.studio-case > *,
+.studio-statement > *,
+.studio-contact > *,
+.human-hero > *,
+.human-about > *,
+.human-contact > *,
+.human-visual-section > *,
+.service-fit > *,
+.project-journey > *,
+.about-grid > *,
+.contact-grid > *,
+.proj-detail-grid > * {
+  min-width: 0;
+}
+
+.human-approach-grid,
+.human-services-grid,
+.human-proof-grid,
+.about-principles-grid,
+.project-outcome-grid,
+.service-steps-grid,
+.pricing-grid,
+.process-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.human-fit-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.process-grid,
+.human-process-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.admin-shell,
+.admin-main {
+  min-width: 0;
+}
+
+.admin-main > * {
+  min-width: 0;
+}
+
+@media (max-width: 1100px) and (min-width: 801px) {
+  .studio-section,
+  .human-approach,
+  .human-process,
+  .human-about,
+  .human-contact,
+  .human-proof,
+  .service-fit,
+  .service-steps,
+  .project-outcomes,
+  .project-journey {
+    padding-left: 32px;
+    padding-right: 32px;
+  }
+
+  .studio-case-info {
+    padding-left: 34px;
+    padding-right: 34px;
+  }
+
+  .studio-statement {
+    grid-template-columns: minmax(90px, .7fr) minmax(0, 1.5fr) minmax(130px, .8fr);
+  }
+
+  .studio-contact {
+    grid-template-columns: minmax(110px, .7fr) minmax(0, 1.7fr) minmax(120px, .8fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .human-approach-grid,
+  .human-services-grid,
+  .human-proof-grid,
+  .about-principles-grid,
+  .project-outcome-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .human-fit-grid,
+  .service-steps-grid,
+  .process-grid,
+  .human-process-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pricing-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .studio-grid-section,
+  .studio-section,
+  .studio-page-hero,
+  .human-hero,
+  .human-approach,
+  .human-process,
+  .human-about,
+  .human-contact,
+  .human-proof,
+  .service-fit,
+  .service-steps,
+  .project-outcomes,
+  .project-journey {
+    max-width: 100%;
+  }
+
+  .studio-bento-grid,
+  .studio-case,
+  .studio-statement,
+  .studio-contact,
+  .human-hero,
+  .human-about,
+  .human-contact,
+  .human-visual-section,
+  .service-fit,
+  .project-journey {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .studio-statement,
+  .studio-contact,
+  .human-about,
+  .human-contact,
+  .human-visual-section,
+  .service-fit,
+  .project-journey {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .studio-statement > *,
+  .studio-contact > *,
+  .human-about > *,
+  .human-contact > *,
+  .human-visual-section > *,
+  .service-fit > *,
+  .project-journey > * {
+    width: 100%;
+  }
+
+  .studio-statement-aside,
+  .human-about-note {
+    align-self: flex-start;
+  }
+
+  .studio-contact .studio-button {
+    align-self: flex-start;
+  }
+
+  .about-grid,
+  .contact-grid,
+  .proj-detail-grid {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .about-grid img,
+  .contact-grid img,
+  .proj-detail-grid img {
+    max-width: 100%;
+  }
+
+  .about-stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .studio-footer {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .process-grid,
+  .human-process-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .studio-section-head h2,
+  .human-approach-head h2,
+  .human-section-head h2,
+  .human-process h2,
+  .human-about h2,
+  .human-contact h2,
+  .human-fit-section-head h2,
+  .project-journey h2,
+  .service-fit-copy h2,
+  .project-outcomes h2 {
+    font-size: clamp(38px, 13vw, 64px);
+  }
+
+  .studio-section-head > p,
+  .human-approach-head p,
+  .human-section-head > p,
+  .human-fit-section-head > p,
+  .project-journey-copy > p {
+    max-width: 100%;
+  }
+
+  .studio-statement,
+  .studio-contact {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .studio-case-info,
+  .studio-case-visual {
+    min-width: 0;
+  }
+
+  .privacy-row {
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+  }
+
+  .privacy-row + .privacy-row {
+    padding-top: 28px !important;
+  }
+
+  .privacy-row ~ div {
+    min-width: 0;
+  }
+
+  .admin-main {
+    padding: 16px;
+    overflow-x: hidden;
+  }
+
+  .admin-main .recharts-responsive-container {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .admin-shell {
+    display: block;
+  }
+
+  .admin-sidebar {
+    border-bottom: 1px solid #e5e7eb;
+    border-right: 0;
+    min-height: 0;
+    position: static;
+    width: 100%;
+  }
+
+  .dark .admin-sidebar {
+    border-bottom-color: #1f2937;
+  }
+
+  .admin-sidebar nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+    padding: 12px;
+  }
+
+  .admin-sidebar nav > p {
+    grid-column: 1 / -1;
+    margin-bottom: 4px;
+  }
+
+  .admin-sidebar nav button {
+    margin-bottom: 0;
+    min-width: 0;
+  }
+
+  .admin-sidebar > div:last-child {
+    padding-top: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .human-fit-grid,
+  .service-steps-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .studio-nav {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .studio-nav > div {
+    gap: 8px !important;
+  }
+
+  .studio-mark {
+    letter-spacing: .12em;
+  }
+
+  .studio-mark > span:last-child {
+    font-size: 10px;
+  }
+
+  .studio-page-hero,
+  .studio-section,
+  .human-hero,
+  .human-approach,
+  .human-process,
+  .human-about,
+  .human-contact,
+  .human-proof,
+  .service-fit,
+  .service-steps,
+  .project-outcomes,
+  .project-journey {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .studio-section-head h2,
+  .human-approach-head h2,
+  .human-section-head h2,
+  .human-process h2,
+  .human-about h2,
+  .human-contact h2,
+  .human-fit-section-head h2,
+  .project-journey h2,
+  .service-fit-copy h2,
+  .project-outcomes h2 {
+    font-size: clamp(34px, 12vw, 54px);
+  }
+
+  .studio-case-info,
+  .about-relationship {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .about-stats-grid > div {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .about-stats-grid p:first-child {
+    font-size: 30px !important;
+  }
+
+  .studio-footer {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}
