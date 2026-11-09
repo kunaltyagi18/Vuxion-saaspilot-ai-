@@ -9,22 +9,14 @@ const welcomeMsg = {
   text: "Hi! 👋 I'm your assistant. Ask me anything about our services, projects, or timings!",
 };
 
-const DEFAULT_QUICK_REPLIES = [
+// These are intentionally client-side so they are available even when the FAQ
+// endpoint or database is unavailable.
+const QUICK_REPLIES = [
   { label: "Services", message: "services" },
   { label: "Projects", message: "projects" },
   { label: "Pricing", message: "pricing" },
   { label: "Contact", message: "contact" },
 ];
-
-function makeQuickReply(keyword) {
-  const message = String(keyword || "").trim();
-  if (!message) return null;
-
-  return {
-    message,
-    label: message.replace(/[-_]+/g, " ").replace(/\b\w/g, (letter) => letter.toUpperCase()),
-  };
-}
 
 function BotLogo({ className = "" }) {
   return (
@@ -46,34 +38,6 @@ export default function Chatbot() {
   const [messages, setMessages] = useState([welcomeMsg]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
-  const [quickReplies, setQuickReplies] = useState(DEFAULT_QUICK_REPLIES);
-
-  // Admin ke FAQ keywords ko chatbot ke quick-reply buttons me dikhayein.
-  useEffect(() => {
-    let active = true;
-
-    fetch("/api/faqs", { cache: "no-store" })
-      .then((response) => (response.ok ? response.json() : []))
-      .then((faqs) => {
-        const adminReplies = Array.isArray(faqs)
-          ? faqs
-              .flatMap((faq) => faq.keywords || [])
-              .map(makeQuickReply)
-              .filter(Boolean)
-              .filter((reply, index, all) => all.findIndex((item) => item.message.toLowerCase() === reply.message.toLowerCase()) === index)
-              .slice(0, 6)
-          : [];
-
-        if (active) setQuickReplies(adminReplies.length ? adminReplies : DEFAULT_QUICK_REPLIES);
-      })
-      .catch(() => {
-        if (active) setQuickReplies(DEFAULT_QUICK_REPLIES);
-      });
-
-    return () => {
-      active = false;
-    };
-  }, []);
 
   // scroll to bottom jab bhi naya message aaye
   const bottomRef = useRef(null);
@@ -208,7 +172,7 @@ export default function Chatbot() {
 
               {messages.length === 1 && !loading && (
                 <div className="chatbot-quick-replies" aria-label="Suggested questions">
-                  {quickReplies.map((reply) => (
+                  {QUICK_REPLIES.map((reply) => (
                     <button
                       key={reply.message}
                       type="button"

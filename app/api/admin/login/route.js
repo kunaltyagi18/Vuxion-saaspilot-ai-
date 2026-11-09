@@ -4,10 +4,24 @@ import {
   createAdminSessionToken,
   SESSION_MAX_AGE,
 } from "@/lib/adminSession";
+import { checkRateLimit } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 
 export async function POST(request) {
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "anonymous";
+  const rateCheck = checkRateLimit(`admin-login:${ip}`, { limit: 5, windowMs: 60_000 });
+
+  if (!rateCheck.ok) {
+    return NextResponse.json(
+      { error: "Too many login attempts. Please wait a minute and try again." },
+      { status: 429 }
+    );
+  }
+
   const { email = "", password = "" } = await request.json().catch(() => ({}));
   const adminEmail = (process.env.ADMIN_LOGIN_EMAIL || process.env.ADMIN_EMAIL || "")
     .trim()

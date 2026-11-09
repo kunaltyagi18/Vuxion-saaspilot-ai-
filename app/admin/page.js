@@ -485,8 +485,7 @@ export default function AdminPage() {
         <div className="flex items-center justify-between gap-4 mb-5">
           <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-400">Admin control center</p>
           <div className="flex items-center gap-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 px-3 py-2 shadow-sm">
-            <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">Theme</span>
-            <ThemeToggle />
+            <ThemeToggle showLabel />
           </div>
         </div>
         <AnimatePresence mode="wait">

@@ -1,6 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 export default function Contact() {
@@ -8,6 +8,22 @@ export default function Contact() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [contactSettings, setContactSettings] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/settings")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (active && data?.contact) setContactSettings(data.contact);
+      })
+      .catch(() => {});
+
+    return () => {
+      active = false;
+    };
+  }, []);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -97,9 +113,9 @@ export default function Contact() {
           style={{ display: "flex", flexDirection: "column", gap: 12 }}
         >
           {[
-            { label: "LOCATION", value: "Vuxion, Noida, India" },
-            { label: "EMAIL", value: "hello@vuxion.com" },
-            { label: "PHONE", value: "+91 74280 XXXXX" },
+            { label: "LOCATION", value: contactSettings?.address || "Vuxion, Noida, India" },
+            { label: "EMAIL", value: contactSettings?.email || "hello@vuxion.com" },
+            { label: "PHONE", value: contactSettings?.phone || "+91 74280 XXXXX" },
             { label: "RESPONSE TIME", value: "Within 24 hours" },
           ].map((item) => (
             <div

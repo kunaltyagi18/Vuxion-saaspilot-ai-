@@ -2,9 +2,12 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Chatbot from "@/components/Chatbot";
+import BlogTeaser from "@/components/BlogTeaser";
+import Testimonials from "@/components/Testimonials";
+import WhyUs from "@/components/WhyUs";
 
 function Arrow() {
   return <span aria-hidden="true" className="studio-arrow">↗</span>;
@@ -55,6 +58,26 @@ function PricingCard({ num, title, desc, features }) {
 }
 
 export default function StudioHome() {
+  const [siteSettings, setSiteSettings] = useState(null);
+
+  useEffect(() => {
+    let active = true;
+
+    fetch("/api/settings")
+      .then((response) => (response.ok ? response.json() : null))
+      .then((data) => {
+        if (active && data) setSiteSettings(data);
+      })
+      .catch(() => {});
+
+    return () => {
+      active = false;
+    };
+  }, []);
+
+  const hero = siteSettings?.hero || {};
+  const cta = siteSettings?.cta || {};
+
   return (
     <div className="studio-shell human-home">
       <Navbar />
@@ -62,17 +85,22 @@ export default function StudioHome() {
       <main>
         <section className="human-hero studio-grid-section">
           <div className="human-hero-main">
-            <p className="human-kicker">VUXION / WEB DEVELOPMENT</p>
-            <h1>Simple ideas.<br /><em>Well built.</em></h1>
+            <p className="human-kicker">{hero.badge || "VUXION / WEB DEVELOPMENT"}</p>
+            <h1>{(hero.headline || "Simple ideas.\nWell built.").split(/\r?\n/).map((line, index) => (
+              <span key={`${line}-${index}`}>
+                {index > 0 && <br />}
+                {line}
+              </span>
+            ))}</h1>
             <p className="human-hero-copy">
-              We design and build useful websites, dashboards, and digital products for people with something real to do.
+              {hero.subtitle || "We design and build useful websites, dashboards, and digital products for people with something real to do."}
             </p>
             <div className="human-actions">
               <Link className="studio-button studio-button--accent" href="/contact">
-                Tell us about it <Arrow />
+                {hero.cta1Text || "Tell us about it"} <Arrow />
               </Link>
               <Link className="studio-text-link" href="/services">
-                See what we do <Arrow />
+                {hero.cta2Text || "See what we do"} <Arrow />
               </Link>
             </div>
           </div>
@@ -259,13 +287,27 @@ export default function StudioHome() {
         </section>
 
         {/* ── Contact CTA ────────────────────────────────────────────────── */}
+        <WhyUs />
+        <Testimonials />
+        <BlogTeaser />
+
         <section className="human-contact studio-grid-section">
           <div>
-            <span className="studio-label">04 / NEXT STEP</span>
-            <h2>Have a real project<br /><em>in mind?</em></h2>
+            <span className="studio-label">{cta.badge || "04 / NEXT STEP"}</span>
+            <h2>{(cta.headline || "Have a real project in mind?").split(/\r?\n/).map((line, index) => (
+              <span key={`${line}-${index}`}>
+                {index > 0 && <br />}
+                {line}
+              </span>
+            ))}</h2>
           </div>
           <div className="human-contact-copy">
-            <p>Tell us what you are trying to make, where you are stuck, or what you want to improve.</p>
+            <p>{cta.subtitle || "Tell us what you are trying to make, where you are stuck, or what you want to improve."}</p>
+            <div className="studio-mono" style={{ display: "flex", flexWrap: "wrap", gap: "10px 18px", color: "var(--studio-muted)", fontSize: 9, marginBottom: 24 }}>
+              {[cta.trust1, cta.trust2, cta.trust3].filter(Boolean).map((item) => (
+                <span key={item}><span style={{ color: "var(--studio-orange)", marginRight: 5 }}>—</span>{item}</span>
+              ))}
+            </div>
             <Link className="studio-button studio-button--accent" href="/contact">Start a conversation <Arrow /></Link>
           </div>
         </section>

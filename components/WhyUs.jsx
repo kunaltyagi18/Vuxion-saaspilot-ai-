@@ -37,8 +37,8 @@ export default function WhyUs() {
       .then((r) => r.ok ? r.json() : null)
       .then((d) => {
         if (!d) return;
-        if (d.techStack?.length) setTechs(d.techStack);
-        if (d.whyUs?.length)    setWhyUs(d.whyUs);
+        if (Array.isArray(d.techStack)) setTechs(d.techStack);
+        if (Array.isArray(d.whyUs))     setWhyUs(d.whyUs);
       })
       .catch(() => {});
   }, []);

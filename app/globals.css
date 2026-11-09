@@ -537,6 +537,7 @@ html.light [style*="#929297"], html.light [style*="#a1a1a6"], html.light [style*
 .theme-toggle { align-items: center; background: transparent; border: 1px solid var(--studio-line-light); color: var(--studio-copy); cursor: pointer; display: inline-flex; padding: 7px 8px; transition: border-color .2s ease, color .2s ease; }
 .theme-toggle:hover { border-color: var(--studio-orange); color: var(--studio-orange); }
 .theme-toggle-icon { font-family: Arial, sans-serif; font-size: 13px; line-height: 1; }
+.theme-toggle-label { font-size: 11px; font-weight: 700; line-height: 1; margin-left: 6px; }
 
 @media (max-width: 800px) {
   .theme-toggle { padding: 7px 8px; }
@@ -978,6 +979,53 @@ select {
 
 .admin-main > * {
   min-width: 0;
+}
+
+/* Admin CMS accent: only selected/primary controls use the Vuxion orange. */
+.admin-shell [class~="bg-indigo-600"],
+.admin-shell [class~="bg-indigo-500"] {
+  background-color: var(--studio-orange) !important;
+}
+.admin-shell [class~="border-indigo-600"],
+.admin-shell [class~="border-indigo-500"] {
+  border-color: var(--studio-orange) !important;
+}
+.admin-shell [class~="hover:bg-indigo-700"]:hover,
+.admin-shell [class~="hover:bg-indigo-600"]:hover {
+  background-color: #e64300 !important;
+}
+.admin-shell [class~="bg-indigo-50"],
+.admin-shell [class~="bg-indigo-950\/40"],
+.admin-shell [class~="bg-indigo-950\/50"],
+.admin-shell [class~="bg-indigo-950\/60"] {
+  background-color: #fff4ee !important;
+}
+.admin-shell [class~="border-indigo-100"],
+.admin-shell [class~="border-indigo-200"],
+.admin-shell [class~="border-indigo-800"],
+.admin-shell [class~="border-indigo-900"] {
+  border-color: #ffd2bd !important;
+}
+.admin-shell [class~="focus:ring-indigo-500"]:focus {
+  --tw-ring-color: rgba(255, 74, 0, .28) !important;
+}
+.admin-shell .theme-toggle {
+  background: #fff7f2;
+  border-color: #ffb08d;
+  border-radius: 9px;
+  color: #c2410c;
+  gap: 2px;
+  padding: 8px 10px;
+}
+.admin-shell .theme-toggle:hover {
+  background: #ffeadf;
+  border-color: var(--studio-orange);
+  color: #c2410c;
+}
+.dark .admin-shell .theme-toggle {
+  background: rgba(255, 74, 0, .12);
+  border-color: rgba(255, 138, 98, .5);
+  color: #ffb08d;
 }
 
 @media (max-width: 1100px) and (min-width: 801px) {

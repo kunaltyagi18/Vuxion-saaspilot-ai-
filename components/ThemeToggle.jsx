@@ -23,7 +23,7 @@ function getServerTheme() {
   return "light";
 }
 
-export default function ThemeToggle() {
+export default function ThemeToggle({ showLabel = false }) {
   const theme = useSyncExternalStore(subscribe, getTheme, getServerTheme);
 
   useEffect(() => {
@@ -43,6 +43,7 @@ export default function ThemeToggle() {
       title={`Switch to ${nextTheme} mode`}
     >
       <span className="theme-toggle-icon" aria-hidden="true">{theme === "dark" ? "\u2600" : "\u263E"}</span>
+      {showLabel && <span className="theme-toggle-label">{theme === "dark" ? "Dark" : "Light"}</span>}
     </button>
   );
 }
