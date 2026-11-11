@@ -43,9 +43,6 @@ export default function Navbar() {
               {l.label.toUpperCase()}
             </Link>
           ))}
-          <Link href="/admin" onClick={() => setOpen(false)}>
-            ADMIN
-          </Link>
         </div>
 
         {/* Right actions */}
