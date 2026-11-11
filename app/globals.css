@@ -295,7 +295,7 @@ body {
 .human-hero { align-items: flex-end; display: grid; gap: 8vw; grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); min-height: 700px; overflow: visible; padding: 108px max(28px, calc((100vw - 1328px) / 2)) 0; }
 .human-hero-main { align-self: center; max-width: 730px; position: relative; z-index: 1; padding-bottom: 86px; }
 .human-kicker { color: var(--studio-orange); font-family: var(--studio-mono); font-size: 10px; letter-spacing: .14em; margin: 0 0 27px; }
-.human-hero h1 { color: var(--studio-copy); font-family: var(--studio-display); font-size: clamp(64px, 9vw, 142px); font-weight: 600; letter-spacing: -.09em; line-height: .84; margin: 0; }
+.human-hero h1 { color: var(--studio-copy); font-family: var(--studio-display); font-size: clamp(56px, 6.4vw, 104px); font-weight: 600; letter-spacing: -.08em; line-height: .88; margin: 0; max-width: 860px; overflow-wrap: normal; word-break: normal; }
 .human-hero h1 em, .human-section h2 em, .human-process h2 em, .human-about h2 em, .human-contact h2 em { color: var(--studio-orange); font-style: normal; }
 .human-hero-copy { color: #b4b4ba; font-size: 17px; line-height: 1.6; margin: 34px 0 30px 4px; max-width: 440px; }
 .human-actions { align-items: center; display: flex; flex-wrap: wrap; gap: 24px; margin-left: 4px; }
@@ -521,7 +521,11 @@ html.light [style*="#929297"], html.light [style*="#a1a1a6"], html.light [style*
 .process-grid > div:last-child { border-right: none; }
 
 /* Hero boy wrapper */
-.hero-boy-wrap { position: relative; display: flex; justify-content: center; align-items: flex-end; }
+.hero-boy-wrap { position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; }
+.hero-role { color: var(--studio-copy); font-family: var(--studio-mono); font-size: clamp(11px, 1.05vw, 15px); letter-spacing: .03em; margin: 0 0 15px; text-align: center; white-space: nowrap; }
+.hero-role span { color: var(--studio-orange); }
+.hero-role i { color: var(--studio-orange); font-style: normal; margin-left: 2px; animation: hero-role-cursor .8s steps(1, end) infinite; }
+@keyframes hero-role-cursor { 50% { opacity: 0; } }
 .hero-boy-img { width: 100%; max-width: 420px; height: auto; display: block; object-fit: contain; pointer-events: none; }
 
 /* Pricing + Process responsive */
@@ -572,7 +576,7 @@ html.light [style*="#929297"], html.light [style*="#a1a1a6"], html.light [style*
   .studio-case-info h3 { max-width: 100%; overflow-wrap: anywhere; }
   .studio-footer { width: 100%; }
   .studio-footer > div { width: 100%; }
-  .human-hero h1, .human-contact h2 { max-width: 100%; overflow-wrap: anywhere; }
+  .human-hero h1, .human-contact h2 { max-width: 100%; overflow-wrap: normal; word-break: normal; }
 }
 
 @media (max-width: 640px) {

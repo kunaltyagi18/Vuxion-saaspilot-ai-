@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Chatbot from "@/components/Chatbot";
 import BlogTeaser from "@/components/BlogTeaser";
@@ -107,6 +108,15 @@ export default function StudioHome() {
 
           {/* Boy — no card, just floating image */}
           <div className="hero-boy-wrap">
+            <motion.p
+              className="hero-role"
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.45, ease: "easeOut" }}
+              aria-label="I am Full stack developer"
+            >
+              I am <span>Full stack developer</span><i aria-hidden="true">_</i>
+            </motion.p>
             <img
               src="/hero-boy-nobg.png"
               alt="Developer"
